@@ -392,6 +392,19 @@
 - Refreshed again at `2026-05-19 12:23:09 UTC`: `check_v134_next_window_gate.py` still returns `WAIT-SAME-UTC-DAY`, visible submissions today remain `4`, and `v134_stable3_guarded_rescue` remains the top guarded candidate.
 - Practical implication unchanged: no real submission action before UTC rollover.
 
+## 2026-05-19 v137 Guarded Recheck Status
+- Added `scripts/recheck_v134_guarded_candidate.py` and wrote `experiments/v137_v134_guarded_recheck_status.md`.
+- Current recheck status at `2026-05-19 12:41:33 UTC`:
+  - `new_utc_window=False`
+  - `top_candidate_is_v134=True`
+  - `runmode_complete=True`
+  - `schema_valid=True`
+  - `rules_hold_runmode_pass=True`
+  - `validation_gate_pass=True`
+  - `decision_guarded_pool=True`
+- Verdict: `WAIT-SAME-UTC-DAY`. In other words, every guarded-submit prerequisite except the UTC window is already satisfied.
+- Also dry-ran `birdclef_guarded_submit.py --candidate v134 --max-today 4`; the helper passed in dry-run mode and confirmed the candidate metadata/pathing are wired correctly for the next window.
+
 ## 2026-05-19 Goal Check Hardening
 - Hardened `birdclef-2026/scripts/birdclef_goal_check.py` with lightweight Kaggle API retry handling and a `GOAL_GATE=CHECK_FAILED_TRANSIENT` fallback instead of raw traceback failure.
 - Re-ran the script at `2026-05-19 12:36:36 UTC`; normal success path still works and reports best visible `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.

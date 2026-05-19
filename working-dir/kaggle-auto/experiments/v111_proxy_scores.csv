@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v111-clean-sed-ecoproto-blend-v1/submission.csv,120,234,313,22,0.75704093,0.77120047,0.12328767,0.27397260,0.01243642,0.99941890,0.52073796,0.24872311

@@ -22,24 +22,18 @@ v104-v107 tested license-clean Perch-only replacements. v108-v109 added an origi
 | v107 | `PASS-clean` | rank-ceiling restore | ~317s | 0.97736356 | 0.91282668 | 0.27397260 | 0.50684932 | best clean top-k; hold |
 | v108 | `PASS-clean` | original EcoProto rescue | ~334s | 0.97881000 | 0.82693410 | 0.00000000 | 0.08219178 | reject submit |
 | v109 | `PASS-clean` | original EcoProto rank-launch | ~341s | 0.97963460 | 0.91325592 | 0.23287671 | 0.47945205 | strongest clean macro; hold |
+| v110 | `PASS-clean` | original EcoProto clean blend | ~288s | 0.97911204 | 0.91481637 | 0.21917808 | 0.52054795 | best clean top-k; hold |
 
 ## Decision
 
-`DO NOT REAL-SUBMIT v104-v109 YET`
+`DO NOT REAL-SUBMIT v104-v110 YET`
 
 Reasons:
 
 - v108-v109 satisfy the user requirement to add original innovation, not just reference public work.
-- v109 is the strongest license-clean macro candidate so far, but it does not exceed v107 on top-hit proxy and is still far behind v103.
+- v109 is the strongest license-clean macro candidate so far; v110 is the best clean top-k fallback, but both are still far behind v103.
 - Current evidence does not justify spending a real submission slot against the `0.949` anchor.
 
 ## Next Action
 
-Promote the low-cost local probe into a possible v110 only if we continue this clean branch:
-
-- probability blend direction: `0.4*v107 + 0.6*v109`;
-- local proxy: `macro=0.97911204`, `top1=0.21917808`, `top5=0.52054795`;
-- still below v103, so treat as a clean fallback hardening step, not a top-5 breakthrough.
-
-In parallel, continue searching for a license-clean SED-like source or build internal distillation from competition-only labels.
-
+Stop squeezing the clean Perch-only family for now. Continue searching for a license-clean SED-like source or build internal distillation from competition-only labels.

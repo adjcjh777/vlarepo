@@ -1,0 +1,13 @@
+check,status,value,notes
+file_exists,PASS,birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/submission.csv,
+shape,PASS,120x235,
+row_id_column,PASS,row_id,
+class_columns,PASS,0,
+finite,PASS,True,
+min,PASS,0.011144416,
+max,PASS,0.999469900,
+mean,PASS,0.521132226,
+std,PASS,0.242344545,
+duplicate_row_id,PASS,0,
+sha256,PASS,96ecbad7cbd224d3cdffedd416e2936911e7d76ea435039eb4d7331265e19334,
+row_count_mod_12,PASS,0,

@@ -15,6 +15,15 @@ Updated: 2026-05-19 00:34 UTC
 - Error: none visible
 - UTC `2026-05-19` submissions used: `1/5`
 
+## Latest Check
+- Checked at: `2026-05-19 00:36:59 UTC`
+- Status: `PENDING`
+- Public score: not available yet
+- Error: none visible
+- Goal gate: `GOAL_GATE=NOT_REACHED`
+- Visible best: v87 `0.949`; top20/top5 cutoffs `0.953` / `0.958`
+- Decision: keep slot two locked; wait for v91 scored row or error.
+
 ## Gate
 - Do not submit another candidate while v91 is pending.
 - Re-run `birdclef_goal_check.py` after v91 receives a score.

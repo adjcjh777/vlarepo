@@ -1,12 +1,12 @@
 # Ledger Summary
 
-Updated: 2026-05-19T14:11:07
+Updated: 2026-05-19T14:51:42
 
-- Total files inventoried: 673
-- Artifacts classified: 416
-- Notebook experiment directories: 117
+- Total files inventoried: 708
+- Artifacts classified: 432
+- Notebook experiment directories: 120
 - OOF+test candidates from low-cost scan: 0
-- Teacher/reference/unknown-test-pred candidates: 27
+- Teacher/reference/unknown-test-pred candidates: 29
 
 ## Immediate Observations
 - Low-cost scan found many notebook versions and recent output directories, but visible OOF artifacts are not yet sufficient for stacking/final promotion.

@@ -171,3 +171,10 @@
 - Correlation vs v110: Pearson/Spearman `0.999594`; branch AUC delta diagnostics show `8` positive classes and `63` negative classes for the v113-like sidecar.
 - Refreshed `birdclef_goal_check.py` at `2026-05-19 06:05:54 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.953/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `2/5`.
 - Decision: `HOLD - do not submit`. v114 is clean, self-contained, and more original than a public fork or CSV blend, but the proxy gain over v110 is microscopic and the output is too correlated with v110 to justify spending a real submission slot.
+
+## 2026-05-19 v115-v117 Tsubasa SED Negative Result
+- Audited `tsubasatech/birdclef-2026-snowflake-sed`: Kaggle metadata license `CC0-1.0`; ONNX files expose `audio [B,160000] -> logits [B,234]`.
+- Built v115 as a two-model Snowflake SED ensemble plus the workspace-original train-window remap/trust/EcoProto layer. Kaggle Run-mode failed with memory exceeded after loading both SED ONNX sessions and rebuilding Perch train features.
+- Built v116 as a memory-reduced single `sed_convnext-tiny_fold0.onnx` branch with the same remap/trust layer. Run-mode completed in about `489.9s`; schema passed; proxy `macro=0.85930903`, `micro=0.83251880`, `top5=0.39726027`; correlation vs v110 `0.764711`; decision `REJECT - do not submit`.
+- Built v117 to isolate same-index Tsubasa ConvNeXt SED by disabling column remap. Run-mode completed in about `435.3s`; schema passed; proxy `macro=0.71214482`, `micro=0.72131755`, `top5=0.32876712`; correlation vs v110 `0.772860`; decision `REJECT - do not submit`.
+- Conclusion: Tsubasa SED is compliance-clean and low-correlation but does not transfer into the current clean EcoProto final layer. Stop tuning this lane unless a new OOF-style rationale appears.

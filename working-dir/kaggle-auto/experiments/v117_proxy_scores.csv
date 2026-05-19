@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/submission.csv,120,234,313,22,0.71214482,0.72131755,0.08219178,0.32876712,0.01365967,0.99964327,0.52078445,0.25111275

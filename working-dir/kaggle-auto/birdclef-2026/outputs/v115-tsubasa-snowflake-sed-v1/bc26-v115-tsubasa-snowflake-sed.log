@@ -1,0 +1,84 @@
+[{"stream_name":"stderr","time":8.454251999,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.454344369,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.454348759,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.454351319,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.131491436,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.131523566,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.131526776,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.131529106,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":17.905791979,"data":"ONNX Runtime: 1.24.4\n"}
+,{"stream_name":"stdout","time":17.918276356,"data":"External Perch cache disabled for v115 Snowflake SED EcoProto run\n"}
+,{"stream_name":"stdout","time":17.967028373,"data":"Classes: 234\n"}
+,{"stream_name":"stdout","time":24.822757075,"data":"Using ONNX Perch: /kaggle/input/datasets/rishikeshjani/perch-onnx-for-birdclef-2026/perch_v2.onnx\n"}
+,{"stream_name":"stdout","time":24.822792475,"data":"Mapped: 203/234\n"}
+,{"stream_name":"stdout","time":24.855239486,"data":"Frog proxies: 0\n"}
+,{"stream_name":"stdout","time":24.868705382999998,"data":"V115: Perch train cache will be rebuilt in-notebook after inference helpers are defined\n"}
+,{"stream_name":"stdout","time":25.109120258,"data":"Full files: 59, Windows: 708, Active: 71\n"}
+,{"stream_name":"stdout","time":28.489238236,"data":"Using V115 Snowflake SED: /kaggle/input/datasets/tsubasatech/birdclef-2026-snowflake-sed/sed_convnext-tiny_fold0.onnx\n"}
+,{"stream_name":"stdout","time":28.489275386,"data":"Snowflake SED inputs: [('audio', ['B', 160000], 'tensor(float)')]\n"}
+,{"stream_name":"stdout","time":28.489280826,"data":"Snowflake SED outputs: [('logits', ['B', 234], 'tensor(float)')]\n"}
+,{"stream_name":"stdout","time":28.489806266,"data":"Using V115 Snowflake SED: /kaggle/input/datasets/tsubasatech/birdclef-2026-snowflake-sed/sed_tf-efficientnetv2-m_fold0.onnx\n"}
+,{"stream_name":"stdout","time":28.489842606,"data":"Snowflake SED inputs: [('audio', ['B', 160000], 'tensor(float)')]\n"}
+,{"stream_name":"stdout","time":28.489845956,"data":"Snowflake SED outputs: [('logits', ['B', 234], 'tensor(float)')]\n"}
+,{"stream_name":"stdout","time":28.489848236,"data":"V115 Snowflake SED ensemble size: 2\n"}
+,{"stream_name":"stdout","time":28.609206234,"data":"V115 rebuilding Perch train features for 59 files\n"}
+,{"stream_name":"stdout","time":56.567617412,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":56.567661962,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":56.567668062,"data":"Detected spatial_embedding output index: None\n"}
+,{"stream_name":"stdout","time":129.206535198,"data":"V115 rebuilt train features: meta=(708, 2), scores=(708, 234), emb=(708, 1536)\n"}
+,{"stream_name":"stderr","time":189.054902092,"data":"Kernel died while waiting for execute reply.\n"}
+,{"stream_name":"stderr","time":190.072175926,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":190.072205646,"data":"  File \"/usr/local/lib/python3.12/dist-packages/nbclient/client.py\", line 949, in async_execute_cell\n"}
+,{"stream_name":"stderr","time":190.099960312,"data":"    exec_reply = await self.task_poll_for_reply\n"}
+,{"stream_name":"stderr","time":190.099996802,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.100002602,"data":"  File \"/usr/local/lib/python3.12/dist-packages/nbclient/client.py\", line 730, in _async_poll_for_reply\n"}
+,{"stream_name":"stderr","time":190.100071642,"data":"    msg = await ensure_async(self.kc.shell_channel.get_msg(timeout=new_timeout))\n"}
+,{"stream_name":"stderr","time":190.100117062,"data":"          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.100127092,"data":"  File \"/usr/local/lib/python3.12/dist-packages/nbclient/util.py\", line 96, in ensure_async\n"}
+,{"stream_name":"stderr","time":190.101529073,"data":"    result = await obj\n"}
+,{"stream_name":"stderr","time":190.101560793,"data":"             ^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.101563902,"data":"  File \"/usr/local/lib/python3.12/dist-packages/jupyter_client/channels.py\", line 224, in get_msg\n"}
+,{"stream_name":"stderr","time":190.108450124,"data":"    ready = await self.socket.poll(timeout)\n"}
+,{"stream_name":"stderr","time":190.108481294,"data":"            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.108485614,"data":"asyncio.exceptions.CancelledError\n"}
+,{"stream_name":"stderr","time":190.108488954,"data":"\n"}
+,{"stream_name":"stderr","time":190.108492114,"data":"During handling of the above exception, another exception occurred:\n"}
+,{"stream_name":"stderr","time":190.108495634,"data":"\n"}
+,{"stream_name":"stderr","time":190.108498834,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":190.108502184,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":190.108506304,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 116, in execute_notebook\n"}
+,{"stream_name":"stderr","time":190.113587275,"data":"    nb = papermill_engines.execute_notebook_with_engine(\n"}
+,{"stream_name":"stderr","time":190.113615615,"data":"         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.113620175,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/engines.py\", line 49, in execute_notebook_with_engine\n"}
+,{"stream_name":"stderr","time":190.114536385,"data":"    return self.get_engine(engine_name).execute_notebook(nb, kernel_name, **kwargs)\n"}
+,{"stream_name":"stderr","time":190.114572135,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.114577745,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/engines.py\", line 371, in execute_notebook\n"}
+,{"stream_name":"stderr","time":190.114756725,"data":"    cls.execute_managed_notebook(nb_man, kernel_name, log_output=log_output, **kwargs)\n"}
+,{"stream_name":"stderr","time":190.114764385,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/engines.py\", line 443, in execute_managed_notebook\n"}
+,{"stream_name":"stderr","time":190.114943895,"data":"    return PapermillNotebookClient(nb_man, **final_kwargs).execute()\n"}
+,{"stream_name":"stderr","time":190.114951995,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.114955695,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/clientwrap.py\", line 45, in execute\n"}
+,{"stream_name":"stderr","time":190.116177106,"data":"    self.papermill_execute_cells()\n"}
+,{"stream_name":"stderr","time":190.116250076,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/clientwrap.py\", line 72, in papermill_execute_cells\n"}
+,{"stream_name":"stderr","time":190.116256566,"data":"    self.execute_cell(cell, index)\n"}
+,{"stream_name":"stderr","time":190.116260796,"data":"  File \"/usr/local/lib/python3.12/dist-packages/nbclient/util.py\", line 84, in wrapped\n"}
+,{"stream_name":"stderr","time":190.116270036,"data":"    return just_run(coro(*args, **kwargs))\n"}
+,{"stream_name":"stderr","time":190.116310296,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.116333556,"data":"  File \"/usr/local/lib/python3.12/dist-packages/nbclient/util.py\", line 62, in just_run\n"}
+,{"stream_name":"stderr","time":190.116378886,"data":"    return loop.run_until_complete(coro)\n"}
+,{"stream_name":"stderr","time":190.116437846,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.116454896,"data":"  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 691, in run_until_complete\n"}
+,{"stream_name":"stderr","time":190.122995487,"data":"    return future.result()\n"}
+,{"stream_name":"stderr","time":190.123024587,"data":"           ^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":190.123029837,"data":"  File \"/usr/local/lib/python3.12/dist-packages/nbclient/client.py\", line 953, in async_execute_cell\n"}
+,{"stream_name":"stderr","time":190.123209377,"data":"    raise DeadKernelError(\"Kernel died\")\n"}
+,{"stream_name":"stderr","time":190.123228977,"data":"nbclient.exceptions.DeadKernelError: Kernel died\n"}
+,{"stream_name":"stderr","time":193.704163147,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":193.704204297,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":194.076167373,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":194.076193913,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":195.900846914,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":196.179491481,"data":"[NbConvertApp] Writing 80538 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":198.579623068,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":199.143638753,"data":"[NbConvertApp] Writing 612863 bytes to __results__.html\n"}
+]

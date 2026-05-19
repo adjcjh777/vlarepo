@@ -1,0 +1,6 @@
+name,rows,pearson,spearman,mean_abs_diff,source
+v116_vs_v114,120,0.766135490519532,0.7617049174125413,0.12877082168913817,birdclef-2026/outputs/v114-v110-v113-selfblend-v1/submission.csv
+v116_vs_v110,120,0.7647105204789181,0.7604457198545981,0.12902789083411684,birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/submission.csv
+v116_vs_v103,120,0.679693939850107,0.6768243064041412,0.15334124636773502,birdclef-2026/outputs/v103-guarded-macro-risk-rescue-v1/submission.csv
+v116_vs_v109,120,0.7679351382168271,0.7638970385147964,0.12856148024747152,birdclef-2026/outputs/v109-ecoproto-ranklaunch-perch-v1/submission.csv
+v116_vs_v113,120,0.7624437495076454,0.7583232476348511,0.1296600534029202,birdclef-2026/outputs/v113-lantingguo-melnorm-ecoproto-v1/submission.csv

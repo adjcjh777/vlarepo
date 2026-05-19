@@ -106,6 +106,12 @@ birdclef-2026/notebooks/v113-lantingguo-melnorm-ecoproto/kernel-metadata.json	ke
 birdclef-2026/notebooks/v113-lantingguo-melnorm-ecoproto/submission.ipynb	notebook	v113-lantingguo-melnorm-ecoproto	63643	
 birdclef-2026/notebooks/v114-v110-v113-selfblend/kernel-metadata.json	kernel_metadata	v114-v110-v113-selfblend	601	
 birdclef-2026/notebooks/v114-v110-v113-selfblend/submission.ipynb	notebook	v114-v110-v113-selfblend	68080	
+birdclef-2026/notebooks/v115-tsubasa-snowflake-sed/kernel-metadata.json	kernel_metadata	v115-tsubasa-snowflake-sed	610	
+birdclef-2026/notebooks/v115-tsubasa-snowflake-sed/submission.ipynb	notebook	v115-tsubasa-snowflake-sed	65061	
+birdclef-2026/notebooks/v116-tsubasa-convnext-sed/kernel-metadata.json	kernel_metadata	v116-tsubasa-convnext-sed	608	
+birdclef-2026/notebooks/v116-tsubasa-convnext-sed/submission.ipynb	notebook	v116-tsubasa-convnext-sed	64800	
+birdclef-2026/notebooks/v117-tsubasa-convnext-noremap/kernel-metadata.json	kernel_metadata	v117-tsubasa-convnext-noremap	616	
+birdclef-2026/notebooks/v117-tsubasa-convnext-noremap/submission.ipynb	notebook	v117-tsubasa-convnext-noremap	64898	
 birdclef-2026/notebooks/v12-oof-blend/kernel-metadata.json	kernel_metadata	v12-oof-blend	671	
 birdclef-2026/notebooks/v12-oof-blend/submission.ipynb	notebook	v12-oof-blend	24212	
 birdclef-2026/notebooks/v13-consensus-rank/kernel-metadata.json	kernel_metadata	v13-consensus-rank	681	
@@ -320,6 +326,13 @@ birdclef-2026/outputs/v114-v110-v113-selfblend-v1/submission.csv	submission_or_t
 birdclef-2026/outputs/v114-v110-v113-selfblend-v1/v113_lantingguo_melnorm_diagnostics.csv	csv_data_or_report	v114-v110-v113-selfblend-v1	12072	primary_label,support,best_variant,best_auc,second_auc,sed_quality,sed_margin,sed_trust
 birdclef-2026/outputs/v114-v110-v113-selfblend-v1/v114_branch_auc_diagnostics.csv	csv_data_or_report	v114-v110-v113-selfblend-v1	6642	primary_label,support,sed_auc_v110_like,sed_auc_v113_like,sed_auc_delta
 birdclef-2026/outputs/v114-v110-v113-selfblend-v1/v114_branch_summary.csv	csv_data_or_report	v114-v110-v113-selfblend-v1	291	branch,mean,std,min,max
+birdclef-2026/outputs/v115-tsubasa-snowflake-sed-v1/bc26-v115-tsubasa-snowflake-sed.log	runtime_log	v115-tsubasa-snowflake-sed-v1	10146	
+birdclef-2026/outputs/v116-tsubasa-convnext-sed-v1/bc26-v116-tsubasa-convnext-sed.log	runtime_log	v116-tsubasa-convnext-sed-v1	12721	
+birdclef-2026/outputs/v116-tsubasa-convnext-sed-v1/submission.csv	submission_or_test_pred	v116-tsubasa-convnext-sed-v1	302959	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v116-tsubasa-convnext-sed-v1/v116_tsubasa_convnext_sed_remap_diagnostics.csv	csv_data_or_report	v116-tsubasa-convnext-sed-v1	9994	primary_label,support,same_col,best_col,remapped,strength,same_auc,best_auc
+birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/bc26-v117-tsubasa-convnext-noremap.log	runtime_log	v117-tsubasa-convnext-noremap-v1	12717	
+birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/submission.csv	submission_or_test_pred	v117-tsubasa-convnext-noremap-v1	303008	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/v117_tsubasa_convnext_noremap_diagnostics.csv	csv_data_or_report	v117-tsubasa-convnext-noremap-v1	9938	primary_label,support,same_col,best_col,remapped,strength,same_auc,best_auc
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/bc26-v87-attributed-nina-eos5-v38plus.log	runtime_log	v87-attributed-nina-eos5-v38plus	29165	
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/perch_cache/full_perch_meta.parquet	other	perch_cache	9298	
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/subm_2.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	658395	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
@@ -410,6 +423,9 @@ birdclef-2026/scripts/birdclef_prepare_v111_clean_sed_ecoproto.py	script	scripts
 birdclef-2026/scripts/birdclef_prepare_v112_clean_sed_remap_ecoproto.py	script	scripts	27397	
 birdclef-2026/scripts/birdclef_prepare_v113_lantingguo_melnorm_ecoproto.py	script	scripts	26996	
 birdclef-2026/scripts/birdclef_prepare_v114_v110_v113_selfblend.py	script	scripts	8173	
+birdclef-2026/scripts/birdclef_prepare_v115_tsubasa_snowflake_sed.py	script	scripts	10392	
+birdclef-2026/scripts/birdclef_prepare_v116_tsubasa_convnext_sed.py	script	scripts	6149	
+birdclef-2026/scripts/birdclef_prepare_v117_tsubasa_convnext_noremap.py	script	scripts	6090	
 birdclef-2026/scripts/birdclef_prepare_youssef_e1.py	script	scripts	6182	
 birdclef-2026/scripts/birdclef_prepare_youssef_e1_nobirdnet.py	script	scripts	6237	
 birdclef-2026/scripts/birdclef_public_scan.py	script	scripts	3813	

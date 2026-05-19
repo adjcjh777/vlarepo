@@ -24,6 +24,21 @@ Negative signals:
 - The notebook's default final `submission.csv` remains `base_3way`; NFNet-weighted files are side outputs, not the selected final candidate.
 - Final sample output remains close to v87: `corr=0.979803`, `MAD=0.001489`.
 
+## Added Proxy Check
+
+Ran `birdclef-2026/scripts/evaluate_dryrun_proxy.py` on the original-output train dry-run files and wrote `experiments/v97_nfnet_proxy_scores.csv`.
+
+Key proxy result:
+
+- `submission_sed`: macro `0.99206224`, micro `0.99865115`.
+- `submission_base_3way`: macro `0.98214004`, micro `0.93134066`.
+- `submission_a2_nfnet_w03`: macro `0.98073675`, micro `0.93232850`.
+- `submission_a2_nfnet_w05`: macro `0.97972491`, micro `0.93286546`.
+- `submission_a2_nfnet_w08`: macro `0.97719511`, micro `0.93311099`.
+- `submission_nfnet`: macro `0.73311292`, micro `0.66131207`.
+
+Interpretation: NFNet diversity does not translate into useful macro-AUC proxy evidence. Increasing NFNet weight slightly improves micro/top-5-style behavior but consistently lowers macro, which is the competition metric direction that matters.
+
 ## Decision
 
 Do not create a local v97 notebook and do not spend a real Kaggle submission slot on this family now.

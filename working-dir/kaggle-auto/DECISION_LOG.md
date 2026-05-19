@@ -325,6 +325,8 @@
 - Best `v114` row: `macro=0.97979134`, `micro=0.91924338`, `top1=0.23287671`, `top5=0.52054795`, `active_cells=176`.
 - Interpretation: `v134` does not beat `v131` on macro/top5, but it preserves both while slightly improving micro and gives a cleaner guarded interpretation of the stable3 route.
 - Decision: `HOLD-guarded-component - do not submit v134`; treat it as the preferred local continuation over raw `v131`, while keeping today's slot 5 unused.
+- Materialized `birdclef-2026/notebooks/v134-stable3-guarded-rescue` via `birdclef-2026/scripts/birdclef_prepare_v134_stable3_guarded_rescue.py`.
+- Static local package check passed: notebook exists, router cell is inserted, metadata is private CPU-only/no-internet, dataset sources were reduced to Perch + Backtracking only, and `ATTRIBUTION.md` records the stable3 guarded change.
 
 ## 2026-05-19 Anchor-Streak Guard
 - Adopt the updated objective rule explicitly: stay on the current highest-score basis and avoid broad method-family changes until there are `5` consecutive real-submit outcomes without positive feedback over the best visible anchor.

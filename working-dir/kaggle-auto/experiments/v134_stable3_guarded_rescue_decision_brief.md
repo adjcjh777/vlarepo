@@ -6,6 +6,8 @@ Updated: 2026-05-19 11:42 UTC
 
 - Script: `birdclef-2026/scripts/birdclef_probe_v134_stable3_guarded_rescue.py`
 - Probe output: `experiments/v134_stable3_guarded_rescue_probe.csv`
+- Materialize script: `birdclef-2026/scripts/birdclef_prepare_v134_stable3_guarded_rescue.py`
+- Materialized notebook dir: `birdclef-2026/notebooks/v134-stable3-guarded-rescue`
 - Scope: local-only blocked probe; no Kaggle push and no real submission.
 
 ## Motivation
@@ -51,6 +53,6 @@ Use `v134` as the current best local continuation of the stable3 clean family. I
 ## Next Action
 
 - Prefer `v134` over `v131` as the stable3 baseline for future local work.
+- Use the materialized `v134-stable3-guarded-rescue` notebook as the next candidate handoff package when a later Run-mode verification is worth doing.
 - Keep today's slot 5 unused.
 - If a later follow-up is needed, build around `v134` plus stronger grouped anti-collapse screening rather than reopening the broad clean-router family.
-

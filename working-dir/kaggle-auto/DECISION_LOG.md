@@ -462,6 +462,8 @@
 - Practical implication: once the UTC day changes, the automation can refresh every guarded decision layer from one stable entrypoint before taking any action.
 - Refreshed again at `2026-05-19 13:19:22 UTC`; consolidated exits remain `0/0/0/0`, but the wrapper verdict is still `NOT-READY` because the UTC day has not rolled over yet.
 - Practical implication unchanged: the entire automation stack is now stable; the only missing condition for a guarded submit recheck is time.
+- Refreshed again at `2026-05-19 13:22:51 UTC`: `v139` wrapper still returns `gate_decision=WAIT-SAME-UTC-DAY`, `recheck_verdict=WAIT-SAME-UTC-DAY`, `ready_for_guarded_submit=False`, `wrapper_verdict=NOT-READY`.
+- Practical implication unchanged: do not spend the final same-day slot; continue waiting for UTC rollover.
 
 ## 2026-05-19 v134 Heartbeat Retarget v2
 - Updated the `BirdCLEF v134 next-window gate check` heartbeat again so it now prefers `python3 scripts/recheck_and_optionally_submit_v134.py --write` as the first-step refresh command, with `check_v134_window_bundle.py --write` as the expanded fallback summary.

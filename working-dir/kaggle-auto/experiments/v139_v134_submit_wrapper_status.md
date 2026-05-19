@@ -1,10 +1,10 @@
 # v139 v134 Submit Wrapper Status
 
-Updated: 2026-05-19 13:40:03 UTC
+Updated: 2026-05-19 13:42:34 UTC
 
 ## Inputs
 
-- execute_if_ready: `False`
+- execute_if_ready: `True`
 
 ## Gate Summary
 
@@ -52,7 +52,7 @@ status_path=/Users/junhaocheng/working-dir/kaggle-auto/experiments/v137_v134_gua
 ## Bundle Output
 
 ```text
-bundle_updated=2026-05-19 13:40:11 UTC
+bundle_updated=2026-05-19 13:42:37 UTC
 gate_exit=0
 recheck_exit=0
 goal_exit=3

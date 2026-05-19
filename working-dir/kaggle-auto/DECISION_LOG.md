@@ -446,6 +446,8 @@
   - `ready_for_guarded_submit=False`
   - `wrapper_verdict=NOT-READY`
 - Practical implication: the wrapper now fails closed in the correct direction and is safe to use as the final pre-submit automation layer once a new UTC window opens.
+- Re-ran the wrapper with `--execute-if-ready` at `2026-05-19 13:42:34 UTC`; it still failed closed with `execute_if_ready=True`, `ready_for_guarded_submit=False`, and `wrapper_verdict=NOT-READY`.
+- Practical implication: even an explicit execute path will not spend the same-day slot before the UTC rollover and gate transition.
 
 ## 2026-05-19 v140 Guarded State Refresh
 - Added `scripts/refresh_v134_guarded_state.py` and wrote `experiments/v140_v134_guarded_state_refresh.md`.

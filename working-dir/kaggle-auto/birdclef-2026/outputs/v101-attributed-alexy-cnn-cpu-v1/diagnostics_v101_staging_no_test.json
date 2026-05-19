@@ -1,0 +1,8 @@
+{
+  "notebook": "v101_alexy_cnn_cpu",
+  "mode": "staging_no_test",
+  "rows": 3,
+  "classes": 234,
+  "device": "cpu",
+  "reason": "hidden test is unavailable in Kaggle Run mode"
+}

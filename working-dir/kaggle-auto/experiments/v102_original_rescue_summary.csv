@@ -1,0 +1,7 @@
+macro_risk_action,classes,mean_support,mean_base_auc
+no_oof_evidence,159,0.0,
+protect_anchor,40,104.2,0.9529710574908353
+cnn_rescue_candidate,14,27.428571428571427,0.3774042017987265
+rare_prior_floor,12,5.0,0.7697909612895729
+neutral,8,201.0,0.7839283089854072
+mild_rescue,1,24.0,0.6538553639846744

@@ -1,0 +1,30 @@
+[{"stream_name":"stdout","time":17.539570086,"data":"============================================================\n"}
+,{"stream_name":"stdout","time":17.539666666,"data":"v101 nb20e CPU startup  (0e1515d1eab9, Linux)\n"}
+,{"stream_name":"stdout","time":17.539673818,"data":"  cwd          : /kaggle/working\n"}
+,{"stream_name":"stdout","time":17.539737586,"data":"  python       : 3.12.12\n"}
+,{"stream_name":"stdout","time":17.539843989,"data":"  /kaggle/input contents:\n"}
+,{"stream_name":"stdout","time":17.539965348,"data":"    competitions\n"}
+,{"stream_name":"stdout","time":17.540081018,"data":"    datasets\n"}
+,{"stream_name":"stdout","time":17.540098787,"data":"============================================================\n"}
+,{"stream_name":"stdout","time":17.540122553,"data":"torch=2.10.0+cpu  torchaudio=2.10.0+cpu  timm=1.0.25\n"}
+,{"stream_name":"stdout","time":17.540182516,"data":"device=cpu  GPU=forced-off\n"}
+,{"stream_name":"stdout","time":17.540555615,"data":"BASE_DIR exists = True\n"}
+,{"stream_name":"stdout","time":17.546247832,"data":"\n"}
+,{"stream_name":"stdout","time":17.546278562,"data":"Searching for fold checkpoints under /kaggle/input/ ...\n"}
+,{"stream_name":"stdout","time":54.790376475,"data":"  fold 1: /kaggle/input/datasets/alexycactus/birdclef-2026-cnn-fold-checkpoints/fold1_best.pth\n"}
+,{"stream_name":"stdout","time":54.790427256,"data":"  fold 2: /kaggle/input/datasets/alexycactus/birdclef-2026-cnn-fold-checkpoints/fold2_best.pth\n"}
+,{"stream_name":"stdout","time":54.790565644,"data":"  fold 3: /kaggle/input/datasets/alexycactus/birdclef-2026-cnn-fold-checkpoints/fold3_best.pth\n"}
+,{"stream_name":"stdout","time":54.790635207,"data":"Using 3 folds (subset of full 5-fold trained set)\n"}
+,{"stream_name":"stdout","time":55.529899256,"data":"Loaded fold 1\n"}
+,{"stream_name":"stdout","time":56.032726392,"data":"Loaded fold 2\n"}
+,{"stream_name":"stdout","time":56.529390695000004,"data":"Loaded fold 3\n"}
+,{"stream_name":"stdout","time":56.529516884,"data":"Ensemble size: 3 folds (precision: fp32)\n"}
+,{"stream_name":"stdout","time":56.539618045,"data":"torch.num_threads = 4  (cpu_count=4)\n"}
+,{"stream_name":"stdout","time":56.539842148,"data":"test_soundscapes empty -- staging sample-submission prior output\n"}
+,{"stream_name":"stderr","time":60.212440853,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":60.212514718,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":60.489159763,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":60.489194043,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":61.289039432,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":62.837767736,"data":"[NbConvertApp] Writing 352378 bytes to __results__.html\n"}
+]

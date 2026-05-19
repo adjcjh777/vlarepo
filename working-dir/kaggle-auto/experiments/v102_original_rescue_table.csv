@@ -1,0 +1,235 @@
+primary_label,common_name,class_name,support,oof_base_auc,oof_prior_auc,support_bucket,macro_risk_action,w_anchor,w_sed,w_private_probe,w_cnn_sidecar,risk_rank
+22961,Pointedbelly Frog,Amphibia,72,0.1727497194163861,0.1385185185185185,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,167.14
+47158son15,Insect sonotype15,Insecta,24,0.3450502152080344,0.3450502152080344,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,167.9
+47158son16,Insect sonotype16,Insecta,24,0.3450502152080344,0.3450502152080344,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,168.91
+47158son01,Insect sonotype01,Insecta,46,0.3513119533527696,0.3513119533527696,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,170.05
+47158son14,Insect sonotype14,Insecta,24,0.3536585365853658,0.3536585365853658,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,170.89
+47158son20,Insect sonotype20,Insecta,24,0.3536585365853658,0.3536585365853658,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,171.93
+47158son18,Insect sonotype18,Insecta,24,0.3708751793400286,0.3708751793400286,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,172.92
+47158son02,Insect sonotype02,Insecta,14,0.3803418803418803,0.3803418803418803,low_5_20,cnn_rescue_candidate,0.35,0.2,0.15,0.3,174.81
+47158son05,Insect sonotype05,Insecta,6,0.3895184135977337,0.3895184135977337,low_5_20,cnn_rescue_candidate,0.35,0.2,0.15,0.3,175.71
+47158son09,Insect sonotype09,Insecta,12,0.414651493598862,0.414651493598862,low_5_20,cnn_rescue_candidate,0.35,0.2,0.15,0.3,176.8
+47158son12,Insect sonotype12,Insecta,10,0.4231863442389758,0.4231863442389758,low_5_20,cnn_rescue_candidate,0.35,0.2,0.15,0.3,177.76
+47158son08,Insect sonotype08,Insecta,34,0.4317196531791907,0.4317196531791907,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,179.01
+25092,Two-colored oval frog,Amphibia,48,0.4703680598877105,0.4255562487003535,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,180.06
+nacnig1,Nacunda Nighthawk,Aves,22,0.4815186246418338,0.1045845272206303,mid_21_75,cnn_rescue_candidate,0.35,0.2,0.15,0.3,180.86
+redjun,Red Junglefowl,Aves,24,0.6538553639846744,0.6853448275862069,mid_21_75,mild_rescue,0.5,0.25,0.15,0.1,182.94
+47158son03,Insect sonotype03,Insecta,66,0.7344308381378949,0.7344308381378949,mid_21_75,neutral,0.6,0.25,0.15,0.0,184.11
+22967,Marbled White-lipped Frog,Amphibia,310,0.7490792813417608,0.6208629871099388,high_151_plus,neutral,0.6,0.25,0.15,0.0,185.27
+517063,Southern Orange-legged Leaf Frog,Amphibia,626,0.7600635770453404,0.7294294796720763,high_151_plus,neutral,0.6,0.25,0.15,0.0,186.33
+trsowl,Tropical Screech Owl,Aves,52,0.777628111273792,0.6370424597364568,mid_21_75,neutral,0.6,0.25,0.15,0.0,189.1
+67107,Rococo Toad,Amphibia,18,0.80125,0.3542857142857142,low_5_20,neutral,0.6,0.25,0.15,0.0,189.83
+1491113,Guaraní leaf-litter frog,Amphibia,158,0.806953179594689,0.682520964360587,high_151_plus,neutral,0.6,0.25,0.15,0.0,191.24
+47158son04,Insect sonotype04,Insecta,34,0.8186147186147186,0.8186147186147186,mid_21_75,neutral,0.6,0.25,0.15,0.0,192.0
+24321,Mato Grosso Snouted Tree Frog,Amphibia,344,0.8234067658750616,0.8125408117675361,high_151_plus,neutral,0.6,0.25,0.15,0.0,193.28
+1161364,Guyalna cuta,Insecta,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,1.01
+1176823,Wrestler Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,2.02
+1595929,Uruguay Harlequin Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,3.03
+209233,Feral Horse,Mammalia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,4.04
+22930,Basin White-lipped Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,5.05
+22956,Mustached Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,6.06
+22983,Pepper Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,7.07
+22985,Peter's Jungle Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,8.08
+23150,Central Dwarf Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,9.09
+23154,Bahia Dwarf Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,10.1
+23176,Cope's Swamp Froglet,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,11.11
+23724,Waxy Monkey Tree Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,12.12
+24285,Snouted Tree Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,13.13
+24287,Brown-bordered Snouted Tree Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,14.14
+244024,Giant Cicada,Insecta,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,15.15
+25214,Muller's Termite Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,16.16
+41970,Jaguar,Mammalia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,17.17
+476521,Cuyaba Dwarf Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,18.18
+555123,Usina Tree Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,20.19
+555145,Polka-dot Tree Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,21.2
+64898,Yungas de la Paz Poison Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,22.21
+70711,Cei's White-lipped Frog,Amphibia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,23.22
+738183,White-coated Titi,Mammalia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,24.23
+74580,Black-tailed Marmoset,Mammalia,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,25.24
+760266,Prionacris erosa,Insecta,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,26.25
+ashgre1,Ashy-headed Greenlet,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,27.26
+astcra1,Ash-throated Crake,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,28.27
+baffal1,Barred Forest-Falcon,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,29.28
+banana,Bananaquit,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,30.29
+barant1,Barred Antshrike,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,31.3
+batbel1,Bare-throated Bellbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,32.31
+baymac,Blue-and-yellow Macaw,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,33.32
+bbwduc,Black-bellied Whistling Duck,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,34.33
+bcwfin2,Black-capped Warbling Finch,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,35.34
+bkcdon,Black-capped Donacobius,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,36.35
+bkhpar,Nanday Parakeet,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,37.36
+blchaw1,Black-collared Hawk,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,38.37
+blheag1,Black Hawk-Eagle,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,39.38
+blttit1,Black-tailed Tityra,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,40.39
+bncfly,Brown-crested Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,41.4
+bobfly1,Boat-billed Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,42.41
+brcmar1,Brown-chested Martin,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,43.42
+brnowl,American Barn Owl,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,44.43
+bucmot4,Amazonian Motmot,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,45.44
+bucpar,Blue-crowned Parakeet,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,46.45
+burowl,Burrowing Owl,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,47.46
+camfli1,Campo Flicker,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,48.47
+chbmoc1,Chalk-browed Mockingbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,49.48
+chobla1,Chopi Blackbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,50.49
+cibspi1,Cinereous-breasted Spinetail,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,51.5
+coffal1,Collared Forest-Falcon,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,52.51
+crbthr1,Creamy-bellied Thrush,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,53.52
+crebec1,Crested Becard,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,54.53
+dwatin1,Dwarf Tinamou,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,55.54
+epaori4,Variable Oriole,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,56.55
+eulfly1,Euler's Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,57.56
+fabwre1,Fawn-breasted Wren,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,58.57
+fepowl,Ferruginous Pygmy Owl,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,59.58
+ficman1,Fiery-capped Manakin,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,60.59
+flawar1,Flavescent Warbler,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,61.6
+fotfly,Fork-tailed Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,62.61
+gilhum1,Gilded Hummingbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,63.62
+giwrai1,Giant Wood Rail,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,64.63
+glteme1,Glittering-throated Emerald,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,65.64
+grasal3,Bluish-grey Saltator,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,66.65
+greani1,Greater Ani,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,67.66
+greant1,Great Antshrike,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,68.67
+greela,Greenish Elaenia,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,69.68
+grepot1,Great Potoo,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,71.69
+gretho2,Greater Thornbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,72.7
+greyel,Greater Yellowlegs,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,73.71
+grfdov1,Grey-fronted Dove,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,74.72
+grhtan1,Grey-headed Tanager,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,75.73
+gycwor1,Grey-cowled Wood Rail,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,76.74
+horscr1,Horned Screamer,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,77.75
+houspa,House Sparrow,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,78.76
+larela1,Large Elaenia,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,79.77
+lesela1,Lesser Elaenia,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,80.78
+lesgrf1,Lesser Grass-Finch,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,81.79
+linwoo1,Lineated Woodpecker,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,82.8
+litcuc2,Little Cuckoo,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,83.81
+mabpar,Maroon-bellied Parakeet,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,84.82
+magtan2,Magpie Tanager,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,85.83
+masgna1,Masked Gnatcatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,86.84
+ocecra1,Ocellated Crake,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,87.85
+oliwoo1,Olivaceous Woodcreeper,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,88.86
+orbtro3,Orange-backed Troupial,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,89.87
+osprey,Osprey,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,90.88
+pabspi1,Pale-breasted Spinetail,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,91.89
+palhor3,Pale-legged Hornero,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,92.9
+paltan1,Palm Tanager,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,93.91
+phecuc1,Pheasant Cuckoo,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,94.92
+picpig2,Picazuro Pigeon,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,95.93
+pirfly1,Piratic Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,96.94
+plasla1,Planalto Slaty Antshrike,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,97.95
+platyr1,Plain Inezia,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,98.96
+pluibi1,Plumbeous Ibis,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,100.97
+pvttyr1,Pearly-vented Tody-Tyrant,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,101.98
+ragmac1,Red-and-green Macaw,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,102.99
+rebscy1,Red-billed Scythebill,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,104.0
+recfin1,Red-crested Finch,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,105.01
+relser1,Red-legged Seriema,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,106.02
+rinkin1,Ringed Kingfisher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,107.03
+rivwar1,Riverbank Warbler,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,108.04
+roahaw,Roadside Hawk,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,109.05
+rubthr1,Rufous-bellied Thrush,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,110.06
+rufcac2,Rufous Cacholote,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,111.07
+rufcas2,Rufous Casiornis,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,112.08
+rufgna3,Rufous Gnateater,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,113.09
+rufnig1,Rufous Nightjar,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,114.1
+ruftho1,Rufous-fronted Thornbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,115.11
+ruftof1,Rusty-fronted Tody-Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,116.12
+rumfly1,Rusty-margined Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,117.13
+sabspa1,Saffron-billed Sparrow,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,118.14
+saffin,Saffron Finch,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,119.15
+saytan1,Sayaca Tanager,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,120.16
+scadov1,Scaled Dove,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,121.17
+schpar1,Scaly-headed Parrot,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,122.18
+scther1,Scale-throated Hermit,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,123.19
+shcfly1,Short-crested Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,124.2
+shshaw,Sharp-shinned Hawk,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,125.21
+shtnig1,Short-tailed Nighthawk,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,126.22
+smbani,Smooth-billed Ani,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,127.23
+smbtin1,Small-billed Tinamou,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,128.24
+sobcac1,Solitary Cacique,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,129.25
+sobtyr1,Southern Beardless Tyrannulet,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,130.26
+socfly1,Social Flycatcher,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,131.27
+sofspi1,Sooty-fronted Spinetail,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,132.28
+souant1,Southern Antpipit,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,133.29
+soulap1,Southern Lapwing,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,134.3
+souscr1,Southern Screamer,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,135.31
+spbant3,Spot-backed Antshrike,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,136.32
+spispi1,Spix's Spinetail,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,137.33
+sptnig1,Spot-tailed Nightjar,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,138.34
+squcuc1,Common Squirrel-Cuckoo,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,139.35
+stbwoo2,Straight-billed Woodcreeper,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,140.36
+strcuc1,Striped Cuckoo,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,141.37
+strowl1,Striped Owl,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,142.38
+swthum1,Swallow-tailed Hummingbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,143.39
+swtman1,Swallow-tailed Manakin,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,144.4
+tattin1,Tataupa Tinamou,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,145.41
+toctou1,Toco Toucan,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,147.42
+trokin,Tropical Kingbird,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,148.43
+varant1,Variable Antshrike,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,149.44
+watjac1,Wattled Jacana,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,150.45
+wesfie1,Western Fire-eye,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,151.46
+whbant2,White-bearded Antshrike,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,153.47
+whbwar2,White-browed Warbler,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,154.48
+whiwoo1,White Woodpecker,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,155.49
+whlspi1,White-lored Spinetail,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,156.5
+whnjay1,White-naped Jay,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,157.51
+whwpic1,White-wedged Piculet,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,158.52
+y00678,Crested Caracara,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,159.53
+yebcar,Yellow-billed Cardinal,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,160.54
+yebela1,Yellow-bellied Elaenia,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,161.55
+yecmac,Golden-collared Macaw,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,162.56
+yecpar,Yellow-chevroned Parakeet,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,163.57
+yehcar1,Yellow-headed Caracara,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,164.58
+yeofly1,Yellow-olive Flatbill,Aves,0,,,zero,no_oof_evidence,0.6,0.25,0.15,0.0,165.59
+47144,Domestic Dog,Mammalia,30,0.8651708522025525,0.5030876904075752,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,193.99
+25073,Chiasmocleis mehelyi,Amphibia,24,0.8673535933220294,0.3450502152080344,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,194.87
+undtin1,Undulated Tinamou,Aves,86,0.8713570044246169,0.6544593556880096,mid_76_150,protect_anchor,0.7,0.2,0.1,0.0,196.2
+47158son11,Insect sonotype11,Insecta,72,0.8911111111111111,0.8911111111111111,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,197.15
+47158son13,Insect sonotype13,Insecta,72,0.8970370370370371,0.8970370370370371,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,198.16
+22973,Whistling Grass Frog,Amphibia,426,0.9058906383620906,0.7142361285778963,high_151_plus,protect_anchor,0.7,0.2,0.1,0.0,199.32
+65377,Lesser Tree Frog,Amphibia,18,0.9058928571428572,0.32,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,199.82
+66971,Paraguayan Swimming Frog,Amphibia,298,0.92231917781656,0.8372503393445802,high_151_plus,protect_anchor,0.7,0.2,0.1,0.0,202.26
+limpki,Limpkin,Aves,6,0.9234042553191488,0.4148936170212766,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,202.74
+litnig1,Little Nightjar,Aves,74,0.9238608305274972,0.6516498316498317,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,204.17
+555146,Chaco Tree Frog,Amphibia,420,0.927553248465373,0.7787047336546781,high_151_plus,protect_anchor,0.7,0.2,0.1,0.0,205.31
+compot1,Common Potoo,Aves,6,0.9348441926345608,0.1940509915014164,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,205.72
+65380,Dwarf Tree Frog,Amphibia,666,0.93799512987013,0.7898701298701298,high_151_plus,protect_anchor,0.7,0.2,0.1,0.0,207.34
+rufhor2,Rufous Hornero,Aves,8,0.9435369318181818,0.4232954545454545,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,207.75
+23158,Pale-legged Weeping Frog,Amphibia,350,0.944206204379562,0.6614279197080292,high_151_plus,protect_anchor,0.7,0.2,0.1,0.0,209.3
+24279,Lesser Snouted Tree Frog,Amphibia,346,0.944312701194854,0.7708182974189779,high_151_plus,protect_anchor,0.7,0.2,0.1,0.0,210.29
+116570,Southern Spectacled Caiman,Reptilia,26,0.9454022988505748,0.9454022988505748,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,210.95
+47158son10,Insect sonotype10,Insecta,66,0.956047197640118,0.956047197640118,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,212.12
+purjay1,Purplish Jay,Aves,10,0.9577414772727272,0.9538352272727272,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,212.79
+bafcur1,Bare-faced Curassow,Aves,18,0.9623271340009536,0.3798283261802575,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,213.84
+326272,Weeping Frog,Amphibia,46,0.9628279883381924,0.9810495626822158,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,215.04
+47158son19,Insect sonotype19,Insecta,10,0.9644886363636364,0.9644886363636364,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,215.77
+chacha1,Chaco Chachalaca,Aves,130,0.9657621895484578,0.8240448147084172,mid_76_150,protect_anchor,0.7,0.2,0.1,0.0,217.23
+fusfly1,Fuscous Flycatcher,Aves,6,0.9659574468085106,0.3978723404255319,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,217.73
+47158son06,Insect sonotype06,Insecta,36,0.973627167630058,0.973627167630058,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,219.02
+47158son17,Insect sonotype17,Insecta,86,0.9738023952095808,0.9738023952095808,mid_76_150,protect_anchor,0.7,0.2,0.1,0.0,220.19
+47158son25,Insect sonotype25,Insecta,168,0.9754358161648178,0.9754358161648178,high_151_plus,protect_anchor,0.7,0.2,0.1,0.0,221.25
+compau,Pauraque,Aves,76,0.976851851851852,0.8311011904761905,mid_76_150,protect_anchor,0.7,0.2,0.1,0.0,222.18
+43435,Black Howling Monkey,Mammalia,24,0.985391939480892,0.3536585365853658,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,222.88
+magant1,Mato Grosso Antbird,Aves,10,0.9900426742532006,0.9625889046941678,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,223.78
+whtdov,White-tipped Dove,Aves,126,0.990756461045086,0.9478939283693104,mid_76_150,protect_anchor,0.7,0.2,0.1,0.0,225.22
+hyamac1,Hyacinth Macaw,Aves,20,0.9907804800508664,0.1223175965665236,low_5_20,protect_anchor,0.7,0.2,0.1,0.0,225.85
+bufpar,Turquoise-fronted Amazon,Aves,28,0.9934698395130048,0.0942446043165467,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,226.98
+orwpar,Orange-winged Amazon,Aves,26,0.9952107279693486,0.9533045977011494,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,227.97
+47158son07,Insect sonotype07,Insecta,96,0.9969879518072288,0.9969879518072288,mid_76_150,protect_anchor,0.7,0.2,0.1,0.0,229.21
+47158son21,Insect sonotype21,Insecta,44,0.997093023255814,0.997093023255814,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,230.03
+chvcon1,Chestnut-vented Conebill,Aves,70,0.9973650147928994,0.9795673076923076,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,231.13
+47158son22,Insect sonotype22,Insecta,48,0.998542274052478,0.998542274052478,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,232.07
+47158son23,Insect sonotype23,Insecta,48,0.998542274052478,0.998542274052478,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,233.08
+47158son24,Insect sonotype24,Insecta,48,0.998542274052478,0.998542274052478,mid_21_75,protect_anchor,0.7,0.2,0.1,0.0,234.09
+516975,Hooded Capuchin,Mammalia,26,,,mid_21_75,rare_prior_floor,0.55,0.25,0.2,0.0,20.96
+grekis,Great Kiskadee,Aves,4,,,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,71.68
+plcjay1,Plush-crested Jay,Aves,2,,,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,100.6
+thlwre1,Thrush-like Wren,Aves,4,,,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,146.7
+wfwduc1,White-faced Whistling Duck,Aves,2,,,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,152.64
+strher2,Striated Heron,Aves,4,0.3803116147308782,0.1770538243626062,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,173.69
+bunibi1,Buff-necked Ibis,Aves,4,0.5410764872521246,0.1855524079320113,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,181.67
+67252,Milk Frog,Amphibia,4,0.7740793201133145,0.2025495750708215,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,186.65
+74113,Highland,Mammalia,4,0.7751060820367751,0.1775106082036775,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,187.66
+rutjac1,Rufous-tailed Jacamar,Aves,2,0.917963224893918,0.466053748231966,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,200.62
+ruther1,Rufescent Tiger Heron,Aves,2,1.0,0.466053748231966,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,234.61
+sibtan2,Silver-beaked Tanager,Aves,2,1.0,0.2369165487977369,rare_1_4,rare_prior_floor,0.55,0.25,0.2,0.0,235.63

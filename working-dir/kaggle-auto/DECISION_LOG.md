@@ -385,3 +385,5 @@
   - `v134` kernel status: `COMPLETE`
   - decision: `WAIT-SAME-UTC-DAY`
 - Practical implication: even though `v134` is now the guarded-pool leader with completed Run-mode evidence, the correct move before UTC rollover is still to preserve the final same-day slot.
+- Refreshed again at `2026-05-19 12:17:49 UTC`: gate decision is still `WAIT-SAME-UTC-DAY`; leaderboard gate remains `NOT_REACHED` with visible best `0.949` and top20/top5 cutoffs `0.954/0.958`.
+- A `gpt-5.3-codex-spark` explorer rechecked the current guarded pool and found no candidate that should be inserted ahead of `v134`. Current guidance remains: keep waiting for the next UTC window rather than spending slot 5 today.

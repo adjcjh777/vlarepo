@@ -243,3 +243,12 @@
 - Proxy was weak: `macro=0.97115717`, `micro=0.90281675`, `top5=0.52054795`; post-final sidecar gate cells were `555 / 28080`.
 - Refreshed `birdclef_goal_check.py` at `2026-05-19 09:45:14 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `3/5`.
 - Decision: `REJECT-quality - do not submit v124`. The Tsubasa sidecar lane is exhausted for now: v121 was quality-strong but memory-unsafe, v122/v123 were memory-safe but not slot-worthy, and v124 is memory-safe but quality-negative.
+
+## 2026-05-19 v125 Non-Tsubasa Class Router Probe
+- Added `birdclef-2026/scripts/birdclef_probe_v125_non_tsubasa_router.py` to satisfy the innovation requirement with a workspace-owned non-Tsubasa sparse class router instead of another public-kernel-style blend.
+- The probe excludes all Tsubasa branches and tests only clean non-Tsubasa side sources already run in Kaggle Run-mode: v112 Backtracking remap, v113 LantingGuo MelNorm, and v119 Roniheka HGNet.
+- Mechanism: keep v110/v114 clean EcoProto anchors, compute per-class side-source AUC deltas on train soundscape windows, select the best side source per class only when it beats the anchor by a declared margin, shrink by class support, and rank-calibrate side predictions onto the anchor distribution.
+- Wrote `experiments/v125_non_tsubasa_router_probe.csv` and `experiments/v125_non_tsubasa_router_class_diagnostics.csv`.
+- Best row: `v114_clean_selfblend_router_m0_w0.7_rankcal`, macro `0.98060057`, micro `0.91703497`, top5 `0.52054795`, Pearson vs anchor `0.99706961`, MAD `0.00218707`, routed classes `6`.
+- Routed classes: `47158son01`, `47158son13`, `47158son21`, `47158son22`, `47158son23`, `plcjay1`; routed sources are v112 and v119.
+- Decision: `HOLD - do not submit`. v125 is a genuine original/non-Tsubasa innovation probe and improves v114 by about `+0.00140` local macro, but the gain is narrow, includes a 1-positive class (`plcjay1`), does not improve top5, and would need separate memory-aware notebook materialization before any real slot.

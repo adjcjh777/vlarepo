@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/submission.csv,120,234,313,22,0.86521034,0.87197101,0.12328767,0.34246575,0.01366975,0.99985874,0.52043511,0.25563497

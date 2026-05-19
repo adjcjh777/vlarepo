@@ -188,3 +188,14 @@
 - v118 result: no formula beats v114; best original gated formulas tie v110 macro `0.97911204`, while v114 remains `0.97920102`.
 - Decision: `REJECT - do not materialize or submit v118 as-is`; preserve the negative result to avoid repeated tuning of v113 gates.
 - No new real Kaggle submission was made; UTC `2026-05-19` visible submissions remain `2/5`.
+
+## 2026-05-19 v119 Roniheka HGNet SED Negative Result
+- Built `birdclef-2026/notebooks/v119-roniheka-hgnet-sed` from the clean v112/v114 line and pushed Kaggle Run-mode only as `junhaochengadjcjh7u7/bc26-v119-roniheka-hgnet-sed`.
+- Original contribution: v119 treats `roniheka/birdclef-2026-a90v2-distilled-hgnet-onnx` as an auditable CC0 SED evidence source, then routes it through the workspace-owned train-window class remap, trust-strength calibration, and EcoProto/rank-launch clean blend instead of copying a public ensemble recipe.
+- Static compliance passed: private kernel, CPU-only, internet disabled, BirdCLEF competition source present, Perch/Google model source present, Roniheka CC0 source present, and unknown-license `jaejohn/perch-meta` / `tuckerarrants/bc2026-distilled-sed-public` excluded from runtime inputs.
+- Kaggle Run-mode completed and saved output at about `400.8s`; downloaded `submission.csv`, `v119_roniheka_hgnet_sed_remap_diagnostics.csv`, and kernel log under `birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/`.
+- Schema passed for dry-run rows: `120 x 235`, sample column order matched, all finite, no duplicate row IDs, range `[0.013670, 0.999859]`.
+- Proxy was weak: `macro=0.86521034`, `micro=0.87197101`, `top5=0.34246575`, below v110/v114 clean baselines.
+- Correlation vs v114 was lower than prior clean self-blends (`Pearson=0.718637`, MAD `0.148267`), but the quality loss is too large to justify a real slot.
+- Refreshed `birdclef_goal_check.py` at `2026-05-19 07:24:45 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `2/5`.
+- Decision: `REJECT - do not submit v119`; preserve as a clean negative result and stop direct Roniheka HGNet tuning unless new train-window evidence appears.

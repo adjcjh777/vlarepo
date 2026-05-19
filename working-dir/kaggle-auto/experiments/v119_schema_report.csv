@@ -1,0 +1,2 @@
+candidate,path,rows,columns,matches_sample_columns,matches_sample_rows,duplicate_row_ids,all_finite,min,max,mean,std
+v119,birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/submission.csv,120,235,True,False,0,True,0.01366975,0.99985874,0.5204351106983974,0.25563497207282554

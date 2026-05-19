@@ -112,6 +112,8 @@ birdclef-2026/notebooks/v116-tsubasa-convnext-sed/kernel-metadata.json	kernel_me
 birdclef-2026/notebooks/v116-tsubasa-convnext-sed/submission.ipynb	notebook	v116-tsubasa-convnext-sed	64800	
 birdclef-2026/notebooks/v117-tsubasa-convnext-noremap/kernel-metadata.json	kernel_metadata	v117-tsubasa-convnext-noremap	616	
 birdclef-2026/notebooks/v117-tsubasa-convnext-noremap/submission.ipynb	notebook	v117-tsubasa-convnext-noremap	64898	
+birdclef-2026/notebooks/v119-roniheka-hgnet-sed/kernel-metadata.json	kernel_metadata	v119-roniheka-hgnet-sed	614	
+birdclef-2026/notebooks/v119-roniheka-hgnet-sed/submission.ipynb	notebook	v119-roniheka-hgnet-sed	65938	
 birdclef-2026/notebooks/v12-oof-blend/kernel-metadata.json	kernel_metadata	v12-oof-blend	671	
 birdclef-2026/notebooks/v12-oof-blend/submission.ipynb	notebook	v12-oof-blend	24212	
 birdclef-2026/notebooks/v13-consensus-rank/kernel-metadata.json	kernel_metadata	v13-consensus-rank	681	
@@ -333,6 +335,9 @@ birdclef-2026/outputs/v116-tsubasa-convnext-sed-v1/v116_tsubasa_convnext_sed_rem
 birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/bc26-v117-tsubasa-convnext-noremap.log	runtime_log	v117-tsubasa-convnext-noremap-v1	12717	
 birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/submission.csv	submission_or_test_pred	v117-tsubasa-convnext-noremap-v1	303008	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
 birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/v117_tsubasa_convnext_noremap_diagnostics.csv	csv_data_or_report	v117-tsubasa-convnext-noremap-v1	9938	primary_label,support,same_col,best_col,remapped,strength,same_auc,best_auc
+birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/bc26-v119-roniheka-hgnet-sed.log	runtime_log	v119-roniheka-hgnet-sed-v1	14483	
+birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/submission.csv	submission_or_test_pred	v119-roniheka-hgnet-sed-v1	303009	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/v119_roniheka_hgnet_sed_remap_diagnostics.csv	csv_data_or_report	v119-roniheka-hgnet-sed-v1	10023	primary_label,support,same_col,best_col,remapped,strength,same_auc,best_auc
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/bc26-v87-attributed-nina-eos5-v38plus.log	runtime_log	v87-attributed-nina-eos5-v38plus	29165	
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/perch_cache/full_perch_meta.parquet	other	perch_cache	9298	
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/subm_2.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	658395	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
@@ -426,8 +431,10 @@ birdclef-2026/scripts/birdclef_prepare_v114_v110_v113_selfblend.py	script	script
 birdclef-2026/scripts/birdclef_prepare_v115_tsubasa_snowflake_sed.py	script	scripts	10392	
 birdclef-2026/scripts/birdclef_prepare_v116_tsubasa_convnext_sed.py	script	scripts	6149	
 birdclef-2026/scripts/birdclef_prepare_v117_tsubasa_convnext_noremap.py	script	scripts	6090	
+birdclef-2026/scripts/birdclef_prepare_v119_roniheka_hgnet_sed.py	script	scripts	10896	
 birdclef-2026/scripts/birdclef_prepare_youssef_e1.py	script	scripts	6182	
 birdclef-2026/scripts/birdclef_prepare_youssef_e1_nobirdnet.py	script	scripts	6237	
+birdclef-2026/scripts/birdclef_probe_v118_ecohabitat_rescue.py	script	scripts	7748	
 birdclef-2026/scripts/birdclef_public_scan.py	script	scripts	3813	
 birdclef-2026/scripts/evaluate_dryrun_proxy.py	script	scripts	6434	
 birdclef-2026/scripts/submit_v76_guarded.py	script	scripts	2502	

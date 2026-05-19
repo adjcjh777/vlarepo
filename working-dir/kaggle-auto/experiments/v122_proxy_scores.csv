@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v122-singlepass-class-selective-tsubasa-v1/submission.csv,120,234,313,22,0.97709863,0.92241158,0.27397260,0.58904110,0.01114442,0.99981236,0.52099789,0.24273697

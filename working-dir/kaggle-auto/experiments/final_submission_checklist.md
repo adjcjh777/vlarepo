@@ -1,6 +1,6 @@
 # Final Submission Checklist
 
-Updated: 2026-05-19 08:29 UTC
+Updated: 2026-05-19 09:21 UTC
 
 ## Current State
 - No final submission selection has been made.
@@ -8,6 +8,8 @@ Updated: 2026-05-19 08:29 UTC
 - v89 is not submit-eligible as-is.
 - v120 was submitted as ref `52802748` and is not final-selection eligible because hidden-test evaluation exceeded Kaggle RAM.
 - v121 completed Run-mode with strong local proxy, but is not submit/final-selection eligible as-is because it inherits v120's double-final-layer memory risk.
+- v122 completed Run-mode with a single-pass memory-safe structure, but macro proxy is below clean baselines.
+- v123 completed Run-mode with rank-calibrated single-pass sidecar, but the proxy gain is too small and output is near-duplicate of v110/v114.
 - Current best visible fallback is v87 `0.949`, but final promotion still requires private-LB robustness reasoning and complete provenance/compliance evidence.
 
 ## Required Before Any Final Judging Selection
@@ -33,6 +35,8 @@ Updated: 2026-05-19 08:29 UTC
 | v89 | `REJECT-as-submit` | all-constant staging prior output; weak OOF diagnostics |
 | v120 | `REJECT-memory` | ref `52802748`; hidden-test error: requested more RAM than available |
 | v121 | `HOLD-memory-risk` | Run-mode proxy strong, but double-final-layer structure is not safe after v120 hidden RAM failure |
+| v122 | `REJECT-quality` | single-pass memory fix works, but macro proxy `0.97709863` is below clean baselines |
+| v123 | `HOLD-too-small-gain` | rank-calibrated single-pass works, but macro gain over v114 is only about `+0.000010` |
 
 ## Next Automatic Action
-Build or audit only memory-reduced follow-ups. The next real candidate should turn v121's sparse class-selective sidecar into a single-pass hybrid before the final layer, then pass fresh compliance evidence.
+Do not submit the current Tsubasa sidecar variants. The next real candidate needs a larger proxy improvement or materially different low-correlation evidence while preserving single-pass memory safety.

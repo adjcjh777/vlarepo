@@ -1,0 +1,2 @@
+candidate,source,rows,cols,matches_sample_columns,matches_sample_row_order,duplicate_row_id,finite,min,max,mean,std
+v122-singlepass-class-selective-tsubasa,birdclef-2026/outputs/v122-singlepass-class-selective-tsubasa-v1/submission.csv,120,235,True,False,False,True,0.011144416,0.99981236,0.5209978932105057,0.2427369722770257

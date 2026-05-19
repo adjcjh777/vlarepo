@@ -1,6 +1,6 @@
 # Rules Compliance Report
 
-Updated: 2026-05-19 08:29 UTC
+Updated: 2026-05-19 09:21 UTC
 
 ## Authority
 - Official Kaggle BirdCLEF+ 2026 rules and platform limits remain the primary authority.
@@ -21,6 +21,8 @@ Updated: 2026-05-19 08:29 UTC
 | v89 attributed Perch-CNN | Run-mode complete; not submitted | `HOLD-as-source` | Do not submit as-is; output is all-constant staging prior and OOF diagnostics are weak. |
 | v120 clean Tsubasa sidecar | submitted; ref `52802748`; hidden RAM error | `REJECT-memory` | Retire; Run-mode passed but hidden-test evaluation exceeded Kaggle RAM. |
 | v121 class-selective Tsubasa | Run-mode complete; not submitted | `HOLD-memory-risk` | Original sparse sidecar gate improves local proxy, but still uses v120's double-final-layer structure. Convert to single-pass before real submission. |
+| v122 single-pass Tsubasa | Run-mode complete; not submitted | `REJECT-quality` | Single-pass memory fix works, but raw probability gate is too sparse and macro proxy drops below clean baselines. |
+| v123 rank-calibrated single-pass Tsubasa | Run-mode complete; not submitted | `HOLD-too-small-gain` | Rank-calibrated single-pass gate works, but gain over v114 is only about `+0.000010` macro with near-duplicate output. |
 
 ## Hard Guardrails
 - Final inference must be CPU-only and under 90 minutes.
@@ -33,4 +35,4 @@ Updated: 2026-05-19 08:29 UTC
 - No hand labeling, hidden-test leakage, or private sharing outside the Kaggle team.
 
 ## Current Decision
-Retire v120 as a submission/final candidate because hidden-test evaluation exceeded Kaggle RAM. Preserve v121 as a promising original Run-mode result, but do not submit it as-is. Continue only with memory-reduced, single-pass evidence before spending another real slot.
+Retire v120 as a submission/final candidate because hidden-test evaluation exceeded Kaggle RAM. Preserve v121/v123 as original sidecar evidence, but do not submit them as-is. v122/v123 show that single-pass memory-reduced variants can run, yet the current Tsubasa lane lacks enough proxy gain to justify another real slot.

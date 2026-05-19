@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v123-rankcal-singlepass-tsubasa-v1/submission.csv,120,234,313,22,0.97921107,0.91480745,0.21917808,0.52054795,0.01114442,0.99946990,0.52113749,0.24236072

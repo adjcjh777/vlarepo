@@ -225,3 +225,13 @@
 - Correlation vs v110/v114 is very high (`0.998869` / `0.998467` Pearson), but correlation vs the raw Tsubasa sidecar is lower (`0.769061`), confirming a sparse sidecar intervention rather than a wholesale branch replacement.
 - Refreshed `birdclef_goal_check.py` at `2026-05-19 08:29:52 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `3/5`.
 - Decision: `HOLD-memory-risk - do not submit v121 as-is`. The candidate is the best current original clean-sidecar idea, but it still uses v120's double-final-layer structure, which already failed hidden-test RAM. Next real candidate should be a single-pass v122 that injects the class-selective sidecar before the final layer and runs the final decision layer once.
+
+## 2026-05-19 v122-v123 Single-Pass Tsubasa Follow-ups
+- Built `birdclef-2026/notebooks/v122-singlepass-class-selective-tsubasa` as the memory-reduced follow-up to v121: inject the 10-class Tsubasa sidecar before the final EcoProto/rank-launch layer, then run the final layer once.
+- v122 Run-mode completed at about `471.2s` before output save; schema passed; proxy `macro=0.97709863`, `micro=0.92241158`, `top5=0.58904110`; gate cells `114 / 28080`.
+- v122 decision: `REJECT-quality`. It proves the single-pass memory structure can run, but the raw probability gate is too sparse because Tsubasa SED probabilities are lower-scale than the clean Perch surrogate.
+- Built `birdclef-2026/notebooks/v123-rankcal-singlepass-tsubasa` to fix v122's scale mismatch: compare column-wise ranks, map Tsubasa rank order onto the clean probability distribution, then apply the same 10-class sidecar gate before one final pass.
+- v123 Run-mode completed at about `474.4s` before output save; schema passed; proxy `macro=0.97921107`, `micro=0.91480745`, `top5=0.52054795`; gate cells `572 / 28080`.
+- v123 correlation is too high to justify a slot: vs v110 Pearson `0.999952`, vs v114 Pearson `0.999546`; macro gain over v114 is only about `+0.000010`.
+- Refreshed `birdclef_goal_check.py` at `2026-05-19 09:21:17 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `3/5`.
+- Decision: `HOLD-too-small-gain - do not submit v123 as-is`. Stop tuning this Tsubasa sidecar lane unless new train-window evidence appears; any future sidecar must remain single-pass and should bring materially larger proxy or diversity evidence.

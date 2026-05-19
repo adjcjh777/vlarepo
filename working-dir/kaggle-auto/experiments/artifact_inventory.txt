@@ -1,0 +1,417 @@
+artifact_path	artifact_type	parent	size_bytes	header_or_note
+birdclef-2026/data/sample_submission.csv	submission_or_test_pred	data	16708	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/data/taxonomy.csv	csv_data_or_report	data	13693	primary_label,inat_taxon_id,scientific_name,common_name,class_name
+birdclef-2026/data/train.csv	csv_data_or_report	data	6779071	primary_label,secondary_labels,type,latitude,longitude,scientific_name,common_name,class_name
+birdclef-2026/data/train_soundscapes_labels.csv	csv_data_or_report	data	134623	filename,start,end,primary_label
+birdclef-2026/notebooks/_public_amul_yous_sedheavy_w090/bc26-yous-sedheavy-w090-20260517.ipynb	notebook	_public_amul_yous_sedheavy_w090	101962	
+birdclef-2026/notebooks/_public_amul_yous_sedheavy_w090/kernel-metadata.json	kernel_metadata	_public_amul_yous_sedheavy_w090	795	
+birdclef-2026/notebooks/_public_kotata_youssef_a1_rankblend_sedup/birdclef-2026-youssef-a1-rankblend-sedup.ipynb	notebook	_public_kotata_youssef_a1_rankblend_sedup	100454	
+birdclef-2026/notebooks/_public_kotata_youssef_a1_rankblend_sedup/kernel-metadata.json	kernel_metadata	_public_kotata_youssef_a1_rankblend_sedup	768	
+birdclef-2026/notebooks/_public_kotata_youssef_b1c1_smooth_spike/birdclef-2026-youssef-b1c1-smooth-spike.ipynb	notebook	_public_kotata_youssef_b1c1_smooth_spike	101297	
+birdclef-2026/notebooks/_public_kotata_youssef_b1c1_smooth_spike/kernel-metadata.json	kernel_metadata	_public_kotata_youssef_b1c1_smooth_spike	765	
+birdclef-2026/notebooks/_public_sunderekkiz_exp019_eos4_rank_power_06/birdclef-2026-exp019-eos4-rank-power-06.ipynb	notebook	_public_sunderekkiz_exp019_eos4_rank_power_06	412546	
+birdclef-2026/notebooks/_public_sunderekkiz_exp019_eos4_rank_power_06/kernel-metadata.json	kernel_metadata	_public_sunderekkiz_exp019_eos4_rank_power_06	927	
+birdclef-2026/notebooks/_public_vyanktesh_protossm_sed_0948/birdclef-2026-protossm-sed-0-948.ipynb	notebook	_public_vyanktesh_protossm_sed_0948	88335	
+birdclef-2026/notebooks/_public_vyanktesh_protossm_sed_0948/kernel-metadata.json	kernel_metadata	_public_vyanktesh_protossm_sed_0948	775	
+birdclef-2026/notebooks/baseline.ipynb	notebook	notebooks	14540	
+birdclef-2026/notebooks/fork-starter/kernel-metadata.json	kernel_metadata	fork-starter	589	
+birdclef-2026/notebooks/fork-starter/perch-v2-starter-train-infer.ipynb	notebook	fork-starter	47246	
+birdclef-2026/notebooks/my-baseline/baseline.ipynb	notebook	my-baseline	5498	
+birdclef-2026/notebooks/my-baseline/kernel-metadata.json	kernel_metadata	my-baseline	560	
+birdclef-2026/notebooks/onnx-perch-seq/birdclef-2026-onnx-perch-sequence-modeling.ipynb	notebook	onnx-perch-seq	89548	
+birdclef-2026/notebooks/onnx-perch-seq/kernel-metadata.json	kernel_metadata	onnx-perch-seq	747	
+birdclef-2026/notebooks/public-references/adarsh-v54-lb-0948-swap/birdclef-2026-v54-lb-0948-swap.ipynb	notebook	adarsh-v54-lb-0948-swap	99557	
+birdclef-2026/notebooks/public-references/adarsh-v54-lb-0948-swap/kernel-metadata.json	kernel_metadata	adarsh-v54-lb-0948-swap	761	
+birdclef-2026/notebooks/public-references/adarsh5harma-birdclef-2026-v53-svanik-fusion/birdclef-2026-v53-svanik-fusion.ipynb	notebook	adarsh5harma-birdclef-2026-v53-svanik-fusion	82144	
+birdclef-2026/notebooks/public-references/adarsh5harma-birdclef-2026-v53-svanik-fusion/kernel-metadata.json	kernel_metadata	adarsh5harma-birdclef-2026-v53-svanik-fusion	756	
+birdclef-2026/notebooks/public-references/adarsh5harma-birdclef-2026-v54-tta/birdclef-2026-v54-tta.ipynb	notebook	adarsh5harma-birdclef-2026-v54-tta	63830	
+birdclef-2026/notebooks/public-references/adarsh5harma-birdclef-2026-v54-tta/kernel-metadata.json	kernel_metadata	adarsh5harma-birdclef-2026-v54-tta	734	
+birdclef-2026/notebooks/public-references/chaneyma-bc26-gate-v53-eos4-shared-perch-no-birdnet-scan/bc26-gate-v53-eos4-shared-perch-no-birdnet-scan.ipynb	notebook	chaneyma-bc26-gate-v53-eos4-shared-perch-no-birdnet-scan	318651	
+birdclef-2026/notebooks/public-references/chaneyma-bc26-gate-v53-eos4-shared-perch-no-birdnet-scan/kernel-metadata.json	kernel_metadata	chaneyma-bc26-gate-v53-eos4-shared-perch-no-birdnet-scan	948	
+birdclef-2026/notebooks/public-references/chaneyma-bc26-gate-v54-v38-eos4-light-post/bc26-gate-v54-v38-eos4-light-post.ipynb	notebook	chaneyma-bc26-gate-v54-v38-eos4-light-post	268628	
+birdclef-2026/notebooks/public-references/chaneyma-bc26-gate-v54-v38-eos4-light-post/kernel-metadata.json	kernel_metadata	chaneyma-bc26-gate-v54-v38-eos4-light-post	785	
+birdclef-2026/notebooks/public-references/cliff376-bc26-public-gate-combo-pc010-v2/bc26-public-gate-combo-pc010-v2.ipynb	notebook	cliff376-bc26-public-gate-combo-pc010-v2	101520	
+birdclef-2026/notebooks/public-references/cliff376-bc26-public-gate-combo-pc010-v2/kernel-metadata.json	kernel_metadata	cliff376-bc26-public-gate-combo-pc010-v2	697	
+birdclef-2026/notebooks/public-references/franksunp-birdclef-2026-5-branch-v4-tta-fix/birdclef-2026-5-branch-v4-tta-fix.ipynb	notebook	franksunp-birdclef-2026-5-branch-v4-tta-fix	105301	
+birdclef-2026/notebooks/public-references/franksunp-birdclef-2026-5-branch-v4-tta-fix/kernel-metadata.json	kernel_metadata	franksunp-birdclef-2026-5-branch-v4-tta-fix	766	
+birdclef-2026/notebooks/public-references/junseong-safar1-tweak-f-only/birdclef-2026-safar1-fork-tweak-f-only.py	script	junseong-safar1-tweak-f-only	46670	
+birdclef-2026/notebooks/public-references/junseong-safar1-tweak-f-only/kernel-metadata.json	kernel_metadata	junseong-safar1-tweak-f-only	744	
+birdclef-2026/notebooks/public-references/karnak-power-optimization/kernel-metadata.json	kernel_metadata	karnak-power-optimization	708	
+birdclef-2026/notebooks/public-references/karnak-power-optimization/power-optimization.ipynb	notebook	karnak-power-optimization	100571	
+birdclef-2026/notebooks/public-references/kruzzcc-bc26-safar-0947-birdnet/bc26-safar-0947-birdnet.ipynb	notebook	kruzzcc-bc26-safar-0947-birdnet	89798	
+birdclef-2026/notebooks/public-references/kruzzcc-bc26-safar-0947-birdnet/kernel-metadata.json	kernel_metadata	kruzzcc-bc26-safar-0947-birdnet	795	
+birdclef-2026/notebooks/public-references/lucataco-bc26-scoredesc-conservative-ensemble/bc26-scoredesc-conservative-ensemble.py	script	lucataco-bc26-scoredesc-conservative-ensemble	8586	
+birdclef-2026/notebooks/public-references/lucataco-bc26-scoredesc-conservative-ensemble/kernel-metadata.json	kernel_metadata	lucataco-bc26-scoredesc-conservative-ensemble	831	
+birdclef-2026/notebooks/public-references/meenalsinha-birdclef-2026-improved/birdclef-2026-improved.ipynb	notebook	meenalsinha-birdclef-2026-improved	86248	
+birdclef-2026/notebooks/public-references/meenalsinha-birdclef-2026-improved/kernel-metadata.json	kernel_metadata	meenalsinha-birdclef-2026-improved	958	
+birdclef-2026/notebooks/public-references/mtoshi-test-0948/kernel-metadata.json	kernel_metadata	mtoshi-test-0948	679	
+birdclef-2026/notebooks/public-references/mtoshi-test-0948/test-0-948.ipynb	notebook	mtoshi-test-0948	74380	
+birdclef-2026/notebooks/public-references/mtoshi-visual-cpu-inference/birdclef-2026-visual-cpu-inference.ipynb	notebook	mtoshi-visual-cpu-inference	100202	
+birdclef-2026/notebooks/public-references/mtoshi-visual-cpu-inference/kernel-metadata.json	kernel_metadata	mtoshi-visual-cpu-inference	792	
+birdclef-2026/notebooks/public-references/mtoshidesu-lb-improved/kernel-metadata.json	kernel_metadata	mtoshidesu-lb-improved	682	
+birdclef-2026/notebooks/public-references/mtoshidesu-lb-improved/lb-improved.ipynb	notebook	mtoshidesu-lb-improved	95353	
+birdclef-2026/notebooks/public-references/nina2025-birdclef-2026-eos-1/birdclef-2026-eos-1.ipynb	notebook	nina2025-birdclef-2026-eos-1	544740	
+birdclef-2026/notebooks/public-references/nina2025-birdclef-2026-eos-1/kernel-metadata.json	kernel_metadata	nina2025-birdclef-2026-eos-1	907	
+birdclef-2026/notebooks/public-references/nina2025-birdclef-2026-eos-4/birdclef-2026-eos-4.ipynb	notebook	nina2025-birdclef-2026-eos-4	315592	
+birdclef-2026/notebooks/public-references/nina2025-birdclef-2026-eos-4/kernel-metadata.json	kernel_metadata	nina2025-birdclef-2026-eos-4	867	
+birdclef-2026/notebooks/public-references/nina2025-eos5/birdclef-2026-eos-5.ipynb	notebook	nina2025-eos5	330091	
+birdclef-2026/notebooks/public-references/nina2025-eos5/kernel-metadata.json	kernel_metadata	nina2025-eos5	867	
+birdclef-2026/notebooks/public-references/pilkwang-948-time-window-rank-fusion/948-birdclef-26-acoustic-time-window-rank-fusion.ipynb	notebook	pilkwang-948-time-window-rank-fusion	119158	
+birdclef-2026/notebooks/public-references/pilkwang-948-time-window-rank-fusion/kernel-metadata.json	kernel_metadata	pilkwang-948-time-window-rank-fusion	953	
+birdclef-2026/notebooks/public-references/raunakdey07-birdclef-2026-deep-protossm-sed-dynamic-blend/birdclef-2026-deep-protossm-sed-dynamic-blend.ipynb	notebook	raunakdey07-birdclef-2026-deep-protossm-sed-dynamic-blend	252742	
+birdclef-2026/notebooks/public-references/raunakdey07-birdclef-2026-deep-protossm-sed-dynamic-blend/kernel-metadata.json	kernel_metadata	raunakdey07-birdclef-2026-deep-protossm-sed-dynamic-blend	950	
+birdclef-2026/notebooks/public-references/vyankteshdwivedi-protossm-sed-0948/birdclef-2026-protossm-sed-0-948.ipynb	notebook	vyankteshdwivedi-protossm-sed-0948	88335	
+birdclef-2026/notebooks/public-references/vyankteshdwivedi-protossm-sed-0948/kernel-metadata.json	kernel_metadata	vyankteshdwivedi-protossm-sed-0948	775	
+birdclef-2026/notebooks/public-references/yaroslav-birdnet-site-hour/birdnet-third-branch-site-hour-prior-restore.ipynb	notebook	yaroslav-birdnet-site-hour	145290	
+birdclef-2026/notebooks/public-references/yaroslav-birdnet-site-hour/kernel-metadata.json	kernel_metadata	yaroslav-birdnet-site-hour	792	
+birdclef-2026/notebooks/public-references/youssef-lb-0948/kernel-metadata.json	kernel_metadata	youssef-lb-0948	677	
+birdclef-2026/notebooks/public-references/youssef-lb-0948/lb-0-948.ipynb	notebook	youssef-lb-0948	100440	
+birdclef-2026/notebooks/public-references/zeyad-eos-parity-inference/birdclef-2026-eos-parity-inference.ipynb	notebook	zeyad-eos-parity-inference	92389	
+birdclef-2026/notebooks/public-references/zeyad-eos-parity-inference/kernel-metadata.json	kernel_metadata	zeyad-eos-parity-inference	841	
+birdclef-2026/notebooks/starter-perch-v2/kernel-metadata.json	kernel_metadata	starter-perch-v2	604	
+birdclef-2026/notebooks/starter-perch-v2/notebooks/onnx-perch-seq/birdclef-2026-onnx-perch-sequence-modeling.ipynb	notebook	onnx-perch-seq	89548	
+birdclef-2026/notebooks/starter-perch-v2/notebooks/onnx-perch-seq/kernel-metadata.json	kernel_metadata	onnx-perch-seq	747	
+birdclef-2026/notebooks/starter-perch-v2/perch-v2-starter-train-infer.ipynb	notebook	starter-perch-v2	47246	
+birdclef-2026/notebooks/top1-pantanal-distill/kernel-metadata.json	kernel_metadata	top1-pantanal-distill	745	
+birdclef-2026/notebooks/top1-pantanal-distill/pantanal-distill-birdclef2026-onnx.ipynb	notebook	top1-pantanal-distill	148596	
+birdclef-2026/notebooks/v10-original-sedrank/kernel-metadata.json	kernel_metadata	v10-original-sedrank	685	
+birdclef-2026/notebooks/v10-original-sedrank/submission.ipynb	notebook	v10-original-sedrank	22736	
+birdclef-2026/notebooks/v101-attributed-alexy-cnn-cpu/birdclef-2026-cnn-infer-dataset.py	script	v101-attributed-alexy-cnn-cpu	14789	
+birdclef-2026/notebooks/v101-attributed-alexy-cnn-cpu/kernel-metadata.json	kernel_metadata	v101-attributed-alexy-cnn-cpu	517	
+birdclef-2026/notebooks/v102-original-macro-risk-rescue/kernel-metadata.json	kernel_metadata	v102-original-macro-risk-rescue	689	
+birdclef-2026/notebooks/v102-original-macro-risk-rescue/submission.ipynb	notebook	v102-original-macro-risk-rescue	49607	
+birdclef-2026/notebooks/v103-guarded-macro-risk-rescue/kernel-metadata.json	kernel_metadata	v103-guarded-macro-risk-rescue	677	
+birdclef-2026/notebooks/v103-guarded-macro-risk-rescue/submission.ipynb	notebook	v103-guarded-macro-risk-rescue	50675	
+birdclef-2026/notebooks/v104-perch-only-guarded-rescue/kernel-metadata.json	kernel_metadata	v104-perch-only-guarded-rescue	557	
+birdclef-2026/notebooks/v104-perch-only-guarded-rescue/submission.ipynb	notebook	v104-perch-only-guarded-rescue	47622	
+birdclef-2026/notebooks/v105-rankrestored-perch-guarded/kernel-metadata.json	kernel_metadata	v105-rankrestored-perch-guarded	557	
+birdclef-2026/notebooks/v105-rankrestored-perch-guarded/submission.ipynb	notebook	v105-rankrestored-perch-guarded	49216	
+birdclef-2026/notebooks/v106-rankdominant-perch-guarded/kernel-metadata.json	kernel_metadata	v106-rankdominant-perch-guarded	557	
+birdclef-2026/notebooks/v106-rankdominant-perch-guarded/submission.ipynb	notebook	v106-rankdominant-perch-guarded	49222	
+birdclef-2026/notebooks/v107-rankceiling-perch-guarded/kernel-metadata.json	kernel_metadata	v107-rankceiling-perch-guarded	555	
+birdclef-2026/notebooks/v107-rankceiling-perch-guarded/submission.ipynb	notebook	v107-rankceiling-perch-guarded	49164	
+birdclef-2026/notebooks/v108-ecoproto-perch-guarded/kernel-metadata.json	kernel_metadata	v108-ecoproto-perch-guarded	549	
+birdclef-2026/notebooks/v108-ecoproto-perch-guarded/submission.ipynb	notebook	v108-ecoproto-perch-guarded	52286	
+birdclef-2026/notebooks/v109-ecoproto-ranklaunch-perch/kernel-metadata.json	kernel_metadata	v109-ecoproto-ranklaunch-perch	559	
+birdclef-2026/notebooks/v109-ecoproto-ranklaunch-perch/submission.ipynb	notebook	v109-ecoproto-ranklaunch-perch	53650	
+birdclef-2026/notebooks/v11-original-adaptive/kernel-metadata.json	kernel_metadata	v11-original-adaptive	687	
+birdclef-2026/notebooks/v11-original-adaptive/submission.ipynb	notebook	v11-original-adaptive	23282	
+birdclef-2026/notebooks/v110-ecoproto-clean-blend/kernel-metadata.json	kernel_metadata	v110-ecoproto-clean-blend	559	
+birdclef-2026/notebooks/v110-ecoproto-clean-blend/submission.ipynb	notebook	v110-ecoproto-clean-blend	54952	
+birdclef-2026/notebooks/v111-clean-sed-ecoproto-blend/kernel-metadata.json	kernel_metadata	v111-clean-sed-ecoproto-blend	603	
+birdclef-2026/notebooks/v111-clean-sed-ecoproto-blend/submission.ipynb	notebook	v111-clean-sed-ecoproto-blend	59316	
+birdclef-2026/notebooks/v112-clean-sed-remap-ecoproto/kernel-metadata.json	kernel_metadata	v112-clean-sed-remap-ecoproto	597	
+birdclef-2026/notebooks/v112-clean-sed-remap-ecoproto/submission.ipynb	notebook	v112-clean-sed-remap-ecoproto	64033	
+birdclef-2026/notebooks/v113-lantingguo-melnorm-ecoproto/kernel-metadata.json	kernel_metadata	v113-lantingguo-melnorm-ecoproto	601	
+birdclef-2026/notebooks/v113-lantingguo-melnorm-ecoproto/submission.ipynb	notebook	v113-lantingguo-melnorm-ecoproto	63643	
+birdclef-2026/notebooks/v114-v110-v113-selfblend/kernel-metadata.json	kernel_metadata	v114-v110-v113-selfblend	601	
+birdclef-2026/notebooks/v114-v110-v113-selfblend/submission.ipynb	notebook	v114-v110-v113-selfblend	68080	
+birdclef-2026/notebooks/v12-oof-blend/kernel-metadata.json	kernel_metadata	v12-oof-blend	671	
+birdclef-2026/notebooks/v12-oof-blend/submission.ipynb	notebook	v12-oof-blend	24212	
+birdclef-2026/notebooks/v13-consensus-rank/kernel-metadata.json	kernel_metadata	v13-consensus-rank	681	
+birdclef-2026/notebooks/v13-consensus-rank/submission.ipynb	notebook	v13-consensus-rank	25783	
+birdclef-2026/notebooks/v14-attributed-safe-ensemble/kernel-metadata.json	kernel_metadata	v14-attributed-safe-ensemble	820	
+birdclef-2026/notebooks/v14-attributed-safe-ensemble/submission.ipynb	notebook	v14-attributed-safe-ensemble	287059	
+birdclef-2026/notebooks/v15-sitehour-prior/kernel-metadata.json	kernel_metadata	v15-sitehour-prior	681	
+birdclef-2026/notebooks/v15-sitehour-prior/submission.ipynb	notebook	v15-sitehour-prior	29728	
+birdclef-2026/notebooks/v16-perch-anchor/kernel-metadata.json	kernel_metadata	v16-perch-anchor	677	
+birdclef-2026/notebooks/v16-perch-anchor/submission.ipynb	notebook	v16-perch-anchor	29911	
+birdclef-2026/notebooks/v17-strong-perch-anchor/kernel-metadata.json	kernel_metadata	v17-strong-perch-anchor	691	
+birdclef-2026/notebooks/v17-strong-perch-anchor/submission.ipynb	notebook	v17-strong-perch-anchor	29911	
+birdclef-2026/notebooks/v18-fast-onnx/kernel-metadata.json	kernel_metadata	v18-fast-onnx	671	
+birdclef-2026/notebooks/v18-fast-onnx/submission.ipynb	notebook	v18-fast-onnx	29956	
+birdclef-2026/notebooks/v19-fast-onnx-3fold/kernel-metadata.json	kernel_metadata	v19-fast-onnx-3fold	683	
+birdclef-2026/notebooks/v19-fast-onnx-3fold/submission.ipynb	notebook	v19-fast-onnx-3fold	30041	
+birdclef-2026/notebooks/v2-improved/kernel-metadata.json	kernel_metadata	v2-improved	568	
+birdclef-2026/notebooks/v2-improved/v2_improved.ipynb	notebook	v2-improved	14101	
+birdclef-2026/notebooks/v20-fast-onnx-4fold/kernel-metadata.json	kernel_metadata	v20-fast-onnx-4fold	683	
+birdclef-2026/notebooks/v20-fast-onnx-4fold/submission.ipynb	notebook	v20-fast-onnx-4fold	30049	
+birdclef-2026/notebooks/v21-fast-onnx-5fold/kernel-metadata.json	kernel_metadata	v21-fast-onnx-5fold	683	
+birdclef-2026/notebooks/v21-fast-onnx-5fold/submission.ipynb	notebook	v21-fast-onnx-5fold	30037	
+birdclef-2026/notebooks/v22-fast-onnx-filemax/kernel-metadata.json	kernel_metadata	v22-fast-onnx-filemax	687	
+birdclef-2026/notebooks/v22-fast-onnx-filemax/submission.ipynb	notebook	v22-fast-onnx-filemax	30427	
+birdclef-2026/notebooks/v23-fast-onnx-filemax04/kernel-metadata.json	kernel_metadata	v23-fast-onnx-filemax04	691	
+birdclef-2026/notebooks/v23-fast-onnx-filemax04/submission.ipynb	notebook	v23-fast-onnx-filemax04	30423	
+birdclef-2026/notebooks/v24-attributed-public-gate-combo/bc26-public-gate-combo-pc010-v2.ipynb	notebook	v24-attributed-public-gate-combo	104776	
+birdclef-2026/notebooks/v24-attributed-public-gate-combo/kernel-metadata.json	kernel_metadata	v24-attributed-public-gate-combo	717	
+birdclef-2026/notebooks/v25-attributed-eos1-benchmark/birdclef-2026-eos-1.ipynb	notebook	v25-attributed-eos1-benchmark	558017	
+birdclef-2026/notebooks/v25-attributed-eos1-benchmark/kernel-metadata.json	kernel_metadata	v25-attributed-eos1-benchmark	942	
+birdclef-2026/notebooks/v26-attributed-raunak-dynamic-blend/birdclef-2026-deep-protossm-sed-dynamic-blend.ipynb	notebook	v26-attributed-raunak-dynamic-blend	263072	
+birdclef-2026/notebooks/v26-attributed-raunak-dynamic-blend/kernel-metadata.json	kernel_metadata	v26-attributed-raunak-dynamic-blend	940	
+birdclef-2026/notebooks/v27-attributed-lucataco-conservative-ensemble/bc26-scoredesc-conservative-ensemble.py	script	v27-attributed-lucataco-conservative-ensemble	9183	
+birdclef-2026/notebooks/v27-attributed-lucataco-conservative-ensemble/kernel-metadata.json	kernel_metadata	v27-attributed-lucataco-conservative-ensemble	801	
+birdclef-2026/notebooks/v28-attributed-meenal-improved/birdclef-2026-improved.ipynb	notebook	v28-attributed-meenal-improved	88558	
+birdclef-2026/notebooks/v28-attributed-meenal-improved/kernel-metadata.json	kernel_metadata	v28-attributed-meenal-improved	948	
+birdclef-2026/notebooks/v29-attributed-meenal-no-bn/birdclef-2026-improved.ipynb	notebook	v29-attributed-meenal-no-bn	90294	
+birdclef-2026/notebooks/v29-attributed-meenal-no-bn/kernel-metadata.json	kernel_metadata	v29-attributed-meenal-no-bn	942	
+birdclef-2026/notebooks/v3-original/kernel-metadata.json	kernel_metadata	v3-original	550	
+birdclef-2026/notebooks/v3-original/submission.ipynb	notebook	v3-original	19192	
+birdclef-2026/notebooks/v30-attributed-adarsh-svanik-fusion/birdclef-2026-v53-svanik-fusion.ipynb	notebook	v30-attributed-adarsh-svanik-fusion	84368	
+birdclef-2026/notebooks/v30-attributed-adarsh-svanik-fusion/kernel-metadata.json	kernel_metadata	v30-attributed-adarsh-svanik-fusion	724	
+birdclef-2026/notebooks/v31-attributed-meenal-sed60/birdclef-2026-improved.ipynb	notebook	v31-attributed-meenal-sed60	90475	
+birdclef-2026/notebooks/v31-attributed-meenal-sed60/kernel-metadata.json	kernel_metadata	v31-attributed-meenal-sed60	942	
+birdclef-2026/notebooks/v32-attributed-chaneyma-gate-v53/bc26-gate-v53-eos4-shared-perch-no-birdnet-scan.ipynb	notebook	v32-attributed-chaneyma-gate-v53	328136	
+birdclef-2026/notebooks/v32-attributed-chaneyma-gate-v53/kernel-metadata.json	kernel_metadata	v32-attributed-chaneyma-gate-v53	896	
+birdclef-2026/notebooks/v33-attributed-adarsh-v54-tta/birdclef-2026-v54-tta.ipynb	notebook	v33-attributed-adarsh-v54-tta	65594	
+birdclef-2026/notebooks/v33-attributed-adarsh-v54-tta/kernel-metadata.json	kernel_metadata	v33-attributed-adarsh-v54-tta	715	
+birdclef-2026/notebooks/v34-attributed-adarsh-v54-sed60/birdclef-2026-v54-tta.ipynb	notebook	v34-attributed-adarsh-v54-sed60	67383	
+birdclef-2026/notebooks/v34-attributed-adarsh-v54-sed60/kernel-metadata.json	kernel_metadata	v34-attributed-adarsh-v54-sed60	719	
+birdclef-2026/notebooks/v35-attributed-adarsh-v54-sed80/birdclef-2026-v54-tta.ipynb	notebook	v35-attributed-adarsh-v54-sed80	75575	
+birdclef-2026/notebooks/v35-attributed-adarsh-v54-sed80/kernel-metadata.json	kernel_metadata	v35-attributed-adarsh-v54-sed80	720	
+birdclef-2026/notebooks/v36-attributed-pilkwang-948-fusion/948-birdclef-26-acoustic-time-window-rank-fusion.ipynb	notebook	v36-attributed-pilkwang-948-fusion	131313	
+birdclef-2026/notebooks/v36-attributed-pilkwang-948-fusion/kernel-metadata.json	kernel_metadata	v36-attributed-pilkwang-948-fusion	901	
+birdclef-2026/notebooks/v37-attributed-vyanktesh-948/birdclef-2026-protossm-sed-0-948.ipynb	notebook	v37-attributed-vyanktesh-948	90487	
+birdclef-2026/notebooks/v37-attributed-vyanktesh-948/kernel-metadata.json	kernel_metadata	v37-attributed-vyanktesh-948	712	
+birdclef-2026/notebooks/v38-attributed-youssef-948/kernel-metadata.json	kernel_metadata	v38-attributed-youssef-948	684	
+birdclef-2026/notebooks/v38-attributed-youssef-948/lb-0-948.ipynb	notebook	v38-attributed-youssef-948	102391	
+birdclef-2026/notebooks/v39-attributed-zeyad-eos-parity/birdclef-2026-eos-parity-inference.ipynb	notebook	v39-attributed-zeyad-eos-parity	93066	
+birdclef-2026/notebooks/v39-attributed-zeyad-eos-parity/kernel-metadata.json	kernel_metadata	v39-attributed-zeyad-eos-parity	801	
+birdclef-2026/notebooks/v4-optimized/kernel-metadata.json	kernel_metadata	v4-optimized	550	
+birdclef-2026/notebooks/v4-optimized/submission.ipynb	notebook	v4-optimized	21133	
+birdclef-2026/notebooks/v40-attributed-mtoshi-948/kernel-metadata.json	kernel_metadata	v40-attributed-mtoshi-948	684	
+birdclef-2026/notebooks/v40-attributed-mtoshi-948/test-0-948.ipynb	notebook	v40-attributed-mtoshi-948	75086	
+birdclef-2026/notebooks/v41-attributed-mtoshi-sed80/kernel-metadata.json	kernel_metadata	v41-attributed-mtoshi-sed80	688	
+birdclef-2026/notebooks/v41-attributed-mtoshi-sed80/test-0-948.ipynb	notebook	v41-attributed-mtoshi-sed80	75905	
+birdclef-2026/notebooks/v42-attributed-nina-eos4/birdclef-2026-eos-4.ipynb	notebook	v42-attributed-nina-eos4	318018	
+birdclef-2026/notebooks/v42-attributed-nina-eos4/kernel-metadata.json	kernel_metadata	v42-attributed-nina-eos4	852	
+birdclef-2026/notebooks/v43-attributed-nina-eos4-alignfix/birdclef-2026-eos-4.ipynb	notebook	v43-attributed-nina-eos4-alignfix	320937	
+birdclef-2026/notebooks/v43-attributed-nina-eos4-alignfix/kernel-metadata.json	kernel_metadata	v43-attributed-nina-eos4-alignfix	870	
+birdclef-2026/notebooks/v44-attributed-mtoshi-visual-cpu/birdclef-2026-visual-cpu-inference.ipynb	notebook	v44-attributed-mtoshi-visual-cpu	101280	
+birdclef-2026/notebooks/v44-attributed-mtoshi-visual-cpu/kernel-metadata.json	kernel_metadata	v44-attributed-mtoshi-visual-cpu	762	
+birdclef-2026/notebooks/v45-attributed-mtoshi-lb-improved/kernel-metadata.json	kernel_metadata	v45-attributed-mtoshi-lb-improved	701	
+birdclef-2026/notebooks/v45-attributed-mtoshi-lb-improved/lb-improved.ipynb	notebook	v45-attributed-mtoshi-lb-improved	95841	
+birdclef-2026/notebooks/v46-attributed-kruzzcc-safar-birdnet/bc26-safar-0947-birdnet.ipynb	notebook	v46-attributed-kruzzcc-safar-birdnet	90306	
+birdclef-2026/notebooks/v46-attributed-kruzzcc-safar-birdnet/kernel-metadata.json	kernel_metadata	v46-attributed-kruzzcc-safar-birdnet	800	
+birdclef-2026/notebooks/v47-attributed-kruzzcc-sed80-no-bn/bc26-safar-0947-birdnet.ipynb	notebook	v47-attributed-kruzzcc-sed80-no-bn	96127	
+birdclef-2026/notebooks/v47-attributed-kruzzcc-sed80-no-bn/kernel-metadata.json	kernel_metadata	v47-attributed-kruzzcc-sed80-no-bn	796	
+birdclef-2026/notebooks/v48-attributed-karnak-power-opt/kernel-metadata.json	kernel_metadata	v48-attributed-karnak-power-opt	704	
+birdclef-2026/notebooks/v48-attributed-karnak-power-opt/power-optimization.ipynb	notebook	v48-attributed-karnak-power-opt	101100	
+birdclef-2026/notebooks/v49-attributed-franksunp-5branch/birdclef-2026-5-branch-v4-tta-fix.ipynb	notebook	v49-attributed-franksunp-5branch	105831	
+birdclef-2026/notebooks/v49-attributed-franksunp-5branch/kernel-metadata.json	kernel_metadata	v49-attributed-franksunp-5branch	741	
+birdclef-2026/notebooks/v5-calibrated/kernel-metadata.json	kernel_metadata	v5-calibrated	550	
+birdclef-2026/notebooks/v5-calibrated/submission.ipynb	notebook	v5-calibrated	18372	
+birdclef-2026/notebooks/v50-attributed-raunak-v7/birdclef-26-v7-notebook.ipynb	notebook	v50-attributed-raunak-v7	83752	
+birdclef-2026/notebooks/v50-attributed-raunak-v7/kernel-metadata.json	kernel_metadata	v50-attributed-raunak-v7	695	
+birdclef-2026/notebooks/v51-attributed-anthony-ensemble/birdclef-ensemble-of-solutions.ipynb	notebook	v51-attributed-anthony-ensemble	320554	
+birdclef-2026/notebooks/v51-attributed-anthony-ensemble/kernel-metadata.json	kernel_metadata	v51-attributed-anthony-ensemble	877	
+birdclef-2026/notebooks/v52-attributed-anthony-alignfix/birdclef-ensemble-of-solutions.ipynb	notebook	v52-attributed-anthony-alignfix	323612	
+birdclef-2026/notebooks/v52-attributed-anthony-alignfix/kernel-metadata.json	kernel_metadata	v52-attributed-anthony-alignfix	877	
+birdclef-2026/notebooks/v53-attributed-anthony-alignfix2/birdclef-ensemble-of-solutions.ipynb	notebook	v53-attributed-anthony-alignfix2	324422	
+birdclef-2026/notebooks/v53-attributed-anthony-alignfix2/kernel-metadata.json	kernel_metadata	v53-attributed-anthony-alignfix2	879	
+birdclef-2026/notebooks/v54-attributed-safar-948/kernel-metadata.json	kernel_metadata	v54-attributed-safar-948	686	
+birdclef-2026/notebooks/v54-attributed-safar-948/lb-score-0-948.ipynb	notebook	v54-attributed-safar-948	97133	
+birdclef-2026/notebooks/v55-attributed-chaneyma-gate-v54/bc26-gate-v54-v38-eos4-light-post.ipynb	notebook	v55-attributed-chaneyma-gate-v54	273332	
+birdclef-2026/notebooks/v55-attributed-chaneyma-gate-v54/kernel-metadata.json	kernel_metadata	v55-attributed-chaneyma-gate-v54	721	
+birdclef-2026/notebooks/v56-attributed-yaroslav-sitehour/birdnet-third-branch-site-hour-prior-restore.ipynb	notebook	v56-attributed-yaroslav-sitehour	157347	
+birdclef-2026/notebooks/v56-attributed-yaroslav-sitehour/kernel-metadata.json	kernel_metadata	v56-attributed-yaroslav-sitehour	732	
+birdclef-2026/notebooks/v57-attributed-adarsh-swap/birdclef-2026-v54-lb-0948-swap.ipynb	notebook	v57-attributed-adarsh-swap	106748	
+birdclef-2026/notebooks/v57-attributed-adarsh-swap/kernel-metadata.json	kernel_metadata	v57-attributed-adarsh-swap	719	
+birdclef-2026/notebooks/v58-attributed-claude-a2prime/birdclef-2026-r0946-a2prime-effv2s-submit.ipynb	notebook	v58-attributed-claude-a2prime	92947	
+birdclef-2026/notebooks/v58-attributed-claude-a2prime/kernel-metadata.json	kernel_metadata	v58-attributed-claude-a2prime	847	
+birdclef-2026/notebooks/v59-attributed-karnak-dual-syntaxfix/kernel-metadata.json	kernel_metadata	v59-attributed-karnak-dual-syntaxfix	720	
+birdclef-2026/notebooks/v59-attributed-karnak-dual-syntaxfix/optimized-dual-architecture-ensemble.ipynb	notebook	v59-attributed-karnak-dual-syntaxfix	157366	
+birdclef-2026/notebooks/v6-fast/kernel-metadata.json	kernel_metadata	v6-fast	550	
+birdclef-2026/notebooks/v6-fast/submission.ipynb	notebook	v6-fast	16469	
+birdclef-2026/notebooks/v60-attributed-adarsh-sed-tta/birdclef-2026-v60-sed-tta.ipynb	notebook	v60-attributed-adarsh-sed-tta	107693	
+birdclef-2026/notebooks/v60-attributed-adarsh-sed-tta/kernel-metadata.json	kernel_metadata	v60-attributed-adarsh-sed-tta	720	
+birdclef-2026/notebooks/v61-attributed-eslam-v20d/birdclef2026-v20d.ipynb	notebook	v61-attributed-eslam-v20d	47217	
+birdclef-2026/notebooks/v61-attributed-eslam-v20d/kernel-metadata.json	kernel_metadata	v61-attributed-eslam-v20d	1352	
+birdclef-2026/notebooks/v62-attributed-svanik-protossm-fusion/kernel-metadata.json	kernel_metadata	v62-attributed-svanik-protossm-fusion	720	
+birdclef-2026/notebooks/v62-attributed-svanik-protossm-fusion/protossm-fusion-engine.ipynb	notebook	v62-attributed-svanik-protossm-fusion	76982	
+birdclef-2026/notebooks/v63-attributed-chaneyma-v37-ninastyle/bc26-gate-v37-ninastyle-branch.ipynb	notebook	v63-attributed-chaneyma-v37-ninastyle	199506	
+birdclef-2026/notebooks/v63-attributed-chaneyma-v37-ninastyle/kernel-metadata.json	kernel_metadata	v63-attributed-chaneyma-v37-ninastyle	728	
+birdclef-2026/notebooks/v64-attributed-amul-full-yous-gate-rb035/bc26-full-yous-gate-rb035-nb-20260517.ipynb	notebook	v64-attributed-amul-full-yous-gate-rb035	217187	
+birdclef-2026/notebooks/v64-attributed-amul-full-yous-gate-rb035/kernel-metadata.json	kernel_metadata	v64-attributed-amul-full-yous-gate-rb035	823	
+birdclef-2026/notebooks/v65-attributed-sunderekkiz-exp019-eos4-rankp06/birdclef-2026-exp019-eos4-rank-power-06.ipynb	notebook	v65-attributed-sunderekkiz-exp019-eos4-rankp06	414825	
+birdclef-2026/notebooks/v65-attributed-sunderekkiz-exp019-eos4-rankp06/kernel-metadata.json	kernel_metadata	v65-attributed-sunderekkiz-exp019-eos4-rankp06	896	
+birdclef-2026/notebooks/v66-attributed-kotata-a1-rankblend-sedup/birdclef-2026-youssef-a1-rankblend-sedup.ipynb	notebook	v66-attributed-kotata-a1-rankblend-sedup	102326	
+birdclef-2026/notebooks/v66-attributed-kotata-a1-rankblend-sedup/kernel-metadata.json	kernel_metadata	v66-attributed-kotata-a1-rankblend-sedup	724	
+birdclef-2026/notebooks/v67-original-sedfirst-rank-consensus/kernel-metadata.json	kernel_metadata	v67-original-sedfirst-rank-consensus	679	
+birdclef-2026/notebooks/v67-original-sedfirst-rank-consensus/submission.ipynb	notebook	v67-original-sedfirst-rank-consensus	29175	
+birdclef-2026/notebooks/v68-original-balanced-rank-consensus/kernel-metadata.json	kernel_metadata	v68-original-balanced-rank-consensus	679	
+birdclef-2026/notebooks/v68-original-balanced-rank-consensus/submission.ipynb	notebook	v68-original-balanced-rank-consensus	29150	
+birdclef-2026/notebooks/v69-original-embedprobe-rank/kernel-metadata.json	kernel_metadata	v69-original-embedprobe-rank	683	
+birdclef-2026/notebooks/v69-original-embedprobe-rank/submission.ipynb	notebook	v69-original-embedprobe-rank	32681	
+birdclef-2026/notebooks/v7-debug/kernel-metadata.json	kernel_metadata	v7-debug	550	
+birdclef-2026/notebooks/v7-debug/submission.ipynb	notebook	v7-debug	18220	
+birdclef-2026/notebooks/v70-original-embedprobe-alignfix/kernel-metadata.json	kernel_metadata	v70-original-embedprobe-alignfix	691	
+birdclef-2026/notebooks/v70-original-embedprobe-alignfix/submission.ipynb	notebook	v70-original-embedprobe-alignfix	33039	
+birdclef-2026/notebooks/v71-original-probe-anchorblend/kernel-metadata.json	kernel_metadata	v71-original-probe-anchorblend	687	
+birdclef-2026/notebooks/v71-original-probe-anchorblend/submission.ipynb	notebook	v71-original-probe-anchorblend	37833	
+birdclef-2026/notebooks/v72-original-macrotilt-anchorblend/kernel-metadata.json	kernel_metadata	v72-original-macrotilt-anchorblend	695	
+birdclef-2026/notebooks/v72-original-macrotilt-anchorblend/submission.ipynb	notebook	v72-original-macrotilt-anchorblend	37917	
+birdclef-2026/notebooks/v73-original-dualprobe-anchorblend/kernel-metadata.json	kernel_metadata	v73-original-dualprobe-anchorblend	695	
+birdclef-2026/notebooks/v73-original-dualprobe-anchorblend/submission.ipynb	notebook	v73-original-dualprobe-anchorblend	44557	
+birdclef-2026/notebooks/v74-original-macrosafe-dualprobe/kernel-metadata.json	kernel_metadata	v74-original-macrosafe-dualprobe	691	
+birdclef-2026/notebooks/v74-original-macrosafe-dualprobe/submission.ipynb	notebook	v74-original-macrosafe-dualprobe	44639	
+birdclef-2026/notebooks/v75-original-proxybalanced-dualprobe/kernel-metadata.json	kernel_metadata	v75-original-proxybalanced-dualprobe	699	
+birdclef-2026/notebooks/v75-original-proxybalanced-dualprobe/submission.ipynb	notebook	v75-original-proxybalanced-dualprobe	44662	
+birdclef-2026/notebooks/v76-original-macroboost-dualprobe/kernel-metadata.json	kernel_metadata	v76-original-macroboost-dualprobe	693	
+birdclef-2026/notebooks/v76-original-macroboost-dualprobe/submission.ipynb	notebook	v76-original-macroboost-dualprobe	44620	
+birdclef-2026/notebooks/v77-original-midboost-dualprobe/kernel-metadata.json	kernel_metadata	v77-original-midboost-dualprobe	689	
+birdclef-2026/notebooks/v77-original-midboost-dualprobe/submission.ipynb	notebook	v77-original-midboost-dualprobe	44556	
+birdclef-2026/notebooks/v78-original-agreegate-dualprobe/kernel-metadata.json	kernel_metadata	v78-original-agreegate-dualprobe	691	
+birdclef-2026/notebooks/v78-original-agreegate-dualprobe/submission.ipynb	notebook	v78-original-agreegate-dualprobe	45451	
+birdclef-2026/notebooks/v79-original-supportgate-dualprobe/kernel-metadata.json	kernel_metadata	v79-original-supportgate-dualprobe	695	
+birdclef-2026/notebooks/v79-original-supportgate-dualprobe/submission.ipynb	notebook	v79-original-supportgate-dualprobe	45392	
+birdclef-2026/notebooks/v80-original-rankdiffgate-dualprobe/kernel-metadata.json	kernel_metadata	v80-original-rankdiffgate-dualprobe	697	
+birdclef-2026/notebooks/v80-original-rankdiffgate-dualprobe/submission.ipynb	notebook	v80-original-rankdiffgate-dualprobe	45183	
+birdclef-2026/notebooks/v81-original-diffabsgate-dualprobe/kernel-metadata.json	kernel_metadata	v81-original-diffabsgate-dualprobe	695	
+birdclef-2026/notebooks/v81-original-diffabsgate-dualprobe/submission.ipynb	notebook	v81-original-diffabsgate-dualprobe	45251	
+birdclef-2026/notebooks/v82-original-probeplus-dualprobe/kernel-metadata.json	kernel_metadata	v82-original-probeplus-dualprobe	691	
+birdclef-2026/notebooks/v82-original-probeplus-dualprobe/submission.ipynb	notebook	v82-original-probeplus-dualprobe	44619	
+birdclef-2026/notebooks/v83-original-supportband-probeplus/kernel-metadata.json	kernel_metadata	v83-original-supportband-probeplus	695	
+birdclef-2026/notebooks/v83-original-supportband-probeplus/submission.ipynb	notebook	v83-original-supportband-probeplus	45114	
+birdclef-2026/notebooks/v84-original-mlpaux-supportband/kernel-metadata.json	kernel_metadata	v84-original-mlpaux-supportband	689	
+birdclef-2026/notebooks/v84-original-mlpaux-supportband/submission.ipynb	notebook	v84-original-mlpaux-supportband	48568	
+birdclef-2026/notebooks/v85-original-eosprivate-overlapgate/kernel-metadata.json	kernel_metadata	v85-original-eosprivate-overlapgate	697	
+birdclef-2026/notebooks/v85-original-eosprivate-overlapgate/submission.ipynb	notebook	v85-original-eosprivate-overlapgate	48994	
+birdclef-2026/notebooks/v86-original-midsupport-proberescue/kernel-metadata.json	kernel_metadata	v86-original-midsupport-proberescue	697	
+birdclef-2026/notebooks/v86-original-midsupport-proberescue/submission.ipynb	notebook	v86-original-midsupport-proberescue	47837	
+birdclef-2026/notebooks/v87-attributed-nina-eos5-v38plus/birdclef-2026-eos-5.ipynb	notebook	v87-attributed-nina-eos5-v38plus	331072	
+birdclef-2026/notebooks/v87-attributed-nina-eos5-v38plus/kernel-metadata.json	kernel_metadata	v87-attributed-nina-eos5-v38plus	890	
+birdclef-2026/notebooks/v88-attributed-zeyad-eos-parity-t3/birdclef-2026-eos-parity-inference.ipynb	notebook	v88-attributed-zeyad-eos-parity-t3	100875	
+birdclef-2026/notebooks/v88-attributed-zeyad-eos-parity-t3/kernel-metadata.json	kernel_metadata	v88-attributed-zeyad-eos-parity-t3	1017	
+birdclef-2026/notebooks/v89-attributed-alexycactus-perch-cnn/birdclef-2026-ensemble-perch-cnn.py	script	v89-attributed-alexycactus-perch-cnn	38617	
+birdclef-2026/notebooks/v89-attributed-alexycactus-perch-cnn/kernel-metadata.json	kernel_metadata	v89-attributed-alexycactus-perch-cnn	654	
+birdclef-2026/notebooks/v9-original/kernel-metadata.json	kernel_metadata	v9-original	568	
+birdclef-2026/notebooks/v9-original/submission.ipynb	notebook	v9-original	18122	
+birdclef-2026/notebooks/v90-attributed-youssef-e1-rare-tail-birdnet/bc26-youssef-e1-rare-tail-birdnet.ipynb	notebook	v90-attributed-youssef-e1-rare-tail-birdnet	102670	
+birdclef-2026/notebooks/v90-attributed-youssef-e1-rare-tail-birdnet/kernel-metadata.json	kernel_metadata	v90-attributed-youssef-e1-rare-tail-birdnet	846	
+birdclef-2026/notebooks/v91-attributed-youssef-e1-rare-tail-nobirdnet/bc26-youssef-e1-rare-tail-birdnet.ipynb	notebook	v91-attributed-youssef-e1-rare-tail-nobirdnet	102706	
+birdclef-2026/notebooks/v91-attributed-youssef-e1-rare-tail-nobirdnet/kernel-metadata.json	kernel_metadata	v91-attributed-youssef-e1-rare-tail-nobirdnet	769	
+birdclef-2026/notebooks/v92-attributed-mtoshi-vis-nobirdnet/bc26-mtoshi-vis-may18.ipynb	notebook	v92-attributed-mtoshi-vis-nobirdnet	105380	
+birdclef-2026/notebooks/v92-attributed-mtoshi-vis-nobirdnet/kernel-metadata.json	kernel_metadata	v92-attributed-mtoshi-vis-nobirdnet	737	
+birdclef-2026/notebooks/v93-attributed-adkasd-strong-nobirdnet/birdclef-2026-sub-v4-5-strong.ipynb	notebook	v93-attributed-adkasd-strong-nobirdnet	437126	
+birdclef-2026/notebooks/v93-attributed-adkasd-strong-nobirdnet/kernel-metadata.json	kernel_metadata	v93-attributed-adkasd-strong-nobirdnet	912	
+birdclef-2026/notebooks/v94-attributed-karnak-advance-ensemble/birdclef-advance-ensemble.ipynb	notebook	v94-attributed-karnak-advance-ensemble	337701	
+birdclef-2026/notebooks/v94-attributed-karnak-advance-ensemble/kernel-metadata.json	kernel_metadata	v94-attributed-karnak-advance-ensemble	908	
+birdclef-2026/outputs/v101-attributed-alexy-cnn-cpu-v1/bc26-v101-attributed-alexy-cnn-cpu.log	runtime_log	v101-attributed-alexy-cnn-cpu-v1	3083	
+birdclef-2026/outputs/v101-attributed-alexy-cnn-cpu-v1/diagnostics_v101_staging_no_test.json	other	v101-attributed-alexy-cnn-cpu-v1	178	
+birdclef-2026/outputs/v101-attributed-alexy-cnn-cpu-v1/submission.csv	submission_or_test_pred	v101-attributed-alexy-cnn-cpu-v1	16708	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v102-original-macro-risk-rescue-v1/bc26-v102-original-macro-risk-rescue.log	runtime_log	v102-original-macro-risk-rescue-v1	9937	
+birdclef-2026/outputs/v102-original-macro-risk-rescue-v1/submission.csv	submission_or_test_pred	v102-original-macro-risk-rescue-v1	303527	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v103-guarded-macro-risk-rescue-v1/bc26-v103-guarded-macro-rescue.log	runtime_log	v103-guarded-macro-risk-rescue-v1	10118	
+birdclef-2026/outputs/v103-guarded-macro-risk-rescue-v1/submission.csv	submission_or_test_pred	v103-guarded-macro-risk-rescue-v1	303590	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v104-perch-only-guarded-rescue-v1/bc26-v104-perch-only-guarded.log	runtime_log	v104-perch-only-guarded-rescue-v1	10426	
+birdclef-2026/outputs/v104-perch-only-guarded-rescue-v1/submission.csv	submission_or_test_pred	v104-perch-only-guarded-rescue-v1	302448	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v105-rankrestored-perch-guarded-v1/bc26-v105-rankrestored-perch.log	runtime_log	v105-rankrestored-perch-guarded-v1	10778	
+birdclef-2026/outputs/v105-rankrestored-perch-guarded-v1/submission.csv	submission_or_test_pred	v105-rankrestored-perch-guarded-v1	302503	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v106-rankdominant-perch-guarded-v1/bc26-v106-rankdominant-perch.log	runtime_log	v106-rankdominant-perch-guarded-v1	10794	
+birdclef-2026/outputs/v106-rankdominant-perch-guarded-v1/submission.csv	submission_or_test_pred	v106-rankdominant-perch-guarded-v1	302403	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v107-rankceiling-perch-guarded-v1/bc26-v107-rankceiling-perch.log	runtime_log	v107-rankceiling-perch-guarded-v1	10786	
+birdclef-2026/outputs/v107-rankceiling-perch-guarded-v1/submission.csv	submission_or_test_pred	v107-rankceiling-perch-guarded-v1	302292	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v108-ecoproto-perch-guarded-v1/bc26-v108-ecoproto-perch.log	runtime_log	v108-ecoproto-perch-guarded-v1	11068	
+birdclef-2026/outputs/v108-ecoproto-perch-guarded-v1/submission.csv	submission_or_test_pred	v108-ecoproto-perch-guarded-v1	302510	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v109-ecoproto-ranklaunch-perch-v1/bc26-v109-ecoproto-ranklaunch.log	runtime_log	v109-ecoproto-ranklaunch-perch-v1	11391	
+birdclef-2026/outputs/v109-ecoproto-ranklaunch-perch-v1/submission.csv	submission_or_test_pred	v109-ecoproto-ranklaunch-perch-v1	302479	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/bc26-v110-ecoproto-cleanblend.log	runtime_log	v110-ecoproto-clean-blend-v1	11567	
+birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/submission.csv	submission_or_test_pred	v110-ecoproto-clean-blend-v1	302389	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v111-clean-sed-ecoproto-blend-v1/bc26-v111-clean-sed-ecoproto.log	runtime_log	v111-clean-sed-ecoproto-blend-v1	12363	
+birdclef-2026/outputs/v111-clean-sed-ecoproto-blend-v1/submission.csv	submission_or_test_pred	v111-clean-sed-ecoproto-blend-v1	302704	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v112-clean-sed-remap-ecoproto-v1/bc26-v112-clean-sed-remap.log	runtime_log	v112-clean-sed-remap-ecoproto-v1	12614	
+birdclef-2026/outputs/v112-clean-sed-remap-ecoproto-v1/submission.csv	submission_or_test_pred	v112-clean-sed-remap-ecoproto-v1	302882	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v112-clean-sed-remap-ecoproto-v1/v112_clean_sed_remap_diagnostics.csv	csv_data_or_report	v112-clean-sed-remap-ecoproto-v1	10041	primary_label,support,same_col,best_col,remapped,strength,same_auc,best_auc
+birdclef-2026/outputs/v113-lantingguo-melnorm-ecoproto-v1/bc26-v113-lanting-melnorm.log	runtime_log	v113-lantingguo-melnorm-ecoproto-v1	12628	
+birdclef-2026/outputs/v113-lantingguo-melnorm-ecoproto-v1/submission.csv	submission_or_test_pred	v113-lantingguo-melnorm-ecoproto-v1	302394	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v113-lantingguo-melnorm-ecoproto-v1/v113_lantingguo_melnorm_diagnostics.csv	csv_data_or_report	v113-lantingguo-melnorm-ecoproto-v1	12072	primary_label,support,best_variant,best_auc,second_auc,sed_quality,sed_margin,sed_trust
+birdclef-2026/outputs/v114-v110-v113-selfblend-v1/bc26-v114-clean-selfblend.log	runtime_log	v114-v110-v113-selfblend-v1	17437	
+birdclef-2026/outputs/v114-v110-v113-selfblend-v1/submission.csv	submission_or_test_pred	v114-v110-v113-selfblend-v1	302327	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v114-v110-v113-selfblend-v1/v113_lantingguo_melnorm_diagnostics.csv	csv_data_or_report	v114-v110-v113-selfblend-v1	12072	primary_label,support,best_variant,best_auc,second_auc,sed_quality,sed_margin,sed_trust
+birdclef-2026/outputs/v114-v110-v113-selfblend-v1/v114_branch_auc_diagnostics.csv	csv_data_or_report	v114-v110-v113-selfblend-v1	6642	primary_label,support,sed_auc_v110_like,sed_auc_v113_like,sed_auc_delta
+birdclef-2026/outputs/v114-v110-v113-selfblend-v1/v114_branch_summary.csv	csv_data_or_report	v114-v110-v113-selfblend-v1	291	branch,mean,std,min,max
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/bc26-v87-attributed-nina-eos5-v38plus.log	runtime_log	v87-attributed-nina-eos5-v38plus	29165	
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/perch_cache/full_perch_meta.parquet	other	perch_cache	9298	
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/subm_2.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	658395	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/subm_5.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	9244	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/subm_karnakbayev_power_optimization.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	9244	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/submission.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	68648	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/submission_protossm.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	671092	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/submission_sed.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/v17_logs.json	other	v87-attributed-nina-eos5-v38plus	4257	
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/bc26-v87-attributed-nina-eos5-v38plus.log	runtime_log	v87-attributed-nina-eos5-v38plus-v2	29336	
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/perch_cache/full_perch_meta.parquet	other	perch_cache	9298	
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/subm_2.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus-v2	658395	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/subm_5.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus-v2	9244	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/subm_karnakbayev_power_optimization.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus-v2	9244	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/submission.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus-v2	9244	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/submission_protossm.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus-v2	671092	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/submission_sed.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus-v2	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/v17_logs.json	other	v87-attributed-nina-eos5-v38plus-v2	4256	
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/bc26-v88-attributed-zeyad-eos-parity-t3.log	runtime_log	v88-attributed-zeyad-eos-parity-t3-v1	9854	
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/cache/perch_meta.parquet	other	cache	9740	
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/subm_50.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	9460	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/subm_51.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	9448	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/subm_52.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	9427	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/subm_53.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	9499	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/submission.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	9457	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/submission_birdnet.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	236307	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/submission_protossm.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	670850	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v88-attributed-zeyad-eos-parity-t3-v1/submission_sed.csv	submission_or_test_pred	v88-attributed-zeyad-eos-parity-t3-v1	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v89-attributed-alexycactus-perch-cnn-v1/bc26-v89-attributed-alexycactus-perch-cnn.log	runtime_log	v89-attributed-alexycactus-perch-cnn-v1	9126	
+birdclef-2026/outputs/v89-attributed-alexycactus-perch-cnn-v1/diagnostics_nb21.json	other	v89-attributed-alexycactus-perch-cnn-v1	485	
+birdclef-2026/outputs/v89-attributed-alexycactus-perch-cnn-v1/diagnostics_staging_no_test.json	other	v89-attributed-alexycactus-perch-cnn-v1	62	
+birdclef-2026/outputs/v89-attributed-alexycactus-perch-cnn-v1/per_class_auc_nb21.csv	csv_data_or_report	v89-attributed-alexycactus-perch-cnn-v1	7365	species,n_pos,auc_perch,auc_off,auc_on,delta_logit,delta_mlp
+birdclef-2026/outputs/v89-attributed-alexycactus-perch-cnn-v1/submission.csv	submission_or_test_pred	v89-attributed-alexycactus-perch-cnn-v1	16708	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v89-attributed-alexycactus-perch-cnn-v1/submission_no_postproc.csv	submission_or_test_pred	v89-attributed-alexycactus-perch-cnn-v1	16708	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v90-attributed-youssef-e1-rare-tail-birdnet-v1/bc26-v90-attributed-youssef-e1-rare-tail-birdnet.log	runtime_log	v90-attributed-youssef-e1-rare-tail-birdnet-v1	14939	
+birdclef-2026/outputs/v90-attributed-youssef-e1-rare-tail-birdnet-v1/cache/perch_meta.parquet	other	cache	9740	
+birdclef-2026/outputs/v90-attributed-youssef-e1-rare-tail-birdnet-v1/submission.csv	submission_or_test_pred	v90-attributed-youssef-e1-rare-tail-birdnet-v1	9274	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v90-attributed-youssef-e1-rare-tail-birdnet-v1/submission_birdnet.csv	submission_or_test_pred	v90-attributed-youssef-e1-rare-tail-birdnet-v1	601429	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v90-attributed-youssef-e1-rare-tail-birdnet-v1/submission_protossm.csv	submission_or_test_pred	v90-attributed-youssef-e1-rare-tail-birdnet-v1	654340	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v90-attributed-youssef-e1-rare-tail-birdnet-v1/submission_sed.csv	submission_or_test_pred	v90-attributed-youssef-e1-rare-tail-birdnet-v1	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v91-attributed-youssef-e1-rare-tail-nobirdnet-v1/bc26-v91-attributed-youssef-e1-rare-tail-nobirdnet.log	runtime_log	v91-attributed-youssef-e1-rare-tail-nobirdnet-v1	13981	
+birdclef-2026/outputs/v91-attributed-youssef-e1-rare-tail-nobirdnet-v1/cache/perch_meta.parquet	other	cache	9740	
+birdclef-2026/outputs/v91-attributed-youssef-e1-rare-tail-nobirdnet-v1/submission.csv	submission_or_test_pred	v91-attributed-youssef-e1-rare-tail-nobirdnet-v1	9268	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v91-attributed-youssef-e1-rare-tail-nobirdnet-v1/submission_birdnet.csv	submission_or_test_pred	v91-attributed-youssef-e1-rare-tail-nobirdnet-v1	236307	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v91-attributed-youssef-e1-rare-tail-nobirdnet-v1/submission_protossm.csv	submission_or_test_pred	v91-attributed-youssef-e1-rare-tail-nobirdnet-v1	654183	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v91-attributed-youssef-e1-rare-tail-nobirdnet-v1/submission_sed.csv	submission_or_test_pred	v91-attributed-youssef-e1-rare-tail-nobirdnet-v1	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v92-attributed-mtoshi-vis-nobirdnet-v1/bc26-v92-attributed-mtoshi-vis-nobirdnet.log	runtime_log	v92-attributed-mtoshi-vis-nobirdnet-v1	10644	
+birdclef-2026/outputs/v92-attributed-mtoshi-vis-nobirdnet-v2/bc26-v92-attributed-mtoshi-vis-nobirdnet.log	runtime_log	v92-attributed-mtoshi-vis-nobirdnet-v2	14083	
+birdclef-2026/outputs/v92-attributed-mtoshi-vis-nobirdnet-v2/cache/perch_meta.parquet	other	cache	9740	
+birdclef-2026/outputs/v92-attributed-mtoshi-vis-nobirdnet-v2/submission.csv	submission_or_test_pred	v92-attributed-mtoshi-vis-nobirdnet-v2	9232	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v92-attributed-mtoshi-vis-nobirdnet-v2/submission_birdnet.csv	submission_or_test_pred	v92-attributed-mtoshi-vis-nobirdnet-v2	236307	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v92-attributed-mtoshi-vis-nobirdnet-v2/submission_protossm.csv	submission_or_test_pred	v92-attributed-mtoshi-vis-nobirdnet-v2	670850	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v92-attributed-mtoshi-vis-nobirdnet-v2/submission_sed.csv	submission_or_test_pred	v92-attributed-mtoshi-vis-nobirdnet-v2	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v93-attributed-adkasd-strong-nobirdnet-v1/bc26-v93-attributed-adkasd-strong-nobirdnet.log	runtime_log	v93-attributed-adkasd-strong-nobirdnet-v1	15861	
+birdclef-2026/outputs/v93-attributed-adkasd-strong-nobirdnet-v1/subm_karnakbayev_power_optimization.csv	submission_or_test_pred	v93-attributed-adkasd-strong-nobirdnet-v1	9244	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v93-attributed-adkasd-strong-nobirdnet-v1/submission.csv	submission_or_test_pred	v93-attributed-adkasd-strong-nobirdnet-v1	9244	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v93-attributed-adkasd-strong-nobirdnet-v1/submission_protossm.csv	submission_or_test_pred	v93-attributed-adkasd-strong-nobirdnet-v1	671092	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v93-attributed-adkasd-strong-nobirdnet-v1/submission_sed.csv	submission_or_test_pred	v93-attributed-adkasd-strong-nobirdnet-v1	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v94-attributed-karnak-advance-ensemble-v1/bc26-v94-attributed-karnak-advance-ensemble.log	runtime_log	v94-attributed-karnak-advance-ensemble-v1	33007	
+birdclef-2026/outputs/v94-attributed-karnak-advance-ensemble-v1/subm_2.csv	submission_or_test_pred	v94-attributed-karnak-advance-ensemble-v1	658372	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v94-attributed-karnak-advance-ensemble-v1/subm_5.csv	submission_or_test_pred	v94-attributed-karnak-advance-ensemble-v1	9229	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v94-attributed-karnak-advance-ensemble-v1/submission.csv	submission_or_test_pred	v94-attributed-karnak-advance-ensemble-v1	9229	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v94-attributed-karnak-advance-ensemble-v1/submission_protossm.csv	submission_or_test_pred	v94-attributed-karnak-advance-ensemble-v1	668859	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v94-attributed-karnak-advance-ensemble-v1/submission_sed.csv	submission_or_test_pred	v94-attributed-karnak-advance-ensemble-v1	733625	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v94-attributed-karnak-advance-ensemble-v1/v17_logs.json	other	v94-attributed-karnak-advance-ensemble-v1	4257	
+birdclef-2026/scripts/birdclef_0805_runner.py	script	scripts	2667	
+birdclef-2026/scripts/birdclef_build_v102_original_rescue_table.py	script	scripts	5113	
+birdclef-2026/scripts/birdclef_candidate_audit.py	script	scripts	5217	
+birdclef-2026/scripts/birdclef_goal_check.py	script	scripts	4045	
+birdclef-2026/scripts/birdclef_guarded_submit.py	script	scripts	11618	
+birdclef-2026/scripts/birdclef_monitor.py	script	scripts	10263	
+birdclef-2026/scripts/birdclef_prepare_adkasd_strong_nobirdnet.py	script	scripts	5856	
+birdclef-2026/scripts/birdclef_prepare_alexy_cnn_cpu.py	script	scripts	7882	
+birdclef-2026/scripts/birdclef_prepare_eos_t3.py	script	scripts	7996	
+birdclef-2026/scripts/birdclef_prepare_karnak_advance.py	script	scripts	7689	
+birdclef-2026/scripts/birdclef_prepare_mtoshi_vis_nobirdnet.py	script	scripts	7270	
+birdclef-2026/scripts/birdclef_prepare_perch_cnn.py	script	scripts	8156	
+birdclef-2026/scripts/birdclef_prepare_v102_macro_rescue.py	script	scripts	11636	
+birdclef-2026/scripts/birdclef_prepare_v103_guarded_macro_rescue.py	script	scripts	12707	
+birdclef-2026/scripts/birdclef_prepare_v104_perch_only_guarded.py	script	scripts	10524	
+birdclef-2026/scripts/birdclef_prepare_v105_rankrestored_perch.py	script	scripts	12388	
+birdclef-2026/scripts/birdclef_prepare_v106_rankdominant_perch.py	script	scripts	12424	
+birdclef-2026/scripts/birdclef_prepare_v107_rankceiling_perch.py	script	scripts	12339	
+birdclef-2026/scripts/birdclef_prepare_v108_ecoproto_perch.py	script	scripts	15430	
+birdclef-2026/scripts/birdclef_prepare_v109_ecoproto_ranklaunch.py	script	scripts	16707	
+birdclef-2026/scripts/birdclef_prepare_v110_ecoproto_clean_blend.py	script	scripts	17964	
+birdclef-2026/scripts/birdclef_prepare_v111_clean_sed_ecoproto.py	script	scripts	22372	
+birdclef-2026/scripts/birdclef_prepare_v112_clean_sed_remap_ecoproto.py	script	scripts	27397	
+birdclef-2026/scripts/birdclef_prepare_v113_lantingguo_melnorm_ecoproto.py	script	scripts	26996	
+birdclef-2026/scripts/birdclef_prepare_v114_v110_v113_selfblend.py	script	scripts	8173	
+birdclef-2026/scripts/birdclef_prepare_youssef_e1.py	script	scripts	6182	
+birdclef-2026/scripts/birdclef_prepare_youssef_e1_nobirdnet.py	script	scripts	6237	
+birdclef-2026/scripts/birdclef_public_scan.py	script	scripts	3813	
+birdclef-2026/scripts/evaluate_dryrun_proxy.py	script	scripts	6434	
+birdclef-2026/scripts/submit_v76_guarded.py	script	scripts	2502	

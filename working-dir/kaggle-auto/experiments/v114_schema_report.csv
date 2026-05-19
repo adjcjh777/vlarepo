@@ -1,0 +1,10 @@
+check,value,expected
+rows,120,120
+cols,235,235
+missing_class_cols,0,0
+duplicate_row_ids,0,0
+finite,True,True
+min,0.011144416,0..1
+max,0.9994662,0..1
+mean,0.521115664760577,diagnostic
+std,0.24191993194383768,diagnostic

@@ -417,3 +417,13 @@
 - Refreshed again at `2026-05-19 12:20:32 UTC`: gate is still `WAIT-SAME-UTC-DAY`, visible submissions today remain `4`, and `v134` remains the top guarded candidate. `birdclef_goal_check.py` still reports best visible `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.
 - Practical implication unchanged: stay idle on real submissions until the UTC day changes.
 - Refreshed again at `2026-05-19 12:44:21 UTC`: both `v136` next-window gate and `v137` guarded recheck still resolve to `WAIT-SAME-UTC-DAY`; `v134` remains guarded-pool rank `#1`, and the only unmet guarded-submit prerequisite is the UTC rollover itself.
+
+## 2026-05-19 v138 Window Bundle
+- Added `scripts/check_v134_window_bundle.py` and wrote `experiments/v138_v134_window_bundle.md`.
+- The bundle now runs three checks together: `v136` next-window gate, `v137` guarded recheck, and `birdclef_goal_check.py`.
+- Current bundle result at `2026-05-19 12:48:54 UTC`:
+  - gate exit `0`
+  - recheck exit `0`
+  - goal_check exit `3`
+  - same practical conclusion: `WAIT-SAME-UTC-DAY`, guarded candidate remains `v134`, and leaderboard goal is still not reached.
+- Updated the heartbeat automation again so it now prefers `python3 scripts/check_v134_window_bundle.py --write` as the first-step refresh command.

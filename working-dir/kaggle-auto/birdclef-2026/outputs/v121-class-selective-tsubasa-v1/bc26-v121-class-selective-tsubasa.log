@@ -1,0 +1,147 @@
+[{"stream_name":"stderr","time":10.329321607,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.329427533,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.329440761,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.32944426,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":11.244570861,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.244649601,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.24465995,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.244665621,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":21.78098829,"data":"ONNX Runtime: 1.24.4\n"}
+,{"stream_name":"stdout","time":21.800427109,"data":"External Perch cache disabled for v121 Snowflake SED EcoProto run\n"}
+,{"stream_name":"stdout","time":21.859622496,"data":"Classes: 234\n"}
+,{"stream_name":"stdout","time":27.53651401,"data":"Using ONNX Perch: /kaggle/input/datasets/rishikeshjani/perch-onnx-for-birdclef-2026/perch_v2.onnx\n"}
+,{"stream_name":"stdout","time":27.536587877,"data":"Mapped: 203/234\n"}
+,{"stream_name":"stdout","time":27.585362643,"data":"Frog proxies: 0\n"}
+,{"stream_name":"stdout","time":27.607758425,"data":"V121: Perch train cache will be rebuilt in-notebook after inference helpers are defined\n"}
+,{"stream_name":"stdout","time":27.919232408,"data":"Full files: 59, Windows: 708, Active: 71\n"}
+,{"stream_name":"stdout","time":28.949090871,"data":"Using V121 Snowflake SED: /kaggle/input/datasets/tsubasatech/birdclef-2026-snowflake-sed/sed_convnext-tiny_fold0.onnx\n"}
+,{"stream_name":"stdout","time":28.94913524,"data":"Snowflake SED inputs: [('audio', ['B', 160000], 'tensor(float)')]\n"}
+,{"stream_name":"stdout","time":28.949142143,"data":"Snowflake SED outputs: [('logits', ['B', 234], 'tensor(float)')]\n"}
+,{"stream_name":"stdout","time":28.949148157,"data":"V121 Tsubasa ConvNeXt SED ensemble size: 1\n"}
+,{"stream_name":"stdout","time":29.150695085,"data":"V121 rebuilding Perch train features for 59 files\n"}
+,{"stream_name":"stdout","time":71.059126737,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":71.059186793,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":71.059194433,"data":"Detected spatial_embedding output index: None\n"}
+,{"stream_name":"stdout","time":170.419177315,"data":"V121 rebuilt train features: meta=(708, 2), scores=(708, 234), emb=(708, 1536)\n"}
+,{"stream_name":"stdout","time":299.601047462,"data":"V121 rebuilt Snowflake SED train logits: meta=(708, 2), logits=(708, 234)\n"}
+,{"stream_name":"stdout","time":299.638617627,"data":"OOF logits shape: (708, 234)\n"}
+,{"stream_name":"stdout","time":299.802823186,"data":"Raw Perch OOF AUC: 0.6812\n"}
+,{"stream_name":"stdout","time":299.846550583,"data":"Per-class AUC: mean=0.6812, min=0.0862, max=1.0000\n"}
+,{"stream_name":"stdout","time":299.846594023,"data":"Classes with AUC \u003c 0.5: 19\n"}
+,{"stream_name":"stdout","time":300.420273141,"data":"Fitted 71 calibrators\n"}
+,{"stream_name":"stdout","time":300.420318263,"data":"Calibrated OOF AUC: 0.8020 (delta: +0.1208)\n"}
+,{"stream_name":"stdout","time":300.432113492,"data":"Calibrated per-class AUC: mean=0.8020, min=0.2949, max=1.0000\n"}
+,{"stream_name":"stdout","time":300.49825447,"data":"Thresholds: mean=0.429, min=0.050, max=0.550\n"}
+,{"stream_name":"stdout","time":300.633328274,"data":"No test files - using train soundscapes for dry run\n"}
+,{"stream_name":"stdout","time":300.872186931,"data":"Processing 10 files\n"}
+,{"stream_name":"stdout","time":323.202728947,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":323.20279627,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":323.202805778,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":323.202812972,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":323.202819107,"data":"Test embeddings: (120, 1536)\n"}
+,{"stream_name":"stdout","time":323.202826408,"data":"Test spatial features: (120, 4608)\n"}
+,{"stream_name":"stdout","time":343.923295605,"data":"Snowflake SED test logits: (120, 234)\n"}
+,{"stream_name":"stdout","time":345.056681168,"data":"V121 Snowflake SED remap view: shape=(120, 234), range=[0.001869, 0.813643]\n"}
+,{"stream_name":"stdout","time":345.056734586,"data":"V121 Snowflake SED remaps accepted: 44/234; strength mean/max=0.1583/0.8800\n"}
+,{"stream_name":"stdout","time":345.056740929,"data":"V121 Snowflake SED train AUC ref: mean=0.9213, min=0.6535, active=71\n"}
+,{"stream_name":"stdout","time":345.05674492,"data":"V121 remap diagnostics saved: v121_tsubasa_sidecar_remap_diagnostics.csv\n"}
+,{"stream_name":"stdout","time":345.542879,"data":"Perch classwise soft suppression: 0.433, factor=[0.369,0.720]\n"}
+,{"stream_name":"stdout","time":345.542924346,"data":"Embedding probe aligned train rows: (708, 1536) unique cache rows 708\n"}
+,{"stream_name":"stdout","time":345.542931156,"data":"Embedding probe active: train=(708, 1536), test=(120, 1536), rank std=0.1590067446231842\n"}
+,{"stream_name":"stdout","time":347.10073865,"data":"MLP embedding probe active: train=(708, 96), test=(120, 96), n_iter=29, rank std=0.2886650860309601\n"}
+,{"stream_name":"stdout","time":382.626907949,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":382.62696546,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":382.626973347,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":382.870628665,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":479.052125669,"data":"Spatial probe aligned train rows: (708, 4608) unique spatial rows 708\n"}
+,{"stream_name":"stdout","time":479.052184736,"data":"Spatial probe active: train=(708, 4608), test=(120, 4608), rank std=0.15956220030784607\n"}
+,{"stream_name":"stdout","time":479.052191566,"data":"Dual probe active: embedding=0.64 spatial=0.26 mlp=0.10 combined std=0.14225563406944275\n"}
+,{"stream_name":"stdout","time":479.294637751,"data":"V121 EcoProto clean-blend guarded macro-risk rescue counts: {'protect_anchor': 35, 'rare_floor': 176, 'macro_weak': 12, 'macro_mild': 4, 'texture_prior_rescue': 24, 'active_rescue': 28, 'positive_rescue_cells': 2725, 'top_hit_guard_cells': 373, 'ctx_cells': 30}\n"}
+,{"stream_name":"stdout","time":479.294704464,"data":"V121 class rescue mix range/mean: [0.000, 0.340] / 0.0287\n"}
+,{"stream_name":"stdout","time":479.294711165,"data":"V121 effective rescue mix range/mean: [0.000, 0.340] / 0.0126\n"}
+,{"stream_name":"stdout","time":479.294716575,"data":"V121 components: macro mean/std=0.506682/0.250335; v84_like mean/std=0.506668/0.250573; rescue_view mean/std=0.507755/0.256292; dualprobe mean/std=0.506599/0.257971\n"}
+,{"stream_name":"stdout","time":479.294743111,"data":"OOF refs: Perch raw=0.681, Perch cal=0.802, SED=0.921, delta=+0.112\n"}
+,{"stream_name":"stdout","time":479.294747325,"data":"SED weights sedfirst=0.578, adaptive=0.578, safety=0.480\n"}
+,{"stream_name":"stdout","time":479.294751335,"data":"View mix: v121 = self-contained v107-like rank ceiling plus EcoProto rank-launch clean blend\n"}
+,{"stream_name":"stdout","time":479.294755389,"data":"Prior strength mean=1.000, applied mean=0.0103, file scale mean=0.999\n"}
+,{"stream_name":"stdout","time":479.294759412,"data":"Spike-smoothed score range: [0.012571, 0.998971]\n"}
+,{"stream_name":"stdout","time":479.294763296,"data":"Score mean/std: 0.507101/0.250757\n"}
+,{"stream_name":"stdout","time":479.294783842,"data":"V121 EcoProto active classes: 67/234; sim range=[-0.0414,0.9523]\n"}
+,{"stream_name":"stdout","time":479.294787918,"data":"V121 EcoProto cells: mix=3480, temporal=721, class_gate=29\n"}
+,{"stream_name":"stdout","time":479.294791987,"data":"V121 EcoProto mix mean/max: 0.02608/0.34000; temporal mean=0.00334\n"}
+,{"stream_name":"stdout","time":479.294795985,"data":"V121 post-EcoProto score range: [0.012571, 0.998971]\n"}
+,{"stream_name":"stdout","time":479.294799895,"data":"V121 post-EcoProto score mean/std: 0.509934/0.247349\n"}
+,{"stream_name":"stdout","time":479.294804329,"data":"V121 v107-like cells: restore=33, top_guard=362\n"}
+,{"stream_name":"stdout","time":479.294808227,"data":"V121 EcoProto rank-launch cells: launch=33, top_guard=359\n"}
+,{"stream_name":"stdout","time":479.294812096,"data":"V121 clean blend weights: v107_like=0.40, v109_like=0.60\n"}
+,{"stream_name":"stdout","time":479.294816076,"data":"V121 post-cleanblend score range: [0.012571, 0.999812]\n"}
+,{"stream_name":"stdout","time":479.294819907,"data":"V121 post-cleanblend score mean/std: 0.520771/0.251924\n"}
+,{"stream_name":"stdout","time":479.294823852,"data":"V121 captured Tsubasa sidecar: range=[0.012571, 0.999812], mean/std=0.520771/0.251924\n"}
+,{"stream_name":"stdout","time":479.294827939,"data":"V121 clean-anchor Perch surrogate SED view: shape=(120, 234), range=[0.000463, 0.999997]\n"}
+,{"stream_name":"stdout","time":479.294832016,"data":"Perch classwise soft suppression: 0.433, factor=[0.369,0.720]\n"}
+,{"stream_name":"stdout","time":479.294835999,"data":"Embedding probe aligned train rows: (708, 1536) unique cache rows 708\n"}
+,{"stream_name":"stdout","time":479.294840033,"data":"Embedding probe active: train=(708, 1536), test=(120, 1536), rank std=0.1590067446231842\n"}
+,{"stream_name":"stdout","time":480.742014288,"data":"MLP embedding probe active: train=(708, 96), test=(120, 96), n_iter=29, rank std=0.2886650860309601\n"}
+,{"stream_name":"stdout","time":516.663157387,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":516.66323603,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":516.663246398,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":516.663252603,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":612.734745801,"data":"Spatial probe aligned train rows: (708, 4608) unique spatial rows 708\n"}
+,{"stream_name":"stdout","time":612.73484342,"data":"Spatial probe active: train=(708, 4608), test=(120, 4608), rank std=0.15956220030784607\n"}
+,{"stream_name":"stdout","time":612.734853547,"data":"Dual probe active: embedding=0.64 spatial=0.26 mlp=0.10 combined std=0.14225563406944275\n"}
+,{"stream_name":"stdout","time":612.807427133,"data":"V121 clean-anchor EcoProto clean-blend guarded macro-risk rescue counts: {'protect_anchor': 35, 'rare_floor': 176, 'macro_weak': 12, 'macro_mild': 4, 'texture_prior_rescue': 0, 'active_rescue': 16, 'positive_rescue_cells': 2749, 'top_hit_guard_cells': 330, 'ctx_cells': 2}\n"}
+,{"stream_name":"stdout","time":612.807491177,"data":"V121 clean-anchor class rescue mix range/mean: [0.000, 0.340] / 0.0190\n"}
+,{"stream_name":"stdout","time":612.807496736,"data":"V121 clean-anchor effective rescue mix range/mean: [0.000, 0.340] / 0.0095\n"}
+,{"stream_name":"stdout","time":612.807501088,"data":"V121 clean-anchor components: macro mean/std=0.506653/0.230775; v84_like mean/std=0.506686/0.232786; rescue_view mean/std=0.506874/0.242758; dualprobe mean/std=0.506997/0.253222\n"}
+,{"stream_name":"stdout","time":612.807505767,"data":"OOF refs: Perch raw=0.681, Perch cal=0.802, SED=0.591, delta=-0.209\n"}
+,{"stream_name":"stdout","time":612.807509977,"data":"SED weights sedfirst=0.578, adaptive=0.489, safety=0.480\n"}
+,{"stream_name":"stdout","time":612.807514195,"data":"View mix: v121 = self-contained v107-like rank ceiling plus EcoProto rank-launch clean blend\n"}
+,{"stream_name":"stdout","time":612.807518792,"data":"Prior strength mean=1.000, applied mean=0.0103, file scale mean=0.999\n"}
+,{"stream_name":"stdout","time":612.807523021,"data":"Spike-smoothed score range: [0.011144, 0.999292]\n"}
+,{"stream_name":"stdout","time":612.807527142,"data":"Score mean/std: 0.507024/0.232823\n"}
+,{"stream_name":"stdout","time":612.807531105,"data":"V121 clean-anchor EcoProto active classes: 67/234; sim range=[-0.0414,0.9523]\n"}
+,{"stream_name":"stdout","time":612.807535315,"data":"V121 clean-anchor EcoProto cells: mix=3480, temporal=930, class_gate=29\n"}
+,{"stream_name":"stdout","time":612.807539414,"data":"V121 clean-anchor EcoProto mix mean/max: 0.02608/0.34000; temporal mean=0.00431\n"}
+,{"stream_name":"stdout","time":612.807543597,"data":"V121 clean-anchor post-EcoProto score range: [0.011144, 0.999292]\n"}
+,{"stream_name":"stdout","time":612.80754776,"data":"V121 clean-anchor post-EcoProto score mean/std: 0.510022/0.233074\n"}
+,{"stream_name":"stdout","time":612.807551888,"data":"V121 clean-anchor v107-like cells: restore=33, top_guard=374\n"}
+,{"stream_name":"stdout","time":612.807555939,"data":"V121 clean-anchor EcoProto rank-launch cells: launch=33, top_guard=376\n"}
+,{"stream_name":"stdout","time":612.807560117,"data":"V121 clean-anchor clean blend weights: v107_like=0.40, v109_like=0.60\n"}
+,{"stream_name":"stdout","time":612.807564195,"data":"V121 clean-anchor post-cleanblend score range: [0.011144, 0.999470]\n"}
+,{"stream_name":"stdout","time":612.807568237,"data":"V121 clean-anchor post-cleanblend score mean/std: 0.521132/0.242345\n"}
+,{"stream_name":"stdout","time":612.807572417,"data":"V121 selected sidecar classes: ['47158son13', '47158son15', '47158son16', '47158son21', '47158son22', '47158son23', '516975', 'chacha1', 'grekis', 'plcjay1']\n"}
+,{"stream_name":"stdout","time":612.807576872,"data":"V121 sidecar gate cells: 523 / 28080\n"}
+,{"stream_name":"stdout","time":612.807580826,"data":"V121 final blend: clean anchor base with 0.40 Tsubasa sidecar on gated cells\n"}
+,{"stream_name":"stdout","time":612.807585004,"data":"V121 final score range: [0.011144, 0.999470]\n"}
+,{"stream_name":"stdout","time":612.807589003,"data":"V121 final score mean/std: 0.522376/0.242254\n"}
+,{"stream_name":"stdout","time":612.941449263,"data":"Saved: (120, 235)\n"}
+,{"stream_name":"stdout","time":612.941493406,"data":"                                     row_id   1161364    116570   1176823  \\\n"}
+,{"stream_name":"stdout","time":612.94150565,"data":"0   BC2026_Train_0001_S08_20250606_030007_5  0.695412  0.641742  0.608992   \n"}
+,{"stream_name":"stdout","time":612.941509177,"data":"1  BC2026_Train_0001_S08_20250606_030007_10  0.763076  0.788035  0.309009   \n"}
+,{"stream_name":"stdout","time":612.941527774,"data":"2  BC2026_Train_0001_S08_20250606_030007_15  0.760851  0.716123  0.460606   \n"}
+,{"stream_name":"stdout","time":612.941531005,"data":"\n"}
+,{"stream_name":"stdout","time":612.941533636,"data":"    1491113   1595929    209233     22930     22956     22961  ...   whnjay1  \\\n"}
+,{"stream_name":"stdout","time":612.941536467,"data":"0  0.617959  0.363710  0.494095  0.167047  0.764954  0.832114  ...  0.073880   \n"}
+,{"stream_name":"stdout","time":612.941539264,"data":"1  0.637635  0.345560  0.531877  0.047741  0.802855  0.617875  ...  0.226398   \n"}
+,{"stream_name":"stdout","time":612.941541925,"data":"2  0.922389  0.332773  0.479846  0.060343  0.691470  0.700350  ...  0.323614   \n"}
+,{"stream_name":"stdout","time":612.941544613,"data":"\n"}
+,{"stream_name":"stdout","time":612.94154715,"data":"     whtdov   whwpic1    y00678    yebcar   yebela1    yecmac    yecpar  \\\n"}
+,{"stream_name":"stdout","time":612.941549899,"data":"0  0.429690  0.604003  0.202415  0.568192  0.741776  0.600642  0.259524   \n"}
+,{"stream_name":"stdout","time":612.941552594,"data":"1  0.387806  0.884046  0.320471  0.165402  0.501788  0.652284  0.214024   \n"}
+,{"stream_name":"stdout","time":612.941555253,"data":"2  0.352083  0.810615  0.305071  0.208769  0.643510  0.674974  0.283948   \n"}
+,{"stream_name":"stdout","time":612.941557911,"data":"\n"}
+,{"stream_name":"stdout","time":612.941560592,"data":"    yehcar1   yeofly1  \n"}
+,{"stream_name":"stdout","time":612.941563193,"data":"0  0.324525  0.710095  \n"}
+,{"stream_name":"stdout","time":612.941565793,"data":"1  0.509926  0.589911  \n"}
+,{"stream_name":"stdout","time":612.941568344,"data":"2  0.486461  0.278476  \n"}
+,{"stream_name":"stdout","time":612.941571102,"data":"\n"}
+,{"stream_name":"stdout","time":612.941573669,"data":"[3 rows x 235 columns]\n"}
+,{"stream_name":"stderr","time":619.035411913,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":619.035472201,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":619.308466562,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":619.308503524,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":620.20064081,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":620.63183197,"data":"[NbConvertApp] Writing 214009 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":623.895892571,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":625.534647167,"data":"[NbConvertApp] Writing 885461 bytes to __results__.html\n"}
+]

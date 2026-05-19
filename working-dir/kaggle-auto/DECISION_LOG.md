@@ -211,3 +211,17 @@
 - Refreshed `birdclef_goal_check.py` at `2026-05-19 07:47:21 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions were `2/5` before v120.
 - Decision: `SUBMIT - guarded slot 3`; v120 is a bold clean macro-proxy candidate, not a final selection until public score is recorded.
 - Real submission executed at `2026-05-19 07:49:31 UTC`, Kaggle ref `52802748`; initial status `PENDING`, public score blank. UTC `2026-05-19` visible submissions are now `3/5`.
+- Refreshed at `2026-05-19 08:06 UTC`: v120 ref `52802748` is `SubmissionStatus.COMPLETE` but has no public score and reports `Your notebook requested more memory (RAM) than is available.`
+- Decision update: `REJECT-memory`; retire v120 as a final/next-submit candidate. The likely issue is the double final-layer execution for sidecar plus clean anchor, so any follow-up must be single-pass or memory-reduced before another real slot.
+
+## 2026-05-19 v121 Class-Selective Tsubasa Innovation Probe
+- Built `birdclef-2026/notebooks/v121-class-selective-tsubasa` from the clean v120/v116 line and pushed Kaggle Run-mode only as `junhaochengadjcjh7u7/bc26-v121-class-selective-tsubasa`.
+- Original contribution: v121 turns the Tsubasa ConvNeXt SED branch into a sparse class-selective sidecar instead of a global blend. It pre-declares 10 train-window-supported classes and applies `0.40` sidecar mix only when `tsubasa_sidecar > clean_anchor + 0.02`.
+- Local probe evidence: best class-selective row `v114_v116_cls_margin-0.02_w0.4_side_gt_anchor` reached macro `0.982755`, micro `0.925888`, top5 `0.534247`, beating v120 macro `0.981399` and v114 top5 `0.520548`.
+- Static compliance passed: private kernel, CPU-only, internet disabled, BirdCLEF competition source present, Perch/Google model source present, Tsubasa CC0 source present, and unknown-license Perch/SED/cache inputs excluded.
+- Kaggle Run-mode completed and saved output at about `612.9s`; downloaded `submission.csv`, `v121_class_selective_tsubasa_summary.csv`, `v121_tsubasa_sidecar_remap_diagnostics.csv`, and kernel log under `birdclef-2026/outputs/v121-class-selective-tsubasa-v1/`.
+- Schema passed for dry-run rows: `120 x 235`, sample column order matched, all finite, no duplicate row IDs, range `[0.011144, 0.999470]`.
+- Proxy: macro `0.98275473`, micro `0.92510802`, top5 `0.53424658`.
+- Correlation vs v110/v114 is very high (`0.998869` / `0.998467` Pearson), but correlation vs the raw Tsubasa sidecar is lower (`0.769061`), confirming a sparse sidecar intervention rather than a wholesale branch replacement.
+- Refreshed `birdclef_goal_check.py` at `2026-05-19 08:29:52 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `3/5`.
+- Decision: `HOLD-memory-risk - do not submit v121 as-is`. The candidate is the best current original clean-sidecar idea, but it still uses v120's double-final-layer structure, which already failed hidden-test RAM. Next real candidate should be a single-pass v122 that injects the class-selective sidecar before the final layer and runs the final decision layer once.

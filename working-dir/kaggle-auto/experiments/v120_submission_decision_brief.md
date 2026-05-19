@@ -1,6 +1,6 @@
 # v120 Submission Decision Brief
 
-Updated: 2026-05-19 07:47 UTC
+Updated: 2026-05-19 08:06 UTC
 
 ## Candidate
 
@@ -31,10 +31,12 @@ v120 is a workspace-original clean sidecar experiment, not a public notebook cop
 
 ## Decision
 
-`SUBMIT - guarded slot 3`
+`REJECT-memory after guarded slot 3`
 
-Rationale: v120 is the best clean-branch macro proxy so far and is fully CPU/no-internet/provenance-clean. It is correlated with v110/v114, but the Tsubasa sidecar provides a measured low-weight diversity signal and a local macro improvement large enough to justify one real slot while UTC `2026-05-19` remains at `2/5` visible submissions.
+Rationale before submission: v120 was the best clean-branch macro proxy so far and was fully CPU/no-internet/provenance-clean. It was submitted as UTC `2026-05-19` slot 3.
+
+Final result: Kaggle ref `52802748` completed with no public score and error `Your notebook requested more memory (RAM) than is available.` Retire v120 as a final/next-submit candidate.
 
 ## Risk
 
-The top5 proxy drops from v114 `0.520548` to v120 `0.479452`, so this is a bold macro-oriented clean candidate rather than the conservative fallback. If public LB drops below the v87 `0.949` anchor, retire this exact blend and do not keep increasing Tsubasa weight.
+The practical risk was hidden-test memory rather than public-LB quality. The likely failure mode is double execution of the expensive final decision layer for both sidecar and clean anchor. Future candidates should use single-pass hybridization before the final layer.

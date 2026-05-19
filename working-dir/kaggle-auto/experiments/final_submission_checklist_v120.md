@@ -1,6 +1,6 @@
 # Final Submission Checklist: v120
 
-Updated: 2026-05-19 07:50 UTC
+Updated: 2026-05-19 08:06 UTC
 
 ## Candidate
 
@@ -19,9 +19,9 @@ Updated: 2026-05-19 07:50 UTC
 - [x] No NaN/inf and prediction range is valid.
 - [x] No hidden-test leakage, hand labeling, or private sharing risk.
 - [x] Daily submission count before submit is `2/5`, so slot 3 is allowed.
-- [ ] Candidate has authoritative public Kaggle score. Current ref `52802748` is `PENDING`.
-- [ ] Candidate is selected as final judging submission.
+- [x] Candidate has authoritative Kaggle result. Ref `52802748` completed with hidden-test RAM error and no public score.
+- [ ] Candidate is selected as final judging submission. Blocked by memory error.
 
 ## Decision
 
-Submitted as guarded real submission ref `52802748`. Not final-selection eligible until score and post-submit stability are reviewed.
+Rejected as final candidate. Hidden-test evaluation exceeded Kaggle RAM.

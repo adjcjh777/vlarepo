@@ -1,6 +1,6 @@
 # v120 Submission Result
 
-Updated: 2026-05-19 07:50 UTC
+Updated: 2026-05-19 08:06 UTC
 
 ## Candidate
 
@@ -9,11 +9,11 @@ Updated: 2026-05-19 07:50 UTC
 - Submitted at: `2026-05-19 07:49:31 UTC`
 - Message: `Original clean v120: Perch-only clean anchor plus 0.15 CC0 Tsubasa ConvNeXt SED sidecar; CPU-only Run-mode COMPLETE ~683s; no unknown-license runtime inputs`
 
-## Current Status
+## Final Status
 
-- Status: `SubmissionStatus.PENDING`
+- Status: `SubmissionStatus.COMPLETE`
 - Public score: blank
-- Error: blank
+- Error: `Your notebook requested more memory (RAM) than is available.`
 - UTC `2026-05-19` visible submissions after v120: `3/5`
 
 ## Pre-Submit Evidence
@@ -26,4 +26,6 @@ Updated: 2026-05-19 07:50 UTC
 
 ## Decision
 
-Wait for public score. Do not submit another candidate while v120 is pending unless a true blocker or clear platform failure appears.
+`REJECT - hidden-test memory exceeded`
+
+v120 remains useful as Run-mode/proxy evidence, but it is not a valid final or next-submit candidate because hidden-test evaluation exceeded Kaggle RAM. The likely failure mode is the double execution of the expensive final decision layer: first for the Tsubasa sidecar and then again for the clean anchor. Future follow-up must be single-pass or otherwise memory-reduced before any real submission.

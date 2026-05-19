@@ -1,6 +1,6 @@
 # Rules Compliance Report: v120
 
-Updated: 2026-05-19 07:47 UTC
+Updated: 2026-05-19 08:06 UTC
 
 ## Candidate
 
@@ -8,13 +8,13 @@ Updated: 2026-05-19 07:47 UTC
 
 ## Result
 
-Status: `PASS-for-guarded-submit`
+Status: `REJECT-memory`
 
-v120 is a clean, original, CPU-only candidate that passed Run-mode, schema, proxy, correlation, and provenance checks. It is eligible for one guarded real code submission.
+v120 was a clean, original, CPU-only candidate that passed Run-mode, schema, proxy, correlation, and provenance checks and was eligible for one guarded real code submission. The real submission later failed hidden-test evaluation with a Kaggle RAM error, so v120 is no longer eligible for final selection or repeat submission.
 
 ## Checks
 
-- Daily submissions: UTC `2026-05-19` visible real submissions are `2/5` before v120.
+- Daily submissions: UTC `2026-05-19` visible real submissions are `3/5` after v120.
 - Pending submissions: none visible in the latest submission table.
 - Final selections: no final judging selection changed.
 - CPU-only: pass; metadata has `enable_gpu=false` and `enable_tpu=false`.
@@ -45,4 +45,4 @@ v120 is a clean, original, CPU-only candidate that passed Run-mode, schema, prox
 
 ## Decision
 
-Allow guarded code submission for v120 as UTC `2026-05-19` slot 3. Do not mark as final candidate until public score and stability are reviewed.
+Retire v120. Kaggle ref `52802748` completed with no public score and error `Your notebook requested more memory (RAM) than is available.` Future sidecar candidates must be single-pass or otherwise memory-reduced before any real submission.

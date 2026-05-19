@@ -36,4 +36,6 @@ Downloaded artifacts:
 
 ## Decision
 
-Run-mode passed. Candidate may proceed to guarded real submission after candidate-specific compliance and quota checks.
+Run-mode passed and the candidate proceeded to guarded real submission.
+
+Post-submission update at `2026-05-19 08:06 UTC`: Kaggle ref `52802748` completed with no public score and error `Your notebook requested more memory (RAM) than is available.` Retire v120 as a final/next-submit candidate; future sidecar candidates must avoid the double-final-layer memory pattern.

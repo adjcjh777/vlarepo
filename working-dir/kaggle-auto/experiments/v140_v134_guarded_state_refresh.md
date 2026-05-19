@@ -1,6 +1,6 @@
 # v140 v134 Guarded State Refresh
 
-Updated: 2026-05-19 13:15:40 UTC
+Updated: 2026-05-19 13:19:22 UTC
 
 ## Inputs
 
@@ -53,7 +53,7 @@ status_path=/Users/junhaocheng/working-dir/kaggle-auto/experiments/v137_v134_gua
 `python3 scripts/check_v134_window_bundle.py --write`
 
 ```text
-bundle_updated=2026-05-19 13:15:43 UTC
+bundle_updated=2026-05-19 13:19:26 UTC
 gate_exit=0
 recheck_exit=0
 goal_exit=3

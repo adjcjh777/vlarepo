@@ -1,0 +1,103 @@
+[{"stream_name":"stderr","time":8.558506885,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.558580944,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.558586097,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.558589307,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.356995965,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.3570564,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.357063756,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.357069151,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.673389557,"data":"v92 safety patch: removed non-inference flow diagram dependency.\n"}
+,{"stream_name":"stdout","time":10.712810875,"data":"v92 safety patch: skipped original flow diagram display cell.\n"}
+,{"stream_name":"stderr","time":15.113597134,"data":"2026-05-19 00:47:07.275756: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:467] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.114374841,"data":"WARNING: All log messages before absl::InitializeLog() is called are written to STDERR\n"}
+,{"stream_name":"stderr","time":15.114406696,"data":"E0000 00:00:1779151627.538191      16 cuda_dnn.cc:8579] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.11441309,"data":"E0000 00:00:1779151627.616734      16 cuda_blas.cc:1407] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.114422212,"data":"W0000 00:00:1779151628.209258      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.114441362,"data":"W0000 00:00:1779151628.209317      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.114446826,"data":"W0000 00:00:1779151628.209320      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.114738792,"data":"W0000 00:00:1779151628.209323      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318052426,"data":"2026-05-19 00:47:07.275756: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:467] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.318166772,"data":"WARNING: All log messages before absl::InitializeLog() is called are written to STDERR\n"}
+,{"stream_name":"stderr","time":15.318172879,"data":"E0000 00:00:1779151627.538191      16 cuda_dnn.cc:8579] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.318176543,"data":"E0000 00:00:1779151627.616734      16 cuda_blas.cc:1407] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.318191178,"data":"W0000 00:00:1779151628.209258      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318194356,"data":"W0000 00:00:1779151628.209317      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318197419,"data":"W0000 00:00:1779151628.209320      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318200328,"data":"W0000 00:00:1779151628.209323      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318208227,"data":"\n"}
+,{"stream_name":"stderr","time":15.318211299,"data":"2026-05-19 00:47:07.275756: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:467] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.318214616,"data":"WARNING: All log messages before absl::InitializeLog() is called are written to STDERR\n"}
+,{"stream_name":"stderr","time":15.318220465,"data":"E0000 00:00:1779151627.538191      16 cuda_dnn.cc:8579] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.318224015,"data":"E0000 00:00:1779151627.616734      16 cuda_blas.cc:1407] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered\n"}
+,{"stream_name":"stderr","time":15.31822868,"data":"W0000 00:00:1779151628.209258      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318231621,"data":"W0000 00:00:1779151628.209317      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318234514,"data":"W0000 00:00:1779151628.209320      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stderr","time":15.318237413,"data":"W0000 00:00:1779151628.209323      16 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.\n"}
+,{"stream_name":"stdout","time":53.176063303,"data":"ONNX Runtime installed\n"}
+,{"stream_name":"stderr","time":125.911749077,"data":"2026-05-19 00:48:59.075559: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)\n"}
+,{"stream_name":"stdout","time":125.922665132,"data":"TF 2.20 installed\n"}
+,{"stream_name":"stdout","time":125.922720926,"data":"ONNX Runtime available\n"}
+,{"stream_name":"stdout","time":125.922729275,"data":"Global random seed set to 4\n"}
+,{"stream_name":"stdout","time":125.922736052,"data":"MODE = submit\n"}
+,{"stream_name":"stdout","time":125.922742431,"data":"CFG loaded\n"}
+,{"stream_name":"stderr","time":125.923985453,"data":"2026-05-19 00:48:59.075559: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)\n"}
+,{"stream_name":"stderr","time":125.924052657,"data":"\n"}
+,{"stream_name":"stderr","time":125.924059806,"data":"2026-05-19 00:48:59.075559: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)\n"}
+,{"stream_name":"stdout","time":126.169288861,"data":"Classes: 234 | Fully-labeled files: 59\n"}
+,{"stream_name":"stdout","time":126.169326896,"data":"Full-file windows: 708 | Active classes: 71\n"}
+,{"stream_name":"stdout","time":139.524250721,"data":"Using ONNX Perch: perch_v2_no_dft.onnx\n"}
+,{"stream_name":"stdout","time":139.524319452,"data":"Mapped: 203 / 234 species have a Perch logit\n"}
+,{"stream_name":"stdout","time":139.562316919,"data":"Unmapped: 31 | Proxy: 3 | No signal: 28\n"}
+,{"stream_name":"stdout","time":139.615820624,"data":"Perch inference engine defined\n"}
+,{"stream_name":"stdout","time":139.763093178,"data":"USE_ONNX = True\n"}
+,{"stream_name":"stdout","time":139.76313737,"data":"No cache found — building from scratch\n"}
+,{"stream_name":"stdout","time":139.763145825,"data":"Building Perch cache from 59 training files…\n"}
+,{"stream_name":"stdout","time":273.227039745,"data":"  Perch pass done in 133.2s  scores=(708, 234) embs=(708, 1536)\n"}
+,{"stream_name":"stdout","time":273.227092341,"data":"  Cache saved to /kaggle/working/cache\n"}
+,{"stream_name":"stdout","time":273.233152002,"data":"  primary_labels schema OK\n"}
+,{"stream_name":"stdout","time":273.233195693,"data":"sc_tr: (708, 234)  emb_tr: (708, 1536)  Y_FULL_aligned: (708, 234)\n"}
+,{"stream_name":"stdout","time":273.510667879,"data":"Sequence Models defined\n"}
+,{"stream_name":"stdout","time":273.710567669,"data":"No hidden test — dry-run on 20 train files\n"}
+,{"stream_name":"stdout","time":316.246190752,"data":"Test scores: (240, 234)\n"}
+,{"stream_name":"stdout","time":329.941514524,"data":"ProtoSSM training: 13.4s\n"}
+,{"stream_name":"stdout","time":330.325995327,"data":"Embedding: (708, 1536) → PCA: (708, 64)  (variance retained: 81.47%)\n"}
+,{"stream_name":"stdout","time":346.422201332,"data":"Trained 58 MLP probes\n"}
+,{"stream_name":"stdout","time":346.422240869,"data":"[Tweak A] Per-class ensemble weights: mapped=0.60 unmapped=0.35\n"}
+,{"stream_name":"stdout","time":346.940184359,"data":"Calibrated 31 classes | Mean threshold: 0.463 | Range: [0.20, 0.50]\n"}
+,{"stream_name":"stdout","time":348.790746994,"data":"ResidualSSM training: 1.9s\n"}
+,{"stream_name":"stdout","time":348.790803155,"data":"  correction_weight=0.10  OOF macro-AUC=0.99238\n"}
+,{"stream_name":"stdout","time":348.790809145,"data":"  correction_weight=0.15  OOF macro-AUC=0.99238\n"}
+,{"stream_name":"stdout","time":349.001965305,"data":"  correction_weight=0.20  OOF macro-AUC=0.99237\n"}
+,{"stream_name":"stdout","time":349.002009816,"data":"  correction_weight=0.25  OOF macro-AUC=0.99237\n"}
+,{"stream_name":"stdout","time":349.002017752,"data":"  correction_weight=0.30  OOF macro-AUC=0.99237\n"}
+,{"stream_name":"stdout","time":349.002024174,"data":"  correction_weight=0.35  OOF macro-AUC=0.99237\n"}
+,{"stream_name":"stdout","time":349.5253418,"data":"  correction_weight=0.40  OOF macro-AUC=0.99237\n"}
+,{"stream_name":"stdout","time":349.525386315,"data":"[Tweak C] Best correction_weight=0.10  (AUC=0.99238)\n"}
+,{"stream_name":"stdout","time":349.525393044,"data":"ProtoSSM execution complete\n"}
+,{"stream_name":"stdout","time":349.525398477,"data":"Total wall time so far: 3.7 min\n"}
+,{"stream_name":"stdout","time":349.526180002,"data":"Memory freed. Ready for SED cell.\n"}
+,{"stream_name":"stdout","time":438.858302837,"data":"SED dir: /kaggle/input/datasets/tuckerarrants/bc2026-distilled-sed-public\n"}
+,{"stream_name":"stdout","time":438.858344836,"data":"SED folds loaded: ['sed_fold0.onnx', 'sed_fold1.onnx', 'sed_fold2.onnx', 'sed_fold3.onnx', 'sed_fold4.onnx']\n"}
+,{"stream_name":"stdout","time":457.941832914,"data":"SED: 1/20\n"}
+,{"stream_name":"stdout","time":505.02049139,"data":"SED: 20/20\n"}
+,{"stream_name":"stdout","time":505.020557232,"data":"Distilled SED Processing Complete. Shape: (240, 235)\n"}
+,{"stream_name":"stdout","time":505.697983219,"data":"BirdNET explicitly disabled for v92 license compatibility.\n"}
+,{"stream_name":"stdout","time":505.698035102,"data":"BirdNET model not found — will use original 60/40 blend\n"}
+,{"stream_name":"stdout","time":505.698041539,"data":"BirdNET inference engine defined\n"}
+,{"stream_name":"stdout","time":505.859805015,"data":"BirdNET unavailable — zero submission saved\n"}
+,{"stream_name":"stdout","time":506.060414226,"data":"BirdNET scores all zero — using original 60/40 blend\n"}
+,{"stream_name":"stdout","time":506.060456663,"data":"Executing standard 2-way rank blend (60% Proto / 40% SED)...\n"}
+,{"stream_name":"stdout","time":506.060469905,"data":"Sonotype mirroring applied to 10 columns.\n"}
+,{"stream_name":"stdout","time":506.060474412,"data":"Adaptive thresholding applied to 44 rare species.\n"}
+,{"stream_name":"stdout","time":506.060478404,"data":"Dry-run detected: Aligning rows with sample_submission.csv\n"}
+,{"stream_name":"stdout","time":506.168270429,"data":"Ready for submission!\n"}
+,{"stream_name":"stdout","time":506.190707693,"data":"submission.csv passed basic diagnostics.\n"}
+,{"stream_name":"stderr","time":512.115822829,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":512.115873488,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":512.353530621,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":512.353563014,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":513.533133376,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":514.157298287,"data":"[NbConvertApp] Writing 164374 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":518.419981786,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":520.39746867,"data":"[NbConvertApp] Writing 753195 bytes to __results__.html\n"}
+]

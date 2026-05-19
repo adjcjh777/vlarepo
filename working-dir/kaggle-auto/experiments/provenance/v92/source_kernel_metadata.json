@@ -1,0 +1,34 @@
+{
+  "id": "beicicc/bc26-mtoshi-vis-may18",
+  "id_no": 119699033,
+  "title": "bc26 mtoshi vis may18",
+  "code_file": "bc26-mtoshi-vis-may18.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "tuckerarrants/bc2026-distilled-sed-public",
+    "mtoshidesu/birdclef-flow-diagram",
+    "jaejohn/perch-meta",
+    "tuckerarrants/perch-v2-no-dft-onnx",
+    "rishikeshjani/perch-onnx-for-birdclef-2026"
+  ],
+  "kernel_sources": [
+    "ashok205/tf-wheels"
+  ],
+  "competition_sources": [
+    "birdclef-2026"
+  ],
+  "model_sources": [
+    "google/bird-vocalization-classifier/TensorFlow2/perch_v2_cpu/1"
+  ],
+  "local_notes": [
+    "v92 removed mtoshidesu/birdclef-flow-diagram because it is a non-inference display dependency.",
+    "v92 explicitly disabled BirdNET and removed any BirdNET model source.",
+    "v92 was used only for Kaggle Run-mode evidence while v91 was pending."
+  ]
+}

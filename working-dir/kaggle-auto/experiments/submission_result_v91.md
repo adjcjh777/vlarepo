@@ -16,7 +16,7 @@ Updated: 2026-05-19 00:34 UTC
 - UTC `2026-05-19` submissions used: `1/5`
 
 ## Latest Check
-- Checked at: `2026-05-19 00:39:48 UTC`
+- Checked at: `2026-05-19 01:01:50 UTC`
 - Status: `PENDING`
 - Public score: not available yet
 - Error: none visible
@@ -31,4 +31,3 @@ Updated: 2026-05-19 00:34 UTC
 - If v91 scores below v87 `0.949`, retire the BirdNET-disabled E1 route as a real-submission path.
 - If v91 scores `0.949..0.953`, treat it as anchor maintenance; require a materially different candidate before slot two.
 - If v91 reaches or exceeds top20 cutoff, enter protection/verification mode before any further submit.
-

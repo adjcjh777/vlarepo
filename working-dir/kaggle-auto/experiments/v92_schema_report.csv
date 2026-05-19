@@ -1,0 +1,6 @@
+file,shape,row_dupes,finite,min,max,mean,std,unique_rounded6,row_order_vs_sample,column_order_vs_sample,notes
+submission.csv,"(3, 235)",0,True,0.47800776,0.55945575,0.5015616540170941,0.011122491099099633,221,pass,pass,Final dry-run sample output aligned to local sample_submission.csv.
+submission_protossm.csv,"(240, 235)",0,True,0.0000000056710276,0.9981291,0.10322816059773657,0.16464327521444785,42977,n/a,n/a,Train-file dry-run intermediate output.
+submission_sed.csv,"(240, 235)",0,True,0.000021937494,0.97485524,0.01260963728861008,0.07037281377844962,13497,n/a,n/a,Train-file dry-run intermediate output.
+submission_birdnet.csv,"(240, 235)",0,True,0.0,0.0,0.0,0.0,1,n/a,n/a,BirdNET disabled; zero branch saved intentionally.
+

@@ -1,0 +1,7 @@
+left,right,common_rows,common_classes,pearson_corr,mean_abs_diff,max_abs_diff,notes
+v87,v92,3,234,0.999061,0.000250,0.004056,v92 dry-run final is near-duplicate of v87 anchor.
+v88,v92,3,234,0.268159,0.204372,0.270266,Structurally different from v88 but v88 already scored weakly at 0.921.
+v89,v92,3,234,0.0,0.497288,0.555182,v89 was constant-like and rejected as submit candidate.
+v90,v92,3,234,0.510105,0.008977,0.056224,v90 is held because BirdNET model source is CC BY-NC.
+v91,v92,3,234,0.688480,0.006172,0.037477,v91 remains pending; v92 is not a slot-two replacement while pending.
+

@@ -283,3 +283,11 @@
 - v121 is the strongest clean-sidecar idea but inherits the v120 hidden-RAM pattern; v120 itself is retired after hidden-test memory failure; v127 is still pending and therefore locks the fifth real slot.
 - Originality decision: do not keep copying or direct-blending public work. The next useful research lane is a license-clean transfer of the v103 guard/rescue mechanism onto allowed in-notebook evidence, with row-level confidence preservation, positive-evidence rescue gating, per-class support floors, rank calibration, and memory-safe single-final-layer/post-final execution.
 - Decision: `RESEARCH-NEXT - no real submission while v127 is PENDING`; prepare v128/v129 only as an original, clean, memory-safe mechanism candidate after v127 score/error is known.
+
+## 2026-05-19 v128 Clean Rescue Transfer Probe
+- Refreshed external state at `2026-05-19 10:41:17 UTC`: v127 kernel is `COMPLETE`, but competition submission ref `52807175` remains `PENDING`; best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.
+- Added `birdclef-2026/scripts/birdclef_probe_v128_clean_rescue_transfer.py` as a local-only originality probe. It transfers the v103 guard/rescue mechanism without using v103/v102 outputs in candidate construction.
+- Wrote `experiments/v128_clean_rescue_transfer_probe.csv`, `experiments/v128_clean_rescue_transfer_selection.csv`, and `experiments/v128_clean_rescue_transfer_decision_brief.md`.
+- Best row: `v128_v114_clean_selfblend_min5_d0_w0.9_rm0_t0.7`, macro `0.97987635`, micro `0.92085607`, top5 `0.52054795`, 6 classes, 350 active cells, Pearson vs anchor `0.99768118`.
+- Interpretation: v128 improves over v114 but is weaker than v126 support>=10 (`0.98021860`) and v127 (`0.98008089`) on macro. The micro gain is interesting, but positive-only cell rescue is too conservative for the macro objective.
+- Decision: `HOLD-quality - do not submit v128`; do not spend the fifth slot while v127 is pending. Next originality probe should move toward grouped clean meta-routing, support-aware full-column routing with a top5 term, or a v126/v127 follow-up after v127 score/error is known.

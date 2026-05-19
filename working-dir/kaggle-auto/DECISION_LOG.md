@@ -178,3 +178,13 @@
 - Built v116 as a memory-reduced single `sed_convnext-tiny_fold0.onnx` branch with the same remap/trust layer. Run-mode completed in about `489.9s`; schema passed; proxy `macro=0.85930903`, `micro=0.83251880`, `top5=0.39726027`; correlation vs v110 `0.764711`; decision `REJECT - do not submit`.
 - Built v117 to isolate same-index Tsubasa ConvNeXt SED by disabling column remap. Run-mode completed in about `435.3s`; schema passed; proxy `macro=0.71214482`, `micro=0.72131755`, `top5=0.32876712`; correlation vs v110 `0.772860`; decision `REJECT - do not submit`.
 - Conclusion: Tsubasa SED is compliance-clean and low-correlation but does not transfer into the current clean EcoProto final layer. Stop tuning this lane unless a new OOF-style rationale appears.
+
+## 2026-05-19 Public Scan and v118 EcoHabitat Negative Result
+- Ran the latest public-kernel scan after the user requested more original innovation and less direct reference copying.
+- Inspected `aiaiaiooo/birdclef2026`: metadata has GPU enabled, current Kaggle status is `ERROR`, training AUC is `nan`, and inference fails on missing `best_model.pth`; decision `REJECT-as-candidate`.
+- Inspected `ommodi07/birdclef2026`: metadata has GPU and internet enabled, the notebook trains on dummy random tensors, and its output `submission.csv` is an all-zero fallback; decision `REJECT-as-candidate`.
+- Converted the public "habitat/acoustic context" idea into a workspace-original v118 local probe instead of copying code: class-selective v113 rescue over v110, gated by per-class AUC deltas, support, row entropy, and branch disagreement.
+- Added `birdclef-2026/scripts/birdclef_probe_v118_ecohabitat_rescue.py` and ran it successfully, writing `experiments/v118_ecohabitat_selective_probe.csv` with `1083` scored formulas.
+- v118 result: no formula beats v114; best original gated formulas tie v110 macro `0.97911204`, while v114 remains `0.97920102`.
+- Decision: `REJECT - do not materialize or submit v118 as-is`; preserve the negative result to avoid repeated tuning of v113 gates.
+- No new real Kaggle submission was made; UTC `2026-05-19` visible submissions remain `2/5`.

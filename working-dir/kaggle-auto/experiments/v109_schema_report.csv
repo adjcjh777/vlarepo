@@ -1,0 +1,13 @@
+check,status,value,notes
+file_exists,PASS,birdclef-2026/outputs/v109-ecoproto-ranklaunch-perch-v1/submission.csv,
+shape,PASS,120x235,
+row_id_column,PASS,row_id,
+class_columns,PASS,0,
+finite,PASS,True,
+min,PASS,0.011144416,
+max,PASS,0.999315100,
+mean,PASS,0.520781665,
+std,PASS,0.242793657,
+duplicate_row_id,PASS,0,
+sha256,PASS,ac5e713a7f410cb9795327113f339f30f3f89ad47479d31311e223fe6a66a3cb,
+row_count_mod_12,PASS,0,

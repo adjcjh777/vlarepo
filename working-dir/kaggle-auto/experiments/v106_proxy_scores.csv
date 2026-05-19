@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission_v106_rankdominant_perch,/tmp/bc26_v106_proxy_dir/submission_v106_rankdominant_perch.csv,120,234,313,22,0.97753686,0.87641886,0.02739726,0.35616438,0.01114442,0.99929160,0.51551380,0.23904995

@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v109-ecoproto-ranklaunch-perch-v1/submission.csv,120,234,313,22,0.97963460,0.91325592,0.23287671,0.47945205,0.01114442,0.99931510,0.52078166,0.24279366

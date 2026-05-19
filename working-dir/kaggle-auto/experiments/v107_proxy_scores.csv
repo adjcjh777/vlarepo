@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission_v107_rankceiling_perch,/tmp/bc26_v107_proxy_dir/submission_v107_rankceiling_perch.csv,120,234,313,22,0.97736356,0.91282668,0.27397260,0.50684932,0.01114442,0.99970210,0.52165804,0.24423135

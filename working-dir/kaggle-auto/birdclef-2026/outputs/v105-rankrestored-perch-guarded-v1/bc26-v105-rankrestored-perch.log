@@ -1,0 +1,93 @@
+[{"stream_name":"stderr","time":8.342520726,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.342590238,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.342597473,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.342602471,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.140263603,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.140304233,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.140308799,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.140312118,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":18.305239603,"data":"ONNX Runtime: 1.24.4\n"}
+,{"stream_name":"stdout","time":18.323084584,"data":"External Perch cache disabled for v105 license-reduced run\n"}
+,{"stream_name":"stdout","time":18.378076862,"data":"Classes: 234\n"}
+,{"stream_name":"stdout","time":22.949899318,"data":"Using ONNX Perch: /kaggle/input/datasets/rishikeshjani/perch-onnx-for-birdclef-2026/perch_v2.onnx\n"}
+,{"stream_name":"stdout","time":22.949939805,"data":"Mapped: 203/234\n"}
+,{"stream_name":"stdout","time":22.992491685,"data":"Frog proxies: 0\n"}
+,{"stream_name":"stdout","time":23.009827455,"data":"V105: Perch train cache will be rebuilt in-notebook after inference helpers are defined\n"}
+,{"stream_name":"stdout","time":23.298854569,"data":"Full files: 59, Windows: 708, Active: 71\n"}
+,{"stream_name":"stdout","time":23.445206333,"data":"V105 rebuilding Perch train features for 59 files\n"}
+,{"stream_name":"stdout","time":65.503467544,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":65.503516589,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":65.503524053,"data":"Detected spatial_embedding output index: None\n"}
+,{"stream_name":"stdout","time":169.403501511,"data":"V105 rebuilt train features: meta=(708, 2), scores=(708, 234), emb=(708, 1536)\n"}
+,{"stream_name":"stdout","time":169.437019889,"data":"OOF logits shape: (708, 234)\n"}
+,{"stream_name":"stdout","time":169.606108331,"data":"Raw Perch OOF AUC: 0.6812\n"}
+,{"stream_name":"stdout","time":169.631899734,"data":"Per-class AUC: mean=0.6812, min=0.0862, max=1.0000\n"}
+,{"stream_name":"stdout","time":169.631940512,"data":"Classes with AUC \u003c 0.5: 19\n"}
+,{"stream_name":"stdout","time":170.199859903,"data":"Fitted 71 calibrators\n"}
+,{"stream_name":"stdout","time":170.199901249,"data":"Calibrated OOF AUC: 0.8020 (delta: +0.1208)\n"}
+,{"stream_name":"stdout","time":170.212556661,"data":"Calibrated per-class AUC: mean=0.8020, min=0.2949, max=1.0000\n"}
+,{"stream_name":"stdout","time":170.274153825,"data":"Thresholds: mean=0.429, min=0.050, max=0.550\n"}
+,{"stream_name":"stdout","time":170.412918117,"data":"No test files - using train soundscapes for dry run\n"}
+,{"stream_name":"stdout","time":170.666472806,"data":"Processing 10 files\n"}
+,{"stream_name":"stdout","time":194.375341984,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":194.375393476,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":194.375400706,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":194.375432758,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":194.375438203,"data":"Test embeddings: (120, 1536)\n"}
+,{"stream_name":"stdout","time":194.375442563,"data":"Test spatial features: (120, 4608)\n"}
+,{"stream_name":"stdout","time":194.39908754,"data":"V105 Perch-only surrogate view: shape=(120, 234), range=[0.000463, 0.999997]\n"}
+,{"stream_name":"stdout","time":194.612784921,"data":"Perch classwise soft suppression: 0.433, factor=[0.369,0.720]\n"}
+,{"stream_name":"stdout","time":194.612826821,"data":"Embedding probe aligned train rows: (708, 1536) unique cache rows 708\n"}
+,{"stream_name":"stdout","time":194.612832533,"data":"Embedding probe active: train=(708, 1536), test=(120, 1536), rank std=0.1590067446231842\n"}
+,{"stream_name":"stdout","time":196.291809849,"data":"MLP embedding probe active: train=(708, 96), test=(120, 96), n_iter=29, rank std=0.2886650860309601\n"}
+,{"stream_name":"stdout","time":234.115471892,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":234.115515363,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":234.115522387,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":234.115528406,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":335.638550717,"data":"Spatial probe aligned train rows: (708, 4608) unique spatial rows 708\n"}
+,{"stream_name":"stdout","time":335.638624321,"data":"Spatial probe active: train=(708, 4608), test=(120, 4608), rank std=0.15956220030784607\n"}
+,{"stream_name":"stdout","time":335.638631866,"data":"Dual probe active: embedding=0.64 spatial=0.26 mlp=0.10 combined std=0.14225563406944275\n"}
+,{"stream_name":"stdout","time":335.702082331,"data":"V105 rank-restored Perch-only guarded macro-risk rescue counts: {'protect_anchor': 35, 'rare_floor': 176, 'macro_weak': 12, 'macro_mild': 4, 'texture_prior_rescue': 0, 'active_rescue': 16, 'positive_rescue_cells': 2749, 'top_hit_guard_cells': 330, 'ctx_cells': 2}\n"}
+,{"stream_name":"stdout","time":335.702131305,"data":"V105 class rescue mix range/mean: [0.000, 0.340] / 0.0190\n"}
+,{"stream_name":"stdout","time":335.702138501,"data":"V105 effective rescue mix range/mean: [0.000, 0.340] / 0.0095\n"}
+,{"stream_name":"stdout","time":335.702144943,"data":"V105 components: macro mean/std=0.506653/0.230775; v84_like mean/std=0.506686/0.232786; rescue_view mean/std=0.506874/0.242758; dualprobe mean/std=0.506997/0.253222\n"}
+,{"stream_name":"stdout","time":335.702151295,"data":"OOF refs: Perch raw=0.681, Perch cal=0.802, SED=0.591, delta=-0.209\n"}
+,{"stream_name":"stdout","time":335.702156788,"data":"SED weights sedfirst=0.578, adaptive=0.489, safety=0.480\n"}
+,{"stream_name":"stdout","time":335.702162489,"data":"View mix: v105 = Perch-only guarded rescue plus row-rank restoration without unknown-license cache/SED dependencies\n"}
+,{"stream_name":"stdout","time":335.702168718,"data":"Prior strength mean=1.000, applied mean=0.0103, file scale mean=0.999\n"}
+,{"stream_name":"stdout","time":335.702174246,"data":"Spike-smoothed score range: [0.011144, 0.999292]\n"}
+,{"stream_name":"stdout","time":335.702180005,"data":"Score mean/std: 0.507024/0.232823\n"}
+,{"stream_name":"stdout","time":335.7021855,"data":"V105 row-rank restore cells: restore=1417, top_guard=138\n"}
+,{"stream_name":"stdout","time":335.702190638,"data":"V105 post-restore score range: [0.011144, 0.999292]\n"}
+,{"stream_name":"stdout","time":335.702195797,"data":"V105 post-restore score mean/std: 0.508823/0.234331\n"}
+,{"stream_name":"stdout","time":335.820018846,"data":"Saved: (120, 235)\n"}
+,{"stream_name":"stdout","time":335.820085062,"data":"                                     row_id   1161364    116570   1176823  \\\n"}
+,{"stream_name":"stdout","time":335.820091968,"data":"0   BC2026_Train_0001_S08_20250606_030007_5  0.695412  0.516515  0.608992   \n"}
+,{"stream_name":"stdout","time":335.820096993,"data":"1  BC2026_Train_0001_S08_20250606_030007_10  0.763076  0.680630  0.309009   \n"}
+,{"stream_name":"stdout","time":335.820101436,"data":"2  BC2026_Train_0001_S08_20250606_030007_15  0.760851  0.565579  0.460606   \n"}
+,{"stream_name":"stdout","time":335.820107295,"data":"\n"}
+,{"stream_name":"stdout","time":335.820111433,"data":"    1491113   1595929    209233     22930     22956     22961  ...   whnjay1  \\\n"}
+,{"stream_name":"stdout","time":335.820116083,"data":"0  0.454287  0.363710  0.494095  0.167047  0.764954  0.715924  ...  0.073880   \n"}
+,{"stream_name":"stdout","time":335.820120713,"data":"1  0.442935  0.345560  0.531877  0.047741  0.802855  0.477969  ...  0.226398   \n"}
+,{"stream_name":"stdout","time":335.820125111,"data":"2  0.664435  0.332773  0.479846  0.060343  0.691470  0.536619  ...  0.323614   \n"}
+,{"stream_name":"stdout","time":335.820129513,"data":"\n"}
+,{"stream_name":"stdout","time":335.820133452,"data":"     whtdov   whwpic1    y00678    yebcar   yebela1    yecmac    yecpar  \\\n"}
+,{"stream_name":"stdout","time":335.820138008,"data":"0  0.429690  0.604003  0.202415  0.568192  0.741776  0.600642  0.259524   \n"}
+,{"stream_name":"stdout","time":335.820141929,"data":"1  0.387806  0.884046  0.320471  0.165402  0.501788  0.652284  0.214024   \n"}
+,{"stream_name":"stdout","time":335.820146436,"data":"2  0.352083  0.810615  0.305071  0.208769  0.643510  0.674974  0.283948   \n"}
+,{"stream_name":"stdout","time":335.820150671,"data":"\n"}
+,{"stream_name":"stdout","time":335.820154905,"data":"    yehcar1   yeofly1  \n"}
+,{"stream_name":"stdout","time":335.820159138,"data":"0  0.324525  0.710095  \n"}
+,{"stream_name":"stdout","time":335.820163356,"data":"1  0.509926  0.589911  \n"}
+,{"stream_name":"stdout","time":335.820167563,"data":"2  0.486461  0.278476  \n"}
+,{"stream_name":"stdout","time":335.820171791,"data":"\n"}
+,{"stream_name":"stdout","time":335.820176134,"data":"[3 rows x 235 columns]\n"}
+,{"stream_name":"stderr","time":340.444121422,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":340.444163119,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":340.655955868,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":340.65598964,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":341.541260928,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":341.98944839,"data":"[NbConvertApp] Writing 116696 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":345.317743482,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":346.682366513,"data":"[NbConvertApp] Writing 573452 bytes to __results__.html\n"}
+]

@@ -416,3 +416,4 @@
 - Practical implication: the thread no longer depends on manual clock-watching to continue once the UTC window changes.
 - Refreshed again at `2026-05-19 12:20:32 UTC`: gate is still `WAIT-SAME-UTC-DAY`, visible submissions today remain `4`, and `v134` remains the top guarded candidate. `birdclef_goal_check.py` still reports best visible `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.
 - Practical implication unchanged: stay idle on real submissions until the UTC day changes.
+- Refreshed again at `2026-05-19 12:44:21 UTC`: both `v136` next-window gate and `v137` guarded recheck still resolve to `WAIT-SAME-UTC-DAY`; `v134` remains guarded-pool rank `#1`, and the only unmet guarded-submit prerequisite is the UTC rollover itself.

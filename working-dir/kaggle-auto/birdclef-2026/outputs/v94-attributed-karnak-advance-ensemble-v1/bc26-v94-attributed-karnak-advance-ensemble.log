@@ -1,0 +1,332 @@
+[{"stream_name":"stderr","time":7.66799699,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.6680680599999995,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.66807256,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.66807512,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.320588207,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.320653747,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.320659497,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.320662857,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":97.358989935,"data":"MODE = submit\n"}
+,{"stream_name":"stdout","time":100.666374201,"data":"TensorFlow: 2.20.0\n"}
+,{"stream_name":"stdout","time":100.666417261,"data":"PyTorch: 2.10.0+cpu\n"}
+,{"stream_name":"stdout","time":100.666421341,"data":"Competition dir exists: True\n"}
+,{"stream_name":"stdout","time":100.666424671,"data":"Model dir exists: True\n"}
+,{"stream_name":"stdout","time":100.666427661,"data":"V17 CFG: d_model=256, n_ssm_layers=3\n"}
+,{"stream_name":"stdout","time":100.666431161,"data":"{\n"}
+,{"stream_name":"stdout","time":100.666434031,"data":"  \"mode\": \"submit\",\n"}
+,{"stream_name":"stdout","time":100.666437231,"data":"  \"verbose\": false,\n"}
+,{"stream_name":"stdout","time":100.666441291,"data":"  \"run_oof_baseline\": false,\n"}
+,{"stream_name":"stdout","time":100.666446651,"data":"  \"run_probe_check\": false,\n"}
+,{"stream_name":"stdout","time":100.666449651,"data":"  \"run_probe_grid\": false,\n"}
+,{"stream_name":"stdout","time":100.666452571,"data":"  \"batch_files\": 16,\n"}
+,{"stream_name":"stdout","time":100.666455491,"data":"  \"proxy_reduce_grid\": [\n"}
+,{"stream_name":"stdout","time":100.666458591,"data":"    \"max\",\n"}
+,{"stream_name":"stdout","time":100.666461621,"data":"    \"mean\"\n"}
+,{"stream_name":"stdout","time":100.666464581,"data":"  ],\n"}
+,{"stream_name":"stdout","time":100.666467491,"data":"  \"proxy_reduce\": \"max\",\n"}
+,{"stream_name":"stdout","time":100.666470581,"data":"  \"run_proxy_reduce_grid\": false,\n"}
+,{"stream_name":"stdout","time":100.666473851,"data":"  \"dryrun_n_files\": 20,\n"}
+,{"stream_name":"stdout","time":100.666476851,"data":"  \"require_full_cache_in_submit\": false,\n"}
+,{"stream_name":"stdout","time":100.666479831,"data":"  \"full_cache_input_dir\": \"/kaggle/input/perch-meta\",\n"}
+,{"stream_name":"stdout","time":100.666483021,"data":"  \"full_cache_work_dir\": \"/kaggle/working/perch_cache\",\n"}
+,{"stream_name":"stdout","time":100.666486031,"data":"  \"best_fusion\": {\n"}
+,{"stream_name":"stdout","time":100.666488991,"data":"    \"lambda_event\": 0.4,\n"}
+,{"stream_name":"stdout","time":100.666491951,"data":"    \"lambda_texture\": 1.0,\n"}
+,{"stream_name":"stdout","time":100.666494901,"data":"    \"lambda_proxy_texture\": 0.8,\n"}
+,{"stream_name":"stdout","time":100.666497851,"data":"    \"smooth_texture\": 0.35,\n"}
+,{"stream_name":"stdout","time":100.666500781,"data":"    \"smooth_event\": 0.15\n"}
+,{"stream_name":"stdout","time":100.666503691,"data":"  },\n"}
+,{"stream_name":"stdout","time":100.666506591,"data":"  \"proto_ssm\": {\n"}
+,{"stream_name":"stdout","time":100.666535011,"data":"    \"d_model\": 256,\n"}
+,{"stream_name":"stdout","time":100.666537201,"data":"    \"d_state\": 16,\n"}
+,{"stream_name":"stdout","time":100.666539271,"data":"    \"n_ssm_layers\": 3,\n"}
+,{"stream_name":"stdout","time":100.666541371,"data":"    \"dropout\": 0.15,\n"}
+,{"stream_name":"stdout","time":100.666543251,"data":"    \"n_prototypes\": 1,\n"}
+,{"stream_name":"stdout","time":100.666545111,"data":"    \"n_sites\": 20,\n"}
+,{"stream_name":"stdout","time":100.66654694100001,"data":"    \"meta_dim\": 16,\n"}
+,{"stream_name":"stdout","time":100.666549001,"data":"    \"use_cross_attn\": true,\n"}
+,{"stream_name":"stdout","time":100.666550881,"data":"    \"cross_attn_heads\": 4\n"}
+,{"stream_name":"stdout","time":100.666552771,"data":"  },\n"}
+,{"stream_name":"stdout","time":100.666554571,"data":"  \"proto_ssm_train\": {\n"}
+,{"stream_name":"stdout","time":100.666556451,"data":"    \"n_epochs\": 40,\n"}
+,{"stream_name":"stdout","time":100.666558321,"data":"    \"lr\": 0.001,\n"}
+,{"stream_name":"stdout","time":100.666560201,"data":"    \"weight_decay\": 0.002,\n"}
+,{"stream_name":"stdout","time":100.666562091,"data":"    \"val_ratio\": 0.15,\n"}
+,{"stream_name":"stdout","time":100.666563991,"data":"    \"patience\": 8,\n"}
+,{"stream_name":"stdout","time":100.666565851,"data":"    \"pos_weight_cap\": 30.0,\n"}
+,{"stream_name":"stdout","time":100.666567721,"data":"    \"distill_weight\": 0.1,\n"}
+,{"stream_name":"stdout","time":100.666569591,"data":"    \"proto_margin\": 0.1,\n"}
+,{"stream_name":"stdout","time":100.666571481,"data":"    \"label_smoothing\": 0.02,\n"}
+,{"stream_name":"stdout","time":100.666573361,"data":"    \"oof_n_splits\": 3,\n"}
+,{"stream_name":"stdout","time":100.666575221,"data":"    \"mixup_alpha\": 0.3,\n"}
+,{"stream_name":"stdout","time":100.666577081,"data":"    \"focal_gamma\": 2.0,\n"}
+,{"stream_name":"stdout","time":100.666578961,"data":"    \"swa_start_frac\": 0.7,\n"}
+,{"stream_name":"stdout","time":100.666580811,"data":"    \"swa_lr\": 0.0005\n"}
+,{"stream_name":"stdout","time":100.666582721,"data":"  },\n"}
+,{"stream_name":"stdout","time":100.666584511,"data":"  \"frozen_best_probe\": {\n"}
+,{"stream_name":"stdout","time":100.666586401,"data":"    \"pca_dim\": 64,\n"}
+,{"stream_name":"stdout","time":100.666588241,"data":"    \"min_pos\": 8,\n"}
+,{"stream_name":"stdout","time":100.666590101,"data":"    \"C\": 0.5,\n"}
+,{"stream_name":"stdout","time":100.666591951,"data":"    \"alpha\": 0.4\n"}
+,{"stream_name":"stdout","time":100.666593861,"data":"  },\n"}
+,{"stream_name":"stdout","time":100.666595651,"data":"  \"residual_ssm\": {\n"}
+,{"stream_name":"stdout","time":100.666597501,"data":"    \"d_model\": 64,\n"}
+,{"stream_name":"stdout","time":100.666599351,"data":"    \"d_state\": 8,\n"}
+,{"stream_name":"stdout","time":100.666601201,"data":"    \"n_ssm_layers\": 1,\n"}
+,{"stream_name":"stdout","time":100.666603051,"data":"    \"dropout\": 0.1,\n"}
+,{"stream_name":"stdout","time":100.666604891,"data":"    \"correction_weight\": 0.3,\n"}
+,{"stream_name":"stdout","time":100.666606801,"data":"    \"n_epochs\": 30,\n"}
+,{"stream_name":"stdout","time":100.666608721,"data":"    \"lr\": 0.001,\n"}
+,{"stream_name":"stdout","time":100.666610581,"data":"    \"patience\": 8\n"}
+,{"stream_name":"stdout","time":100.666612461,"data":"  },\n"}
+,{"stream_name":"stdout","time":100.666614271,"data":"  \"temperature\": {\n"}
+,{"stream_name":"stdout","time":100.666616131,"data":"    \"aves\": 1.1,\n"}
+,{"stream_name":"stdout","time":100.666628301,"data":"    \"texture\": 0.95\n"}
+,{"stream_name":"stdout","time":100.666630251,"data":"  },\n"}
+,{"stream_name":"stdout","time":100.666632041,"data":"  \"file_level_top_k\": 2,\n"}
+,{"stream_name":"stdout","time":100.666634071,"data":"  \"tta_shifts\": [\n"}
+,{"stream_name":"stdout","time":100.666635941,"data":"    0,\n"}
+,{"stream_name":"stdout","time":100.666637741,"data":"    1,\n"}
+,{"stream_name":"stdout","time":100.666639521,"data":"    -1\n"}
+,{"stream_name":"stdout","time":100.666641301,"data":"  ],\n"}
+,{"stream_name":"stdout","time":100.666643071,"data":"  \"rank_aware_scale\": true,\n"}
+,{"stream_name":"stdout","time":100.666644931,"data":"  \"rank_aware_power\": 0.5,\n"}
+,{"stream_name":"stdout","time":100.666646781,"data":"  \"delta_shift_alpha\": 0.15,\n"}
+,{"stream_name":"stdout","time":100.666648681,"data":"  \"threshold_grid\": [\n"}
+,{"stream_name":"stdout","time":100.666650531,"data":"    0.3,\n"}
+,{"stream_name":"stdout","time":100.666652341,"data":"    0.4,\n"}
+,{"stream_name":"stdout","time":100.666654141,"data":"    0.5,\n"}
+,{"stream_name":"stdout","time":100.666655921,"data":"    0.6,\n"}
+,{"stream_name":"stdout","time":100.666657701,"data":"    0.7\n"}
+,{"stream_name":"stdout","time":100.666659491,"data":"  ],\n"}
+,{"stream_name":"stdout","time":100.666661261,"data":"  \"probe_backend\": \"mlp\",\n"}
+,{"stream_name":"stdout","time":100.666663181,"data":"  \"mlp_params\": {\n"}
+,{"stream_name":"stdout","time":100.666665031,"data":"    \"hidden_layer_sizes\": [\n"}
+,{"stream_name":"stdout","time":100.666666911,"data":"      128\n"}
+,{"stream_name":"stdout","time":100.666668731,"data":"    ],\n"}
+,{"stream_name":"stdout","time":100.666670501,"data":"    \"activation\": \"relu\",\n"}
+,{"stream_name":"stdout","time":100.666672381,"data":"    \"max_iter\": 300,\n"}
+,{"stream_name":"stdout","time":100.666674231,"data":"    \"early_stopping\": true,\n"}
+,{"stream_name":"stdout","time":100.666677111,"data":"    \"validation_fraction\": 0.15,\n"}
+,{"stream_name":"stdout","time":100.666679121,"data":"    \"n_iter_no_change\": 15,\n"}
+,{"stream_name":"stdout","time":100.666681001,"data":"    \"random_state\": 42,\n"}
+,{"stream_name":"stdout","time":100.666682921,"data":"    \"learning_rate_init\": 0.001,\n"}
+,{"stream_name":"stdout","time":100.666684811,"data":"    \"alpha\": 0.01\n"}
+,{"stream_name":"stdout","time":100.666686671,"data":"  }\n"}
+,{"stream_name":"stdout","time":100.666688481,"data":"}\n"}
+,{"stream_name":"stdout","time":100.666700661,"data":"✅ V18 CFG loaded\n"}
+,{"stream_name":"stdout","time":100.666703451,"data":"✅ Cosine Restart Scheduler defined\n"}
+,{"stream_name":"stdout","time":100.666705411,"data":"✅ Mixup+CutMix defined\n"}
+,{"stream_name":"stdout","time":100.666707481,"data":"✅ Species Focal Loss defined\n"}
+,{"stream_name":"stdout","time":105.89703739,"data":"sc_clean: (739, 14)\n"}
+,{"stream_name":"stdout","time":105.897106821,"data":"Y_SC: (739, 234) uint8\n"}
+,{"stream_name":"stdout","time":105.897114321,"data":"Full files: 59\n"}
+,{"stream_name":"stdout","time":105.897120341,"data":"Trusted full windows: 708\n"}
+,{"stream_name":"stdout","time":105.897125681,"data":"Active classes in full windows: 71\n"}
+,{"stream_name":"stdout","time":105.897130501,"data":"✅ Class weights built\n"}
+,{"stream_name":"stdout","time":105.89713729,"data":"✅ Calibration + Threshold function defined\n"}
+,{"stream_name":"stdout","time":105.897141841,"data":"✅ Ensemble Weight Sweep defined\n"}
+,{"stream_name":"stdout","time":105.89714621,"data":"Using ONNX Perch (150x faster)\n"}
+,{"stream_name":"stderr","time":106.101050247,"data":"2026-05-19 01:33:02.083649: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)\n"}
+,{"stream_name":"stderr","time":106.314514925,"data":"2026-05-19 01:33:02.083649: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)\n"}
+,{"stream_name":"stderr","time":106.314550965,"data":"\n"}
+,{"stream_name":"stderr","time":106.314554774,"data":"2026-05-19 01:33:02.083649: E external/local_xla/xla/stream_executor/cuda/cuda_platform.cc:51] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)\n"}
+,{"stream_name":"stdout","time":110.311898237,"data":"Proxy targets by class: {'Amphibia': 3, 'Insecta': 0, 'Aves': 0}\n"}
+,{"stream_name":"stdout","time":110.311961747,"data":"Mapped classes: 203 / 234\n"}
+,{"stream_name":"stdout","time":110.311966217,"data":"Unmapped classes: 31\n"}
+,{"stream_name":"stdout","time":110.311969597,"data":"Selected frog proxy targets: ['1491113', '1595929', '25073']\n"}
+,{"stream_name":"stdout","time":110.311972767,"data":"Active texture classes: 42\n"}
+,{"stream_name":"stdout","time":110.311975937,"data":"Selected proxy active texture: 2\n"}
+,{"stream_name":"stdout","time":110.311979037,"data":"Prior-only active texture: 25\n"}
+,{"stream_name":"stdout","time":110.311981867,"data":"Prior-only active event: 2\n"}
+,{"stream_name":"stdout","time":110.311984517,"data":"V17 utilities defined: focal_bce_with_logits, file_level_confidence_scale, temporal_shift_tta,\n"}
+,{"stream_name":"stdout","time":110.311987547,"data":"  rank_aware_scaling, delta_shift_smooth, optimize_per_class_thresholds, apply_per_class_thresholds\n"}
+,{"stream_name":"stdout","time":110.311990907,"data":"No cache found. Running Perch on trusted full files...\n"}
+,{"stream_name":"stdout","time":220.779404755,"data":"Saved cache to:\n"}
+,{"stream_name":"stdout","time":220.779443275,"data":"   /kaggle/working/perch_cache/full_perch_meta.parquet\n"}
+,{"stream_name":"stdout","time":220.779449205,"data":"   /kaggle/working/perch_cache/full_perch_arrays.npz\n"}
+,{"stream_name":"stdout","time":220.779453745,"data":"meta_full: (708, 4)\n"}
+,{"stream_name":"stdout","time":220.779458495,"data":"scores_full_raw: (708, 234) float32\n"}
+,{"stream_name":"stdout","time":220.779463085,"data":"emb_full: (708, 1536) float32\n"}
+,{"stream_name":"stdout","time":220.779467945,"data":"Y_FULL: (708, 234) uint8\n"}
+,{"stream_name":"stdout","time":220.779473085,"data":"[Opsi 3] Using default proxy_reduce='max' (submit mode or no cache)\n"}
+,{"stream_name":"stdout","time":220.779478355,"data":"Building OOF meta-features...\n"}
+,{"stream_name":"stdout","time":220.779482965,"data":"Saved OOF meta-features to: /kaggle/working/perch_cache/full_oof_meta_features.npz\n"}
+,{"stream_name":"stdout","time":220.779487865,"data":"ProtoSSMv4 architecture defined (with cross-attention).\n"}
+,{"stream_name":"stdout","time":221.076123193,"data":"Parameter count: 3,531,445\n"}
+,{"stream_name":"stdout","time":221.076162293,"data":"ProtoSSM v4 training functions defined (with mixup, focal loss, SWA, TTA).\n"}
+,{"stream_name":"stdout","time":221.076168473,"data":"Using frozen BEST_PROBE in submit mode:\n"}
+,{"stream_name":"stdout","time":221.076173753,"data":"{'pca_dim': 128, 'min_pos': 5, 'C': 0.75, 'alpha': 0.45}\n"}
+,{"stream_name":"stdout","time":221.076178653,"data":"Final BEST_PROBE = {'pca_dim': 128, 'min_pos': 5, 'C': 0.75, 'alpha': 0.45}\n"}
+,{"stream_name":"stdout","time":221.076203643,"data":"Built final prior tables for inference.\n"}
+,{"stream_name":"stdout","time":221.076207053,"data":"OOF baseline AUC used for stacker training: 0.7999212856838273\n"}
+,{"stream_name":"stdout","time":221.918217348,"data":"emb_full: (708, 1536)\n"}
+,{"stream_name":"stdout","time":221.918275917,"data":"Z_FULL: (708, 128)\n"}
+,{"stream_name":"stdout","time":221.918279948,"data":"Explained variance ratio sum: 0.89977866\n"}
+,{"stream_name":"stdout","time":221.918282688,"data":"Reshaped to file-level: emb=(59, 12, 1536), logits=(59, 12, 234), labels=(59, 12, 234)\n"}
+,{"stream_name":"stdout","time":221.918284768,"data":"Files: 59\n"}
+,{"stream_name":"stdout","time":221.918286937,"data":"Taxonomic groups: 5\n"}
+,{"stream_name":"stdout","time":221.918288828,"data":"Sites mapped: 9 (capped to 20)\n"}
+,{"stream_name":"stdout","time":221.918291117,"data":"Submit mode: skipping OOF cross-validation\n"}
+,{"stream_name":"stdout","time":222.141300083,"data":"\n"}
+,{"stream_name":"stdout","time":222.141357843,"data":"ProtoSSM v4 parameters: 5,776,250\n"}
+,{"stream_name":"stdout","time":222.141362303,"data":"────────────────────────────────────────────────────────\n"}
+,{"stream_name":"stdout","time":222.141365933,"data":"──▶▶▶ProtoSSM Train...:\n"}
+,{"stream_name":"stdout","time":222.141367973,"data":"────────────────────────────────────────────────────────\n"}
+,{"stream_name":"stdout","time":222.141370403,"data":"────────────────────────────────────────────────────────\n"}
+,{"stream_name":"stdout","time":222.141372663,"data":"──▶▶▶ProtoSSM Load Model(TrainSkip)...:\n"}
+,{"stream_name":"stdout","time":222.141374623,"data":"────────────────────────────────────────────────────────\n"}
+,{"stream_name":"stdout","time":222.559741411,"data":"▶ [Load] Loaded pre-trained ProtoSSM from /kaggle/input/datasets/hideyukizushi/sgkfk-202604041716/train_proto_ssm_single/models/proto_ssm_best.pt\n"}
+,{"stream_name":"stdout","time":222.559822971,"data":"Final model training time: 0.4s\n"}
+,{"stream_name":"stdout","time":222.559826871,"data":"Fusion alpha: mean=0.5009 min=0.4931 max=0.5069\n"}
+,{"stream_name":"stdout","time":254.689829608,"data":"MLP probes trained: 58\n"}
+,{"stream_name":"stdout","time":254.689899308,"data":"\n"}
+,{"stream_name":"stdout","time":254.689906108,"data":"Using default ensemble weight: ProtoSSM=0.50\n"}
+,{"stream_name":"stdout","time":254.689910778,"data":"Wall time: 2.6 min\n"}
+,{"stream_name":"stdout","time":254.689915008,"data":"Loading pretrained ResidualSSM...\n"}
+,{"stream_name":"stdout","time":254.689919658,"data":"▶ [Load] Loaded ResidualSSM from /kaggle/input/datasets/hideyukizushi/sgkfk-202604041716/ResidualSSM/models/residual_ssm_best.pt\n"}
+,{"stream_name":"stdout","time":254.689925168,"data":"Skipping train diagnostics in submit mode.\n"}
+,{"stream_name":"stdout","time":254.689929748,"data":"Hidden test not mounted. Dry-run on first 20 train soundscapes.\n"}
+,{"stream_name":"stdout","time":291.329689766,"data":"proxy_reduce used for test inference: 'max'\n"}
+,{"stream_name":"stdout","time":291.329726296,"data":"meta_test: (240, 4)\n"}
+,{"stream_name":"stdout","time":291.329731246,"data":"scores_test_raw: (240, 234)\n"}
+,{"stream_name":"stdout","time":291.329735396,"data":"emb_test: (240, 1536)\n"}
+,{"stream_name":"stdout","time":291.329769746,"data":"Running TTA with shifts: [0, 1, -1, 2, -2]\n"}
+,{"stream_name":"stdout","time":291.755799349,"data":"ProtoSSM v4 test scores: (240, 234)\n"}
+,{"stream_name":"stdout","time":291.755848379,"data":"Score range: -5.963 to 5.960\n"}
+,{"stream_name":"stdout","time":291.755852689,"data":"\n"}
+,{"stream_name":"stdout","time":291.755856239,"data":"Using OOF-optimized ensemble weight: 0.50\n"}
+,{"stream_name":"stdout","time":291.755859549,"data":"\n"}
+,{"stream_name":"stdout","time":291.755862669,"data":"Residual correction: mean_abs=0.4487, max=1.0606\n"}
+,{"stream_name":"stdout","time":291.755867009,"data":"Final scores (after residual): range [-9.872, 10.228]\n"}
+,{"stream_name":"stdout","time":291.755871139,"data":"Final scores: (240, 234)\n"}
+,{"stream_name":"stdout","time":291.755874379,"data":"\n"}
+,{"stream_name":"stdout","time":291.755878029,"data":"Window position mean scores: ['-0.141', '-0.160', '-0.150', '-0.160', '-0.148', '-0.150', '-0.174', '-0.182', '-0.168', '-0.166', '-0.158', '-0.152']\n"}
+,{"stream_name":"stdout","time":291.755881849,"data":"  Aves: mean_score=0.2414 (n_classes=162)\n"}
+,{"stream_name":"stdout","time":291.755884919,"data":"  Reptilia: mean_score=-0.2098 (n_classes=1)\n"}
+,{"stream_name":"stdout","time":291.755887689,"data":"  Insecta: mean_score=-0.3723 (n_classes=28)\n"}
+,{"stream_name":"stdout","time":291.755890409,"data":"  Mammalia: mean_score=-0.6647 (n_classes=8)\n"}
+,{"stream_name":"stdout","time":291.755893769,"data":"  Amphibia: mean_score=-1.7247 (n_classes=35)\n"}
+,{"stream_name":"stdout","time":291.755896979,"data":"\n"}
+,{"stream_name":"stdout","time":291.755899979,"data":"Prototype nearest-neighbor similarity: mean=0.472, max=1.000\n"}
+,{"stream_name":"stdout","time":291.755902879,"data":"Using default per-class thresholds (0.5) for submit mode\n"}
+,{"stream_name":"stdout","time":291.755906119,"data":"\n"}
+,{"stream_name":"stdout","time":291.755908949,"data":"Per-taxon temperature: Aves=1.1, Texture=0.95\n"}
+,{"stream_name":"stdout","time":291.755912299,"data":"Applying file-level confidence scaling (top_k=2)\n"}
+,{"stream_name":"stdout","time":291.755915239,"data":"Applying rank-aware scaling (power=0.4)\n"}
+,{"stream_name":"stdout","time":291.755918199,"data":"Applying delta shift smoothing (alpha=0.2)\n"}
+,{"stream_name":"stdout","time":291.755921389,"data":"Applying per-class threshold sharpening...\n"}
+,{"stream_name":"stdout","time":291.780139495,"data":"\n"}
+,{"stream_name":"stdout","time":291.780175355,"data":"Saved submission.csv\n"}
+,{"stream_name":"stdout","time":291.780179745,"data":"Submission shape: (240, 235)\n"}
+,{"stream_name":"stdout","time":291.780184195,"data":"Final score range: 0.000000 to 0.999940\n"}
+,{"stream_name":"stdout","time":291.780187655,"data":"Final mean: 0.2451\n"}
+,{"stream_name":"stdout","time":291.780190835,"data":"                                     row_id   1161364    116570   1176823  \\\n"}
+,{"stream_name":"stdout","time":291.780194365,"data":"0   BC2026_Train_0001_S08_20250606_030007_5  0.102530  0.203567  0.028064   \n"}
+,{"stream_name":"stdout","time":291.780197875,"data":"1  BC2026_Train_0001_S08_20250606_030007_10  0.119642  0.219352  0.023560   \n"}
+,{"stream_name":"stdout","time":291.780201305,"data":"2  BC2026_Train_0001_S08_20250606_030007_15  0.114578  0.192529  0.025401   \n"}
+,{"stream_name":"stdout","time":291.780204535,"data":"\n"}
+,{"stream_name":"stdout","time":291.780207535,"data":"        1491113       1595929    209233     22930  \n"}
+,{"stream_name":"stdout","time":291.780210585,"data":"0  7.966175e-07  3.018277e-08  0.293410  0.013403  \n"}
+,{"stream_name":"stdout","time":291.780232165,"data":"1  7.945709e-07  2.803291e-08  0.301797  0.011346  \n"}
+,{"stream_name":"stdout","time":291.780236345,"data":"2  6.998573e-07  2.838533e-08  0.285229  0.012233  \n"}
+,{"stream_name":"stdout","time":291.780239615,"data":"Saved /kaggle/working/v17_logs.json\n"}
+,{"stream_name":"stdout","time":291.780242535,"data":"Submit mode completed.\n"}
+,{"stream_name":"stdout","time":291.780245655,"data":"ProtoSSM v5 parameters: 5,776,250\n"}
+,{"stream_name":"stdout","time":291.780248865,"data":"Ensemble weight: 0.50\n"}
+,{"stream_name":"stdout","time":291.780251785,"data":"Wall time: 191.3s\n"}
+,{"stream_name":"stdout","time":291.780255175,"data":"V17 improvements: ['d_model_256', 'n_ssm_layers_3', 'cross_attention', 'mixup', 'focal_loss', 'swa', 'per_taxon_temperature', 'file_level_scaling', 'tta', 'rank_aware_scaling', 'delta_shift_smooth', 'per_class_thresholds']\n"}
+,{"stream_name":"stdout","time":292.323519589,"data":"ONNX Runtime available\n"}
+,{"stream_name":"stdout","time":292.323575799,"data":"Global random seed set to 4\n"}
+,{"stream_name":"stdout","time":292.323580589,"data":"MODE = submit\n"}
+,{"stream_name":"stdout","time":292.323583849,"data":"Using competition data: /kaggle/input/competitions/birdclef-2026\n"}
+,{"stream_name":"stdout","time":292.323587019,"data":"CFG loaded\n"}
+,{"stream_name":"stdout","time":292.323590079,"data":"Classes: 234 | Fully-labeled files: 59\n"}
+,{"stream_name":"stdout","time":292.323592989,"data":"Full-file windows: 708 | Active classes: 71\n"}
+,{"stream_name":"stdout","time":301.529803696,"data":"Using ONNX Perch: perch_v2_no_dft.onnx\n"}
+,{"stream_name":"stdout","time":301.529847606,"data":"Mapped: 203 / 234 species have a Perch logit\n"}
+,{"stream_name":"stdout","time":301.529852156,"data":"Unmapped: 31 | Proxy: 3 | No signal: 28\n"}
+,{"stream_name":"stdout","time":301.529855456,"data":"Perch inference engine defined\n"}
+,{"stream_name":"stdout","time":301.529858646,"data":"USE_ONNX = True\n"}
+,{"stream_name":"stdout","time":301.529861666,"data":"Using Perch cache: /kaggle/input/datasets/jaejohn/perch-meta/full_perch_meta.parquet /kaggle/input/datasets/jaejohn/perch-meta/full_perch_arrays.npz\n"}
+,{"stream_name":"stdout","time":301.529864816,"data":"Using external cache: /kaggle/input/datasets/jaejohn/perch-meta\n"}
+,{"stream_name":"stdout","time":301.833316178,"data":"sc_tr: (708, 234)  emb_tr: (708, 1536)  Y_FULL_aligned: (708, 234)\n"}
+,{"stream_name":"stdout","time":301.833386148,"data":"Sequence Models defined\n"}
+,{"stream_name":"stdout","time":301.833399628,"data":"No hidden test — dry-run on 20 train files\n"}
+,{"stream_name":"stdout","time":338.878148746,"data":"Test scores: (240, 234)\n"}
+,{"stream_name":"stdout","time":350.002819458,"data":"ProtoSSM training: 11.2s\n"}
+,{"stream_name":"stdout","time":350.317873638,"data":"Embedding: (708, 1536) → PCA: (708, 64)  (variance retained: 81.47%)\n"}
+,{"stream_name":"stdout","time":363.698682005,"data":"Trained 58 MLP probes\n"}
+,{"stream_name":"stdout","time":363.698731085,"data":"[LB0.948] Per-class first-pass weights: mapped=0.60 unmapped=0.35\n"}
+,{"stream_name":"stdout","time":364.149083934,"data":"Calibrated 31 classes | Mean threshold: 0.463 | Range: [0.20, 0.50]\n"}
+,{"stream_name":"stdout","time":365.660776935,"data":"ResidualSSM training: 1.5s\n"}
+,{"stream_name":"stdout","time":365.660831205,"data":"  correction_weight=0.10  OOF macro-AUC=0.99241\n"}
+,{"stream_name":"stdout","time":365.660836515,"data":"  correction_weight=0.15  OOF macro-AUC=0.99241\n"}
+,{"stream_name":"stdout","time":365.660839765,"data":"  correction_weight=0.20  OOF macro-AUC=0.99240\n"}
+,{"stream_name":"stdout","time":365.660884625,"data":"  correction_weight=0.25  OOF macro-AUC=0.99240\n"}
+,{"stream_name":"stdout","time":366.348217756,"data":"  correction_weight=0.30  OOF macro-AUC=0.99240\n"}
+,{"stream_name":"stdout","time":366.348257576,"data":"  correction_weight=0.35  OOF macro-AUC=0.99239\n"}
+,{"stream_name":"stdout","time":366.348260936,"data":"  correction_weight=0.40  OOF macro-AUC=0.99239\n"}
+,{"stream_name":"stdout","time":366.348263676,"data":"[Tweak C] Best correction_weight=0.10  (AUC=0.99241)\n"}
+,{"stream_name":"stdout","time":366.348265756,"data":"ProtoSSM execution complete\n"}
+,{"stream_name":"stdout","time":366.348269136,"data":"Total wall time so far: 1.2 min\n"}
+,{"stream_name":"stdout","time":366.548539964,"data":"Memory freed. Ready for SED cell.\n"}
+,{"stream_name":"stdout","time":430.722569707,"data":"SED dir: /kaggle/input/datasets/tuckerarrants/bc2026-distilled-sed-public\n"}
+,{"stream_name":"stdout","time":430.722661347,"data":"SED folds loaded: ['sed_fold0.onnx', 'sed_fold1.onnx', 'sed_fold2.onnx', 'sed_fold3.onnx', 'sed_fold4.onnx']\n"}
+,{"stream_name":"stdout","time":447.799687419,"data":"SED: 1/20\n"}
+,{"stream_name":"stdout","time":485.795713405,"data":"SED: 20/20\n"}
+,{"stream_name":"stdout","time":485.795828945,"data":"Distilled SED Processing Complete. Shape: (240, 235)\n"}
+,{"stream_name":"stdout","time":485.795838535,"data":"BirdNET explicitly disabled for v94 license compatibility.\n"}
+,{"stream_name":"stdout","time":485.795866925,"data":"BirdNET model not found — will use original xSED rank blend\n"}
+,{"stream_name":"stdout","time":485.796005995,"data":"BirdNET inference engine defined\n"}
+,{"stream_name":"stdout","time":485.796013285,"data":"Executing xSED 2-way rank blend (0.6000 Proto / 0.4000 SED)\n"}
+,{"stream_name":"stdout","time":485.796017845,"data":"Sonotype mirroring applied to 10 columns.\n"}
+,{"stream_name":"stdout","time":485.796022205,"data":"Adaptive thresholding applied to 44 rare species.\n"}
+,{"stream_name":"stdout","time":485.796026495,"data":"Dry-run detected: Aligning rows with sample_submission.csv\n"}
+,{"stream_name":"stdout","time":485.796030745,"data":"Blend and post-processing complete. Saved subm_karnakbayev_power_optimization.csv shape=(3, 235)\n"}
+,{"stream_name":"stdout","time":485.796035015,"data":"Ready for submission!\n"}
+,{"stream_name":"stdout","time":485.801364635,"data":"subm_karnakbayev_power_optimization.csv passed basic diagnostics.\n"}
+,{"stream_name":"stdout","time":485.801411044,"data":"Ensemble: ['Karnakbayev_PowerOptimization_LB0948'],   LB: ['0.948'],   weights: [1.0]\n"}
+,{"stream_name":"stdout","time":485.837797658,"data":"Wrote submission.csv: rows=3, cols=235, min=0.476870, max=0.555666\n"}
+,{"stream_name":"stdout","time":486.032899183,"data":"Ensemble: ['Model_2', 'Model_5'],   LB: ['0.928', '0.949'],   weights: [0.0327, 0.9673]\n"}
+,{"stream_name":"stderr","time":488.799419932,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":488.799483492,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":488.799489762,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":488.800902362,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":488.800965662,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":488.800971212,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":488.801117152,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":488.801122441,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":488.801124801,"data":"Exception encountered at \"In [10]\":\n"}
+,{"stream_name":"stderr","time":488.801127112,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":488.801129152,"data":"AssertionError                            Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":488.801131092,"data":"/tmp/ipykernel_16/3188600236.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":488.801133952,"data":"----\u003e 1 submission = f_add()\n"}
+,{"stream_name":"stderr","time":488.801136341,"data":"      2 \n"}
+,{"stream_name":"stderr","time":488.801139001,"data":"      3 submission.to_csv(f\"submission.csv\", index=True)\n"}
+,{"stream_name":"stderr","time":488.801141172,"data":"      4 \n"}
+,{"stream_name":"stderr","time":488.801143132,"data":"      5 # ── Submission diagnostics ────────────────────────────────────────────────────\n"}
+,{"stream_name":"stderr","time":488.801148772,"data":"\n"}
+,{"stream_name":"stderr","time":488.801151692,"data":"/tmp/ipykernel_16/3891653774.py in direct()\n"}
+,{"stream_name":"stderr","time":488.801155232,"data":"    142 \n"}
+,{"stream_name":"stderr","time":488.801158892,"data":"    143 def direct():\n"}
+,{"stream_name":"stderr","time":488.801162481,"data":"--\u003e 144     if len(_ensemble_models) == 2:  return direct_add2()\n"}
+,{"stream_name":"stderr","time":488.801166401,"data":"\n"}
+,{"stream_name":"stderr","time":488.801169381,"data":"/tmp/ipykernel_16/3891653774.py in direct_add2()\n"}
+,{"stream_name":"stderr","time":488.801172832,"data":"     43         missing = base_idx.difference(df.index)\n"}
+,{"stream_name":"stderr","time":488.801176021,"data":"     44         extra = df.index.difference(base_idx)\n"}
+,{"stream_name":"stderr","time":488.801179041,"data":"---\u003e 45         assert len(missing) == 0 and len(extra) == 0, (\n"}
+,{"stream_name":"stderr","time":488.801181981,"data":"     46             f\"row_id mismatch in {path}: missing={len(missing)}, extra={len(extra)}\"\n"}
+,{"stream_name":"stderr","time":488.801185172,"data":"     47         )\n"}
+,{"stream_name":"stderr","time":488.801188272,"data":"\n"}
+,{"stream_name":"stderr","time":488.801191412,"data":"AssertionError: row_id mismatch in subm_5.csv: missing=240, extra=3\n"}
+,{"stream_name":"stderr","time":488.801194732,"data":"\n"}
+,{"stream_name":"stderr","time":491.890164811,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":491.890234081,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":492.116473821,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":492.116535191,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":492.810968058,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":493.111087545,"data":"[NbConvertApp] Writing 423529 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":496.00116995,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":498.024482609,"data":"[NbConvertApp] Writing 1764776 bytes to __results__.html\n"}
+]

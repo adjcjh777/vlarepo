@@ -1,0 +1,10 @@
+name,rows,macro_auc,micro_auc,top1_hit,top5_hit,decision_note
+submission_v102,120,0.98897867,0.92916937,0.38356164,0.69863014,best local macro among tested v102/side-output blends but weak top-hit profile
+blend_sed_v102_w40,120,0.98855700,0.91359206,0.32876712,0.65753425,lower than standalone v102
+blend_sed_v102_w30,120,0.98836552,0.91194233,0.32876712,0.68493151,lower than standalone v102
+blend_sed_v102_w20,120,0.98815966,0.90901564,0.32876712,0.68493151,lower than standalone v102
+blend_sed_v102_w15,120,0.98819153,0.90700018,0.32876712,0.67123288,lower than standalone v102
+blend_sed_v102_w10,120,0.98803098,0.90455975,0.32876712,0.65753425,lower than standalone v102
+blend_sed_v102_w05,120,0.98798025,0.90171712,0.31506849,0.64383562,lower than standalone v102
+blend_protossm_v102_w40,120,0.98696664,0.91479905,0.19178082,0.56164384,lower than standalone v102
+blend_subm2_v102_w40,120,0.98618697,0.91627886,0.16438356,0.50684932,lower than standalone v102

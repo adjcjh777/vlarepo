@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v102-original-macro-risk-rescue-v1/submission.csv,120,234,313,22,0.98897867,0.92916937,0.38356164,0.69863014,0.01120845,0.99961380,0.50668143,0.25997706

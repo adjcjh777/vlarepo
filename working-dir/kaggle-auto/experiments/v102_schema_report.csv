@@ -1,0 +1,15 @@
+check,status,value,notes
+runmode_status,PASS,COMPLETE,Kaggle kernel version 1 completed.
+metadata_private,PASS,true,Private kernel.
+metadata_cpu_only,PASS,true,enable_gpu=false and enable_tpu=false.
+metadata_no_internet,PASS,true,enable_internet=false.
+competition_source,PASS,birdclef-2026,Competition source attached.
+runmode_runtime_s,PASS,249.49,Maximum logged Kaggle time in Run-mode output.
+runmode_submission_shape,PASS,"(120, 235)",Run-mode train-staging output.
+runmode_row_id_duplicates,PASS,false,No duplicate row_id values.
+runmode_finite,PASS,true,No NaN or infinite values.
+runmode_range,PASS,"[0.011208452, 0.9996138]",Predictions are within [0 to 1].
+runmode_mean_std,PASS,"0.5066814283 / 0.2599770554",Distribution is non-degenerate.
+runmode_sha256,PASS,1b57e53eeb95cdb72dc0187f7f62c6882a015553dea9ae92a2c5aa85616c87e4,Run-mode output checksum.
+original_rescue_log,PASS,"active_rescue=16; ctx_cells=149",Log contains V102 original macro-risk rescue counts.
+real_submission,LOCKED,v101_pending,Do not submit while v101 ref 52795021 is PENDING.

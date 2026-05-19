@@ -485,5 +485,7 @@
 ## 2026-05-19 v134 Heartbeat Retarget v2
 - Updated the `BirdCLEF v134 next-window gate check` heartbeat again so it now prefers `python3 scripts/recheck_and_optionally_submit_v134.py --write` as the first-step refresh command, with `check_v134_window_bundle.py --write` as the expanded fallback summary.
 - Practical implication: once the UTC window changes, the automation now starts from the highest-level `NOT-READY / READY-BUT-DRYRUN-ONLY / EXECUTED` wrapper verdict instead of requiring a human to infer action from lower-level gate pieces.
+- Updated the heartbeat schedule again to a daily wall-clock check at `08:05` local time, aligned to the post-UTC-rollover window instead of refreshing every 30 minutes through the whole UTC day.
+- Practical implication: less same-day churn, faster signal right after the only time boundary that currently matters.
 - Refreshed again at `2026-05-19 13:47:39 UTC`; `v139` still reports `gate_decision=WAIT-SAME-UTC-DAY`, `recheck_verdict=WAIT-SAME-UTC-DAY`, `ready_for_guarded_submit=False`, `wrapper_verdict=NOT-READY`.
 - Practical implication unchanged: even the top-level wrapper remains safely blocked before UTC rollover.

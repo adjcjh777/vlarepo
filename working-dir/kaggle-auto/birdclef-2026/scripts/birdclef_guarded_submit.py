@@ -123,6 +123,15 @@ CANDIDATES: dict[str, Candidate] = {
         ),
         priority_note="first UTC 2026-05-19 submission candidate after v90 was held for BirdNET CC BY-NC risk",
     ),
+    "v120": Candidate(
+        kernel="junhaochengadjcjh7u7/bc26-v120-clean-tsubasa-sidecar",
+        version=1,
+        message=(
+            "Original clean v120: Perch-only clean anchor plus 0.15 CC0 Tsubasa ConvNeXt SED sidecar; "
+            "CPU-only Run-mode COMPLETE ~683s; no unknown-license runtime inputs"
+        ),
+        priority_note="third UTC 2026-05-19 slot candidate; bold clean macro-proxy uplift over v110/v114",
+    ),
 }
 
 

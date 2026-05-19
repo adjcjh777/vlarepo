@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v120-clean-tsubasa-sidecar-v1/submission.csv,120,234,313,22,0.98139925,0.91435250,0.19178082,0.47945205,0.01346187,0.99914530,0.52107801,0.23614894

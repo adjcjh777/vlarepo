@@ -1,0 +1,23 @@
+{
+  "id": "junhaochengadjcjh7u7/bc26-v120-clean-tsubasa-sidecar",
+  "title": "bc26-v120-clean-tsubasa-sidecar",
+  "code_file": "submission.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [],
+  "dataset_sources": [
+    "rishikeshjani/perch-onnx-for-birdclef-2026",
+    "tsubasatech/birdclef-2026-snowflake-sed"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "birdclef-2026"
+  ],
+  "model_sources": [
+    "google/bird-vocalization-classifier/TensorFlow2/perch_v2_cpu/1"
+  ]
+}

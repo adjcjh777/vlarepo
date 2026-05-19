@@ -116,6 +116,8 @@ birdclef-2026/notebooks/v119-roniheka-hgnet-sed/kernel-metadata.json	kernel_meta
 birdclef-2026/notebooks/v119-roniheka-hgnet-sed/submission.ipynb	notebook	v119-roniheka-hgnet-sed	65938	
 birdclef-2026/notebooks/v12-oof-blend/kernel-metadata.json	kernel_metadata	v12-oof-blend	671	
 birdclef-2026/notebooks/v12-oof-blend/submission.ipynb	notebook	v12-oof-blend	24212	
+birdclef-2026/notebooks/v120-clean-tsubasa-sidecar/kernel-metadata.json	kernel_metadata	v120-clean-tsubasa-sidecar	610	
+birdclef-2026/notebooks/v120-clean-tsubasa-sidecar/submission.ipynb	notebook	v120-clean-tsubasa-sidecar	102153	
 birdclef-2026/notebooks/v13-consensus-rank/kernel-metadata.json	kernel_metadata	v13-consensus-rank	681	
 birdclef-2026/notebooks/v13-consensus-rank/submission.ipynb	notebook	v13-consensus-rank	25783	
 birdclef-2026/notebooks/v14-attributed-safe-ensemble/kernel-metadata.json	kernel_metadata	v14-attributed-safe-ensemble	820	
@@ -338,6 +340,10 @@ birdclef-2026/outputs/v117-tsubasa-convnext-noremap-v1/v117_tsubasa_convnext_nor
 birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/bc26-v119-roniheka-hgnet-sed.log	runtime_log	v119-roniheka-hgnet-sed-v1	14483	
 birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/submission.csv	submission_or_test_pred	v119-roniheka-hgnet-sed-v1	303009	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
 birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/v119_roniheka_hgnet_sed_remap_diagnostics.csv	csv_data_or_report	v119-roniheka-hgnet-sed-v1	10023	primary_label,support,same_col,best_col,remapped,strength,same_auc,best_auc
+birdclef-2026/outputs/v120-clean-tsubasa-sidecar-v1/bc26-v120-clean-tsubasa-sidecar.log	runtime_log	v120-clean-tsubasa-sidecar-v1	17556	
+birdclef-2026/outputs/v120-clean-tsubasa-sidecar-v1/submission.csv	submission_or_test_pred	v120-clean-tsubasa-sidecar-v1	302538	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
+birdclef-2026/outputs/v120-clean-tsubasa-sidecar-v1/v120_clean_tsubasa_branch_summary.csv	csv_data_or_report	v120-clean-tsubasa-sidecar-v1	320	branch,weight,min,max,mean,std
+birdclef-2026/outputs/v120-clean-tsubasa-sidecar-v1/v120_tsubasa_sidecar_remap_diagnostics.csv	csv_data_or_report	v120-clean-tsubasa-sidecar-v1	9994	primary_label,support,same_col,best_col,remapped,strength,same_auc,best_auc
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/bc26-v87-attributed-nina-eos5-v38plus.log	runtime_log	v87-attributed-nina-eos5-v38plus	29165	
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/perch_cache/full_perch_meta.parquet	other	perch_cache	9298	
 birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus/subm_2.csv	submission_or_test_pred	v87-attributed-nina-eos5-v38plus	658395	row_id,1161364,116570,1176823,1491113,1595929,209233,22930
@@ -407,7 +413,7 @@ birdclef-2026/scripts/birdclef_0805_runner.py	script	scripts	2667
 birdclef-2026/scripts/birdclef_build_v102_original_rescue_table.py	script	scripts	5113	
 birdclef-2026/scripts/birdclef_candidate_audit.py	script	scripts	5217	
 birdclef-2026/scripts/birdclef_goal_check.py	script	scripts	4045	
-birdclef-2026/scripts/birdclef_guarded_submit.py	script	scripts	11618	
+birdclef-2026/scripts/birdclef_guarded_submit.py	script	scripts	12060	
 birdclef-2026/scripts/birdclef_monitor.py	script	scripts	10263	
 birdclef-2026/scripts/birdclef_prepare_adkasd_strong_nobirdnet.py	script	scripts	5856	
 birdclef-2026/scripts/birdclef_prepare_alexy_cnn_cpu.py	script	scripts	7882	
@@ -432,6 +438,7 @@ birdclef-2026/scripts/birdclef_prepare_v115_tsubasa_snowflake_sed.py	script	scri
 birdclef-2026/scripts/birdclef_prepare_v116_tsubasa_convnext_sed.py	script	scripts	6149	
 birdclef-2026/scripts/birdclef_prepare_v117_tsubasa_convnext_noremap.py	script	scripts	6090	
 birdclef-2026/scripts/birdclef_prepare_v119_roniheka_hgnet_sed.py	script	scripts	10896	
+birdclef-2026/scripts/birdclef_prepare_v120_clean_tsubasa_sidecar.py	script	scripts	8737	
 birdclef-2026/scripts/birdclef_prepare_youssef_e1.py	script	scripts	6182	
 birdclef-2026/scripts/birdclef_prepare_youssef_e1_nobirdnet.py	script	scripts	6237	
 birdclef-2026/scripts/birdclef_probe_v118_ecohabitat_rescue.py	script	scripts	7748	

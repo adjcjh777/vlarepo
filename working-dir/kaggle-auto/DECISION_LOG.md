@@ -199,3 +199,15 @@
 - Correlation vs v114 was lower than prior clean self-blends (`Pearson=0.718637`, MAD `0.148267`), but the quality loss is too large to justify a real slot.
 - Refreshed `birdclef_goal_check.py` at `2026-05-19 07:24:45 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `2/5`.
 - Decision: `REJECT - do not submit v119`; preserve as a clean negative result and stop direct Roniheka HGNet tuning unless new train-window evidence appears.
+
+## 2026-05-19 v120 Clean Tsubasa Sidecar Guarded Submit
+- Built `birdclef-2026/notebooks/v120-clean-tsubasa-sidecar` from the clean v110/v116 line and pushed Kaggle Run-mode only as `junhaochengadjcjh7u7/bc26-v120-clean-tsubasa-sidecar`.
+- Original contribution: v120 recomputes a Perch-only clean anchor and a CC0 Tsubasa ConvNeXt SED sidecar inside one CPU/no-internet notebook, then emits a pre-declared `0.85/0.15` probability blend without mounting prior output CSVs.
+- Static compliance passed: private kernel, CPU-only, internet disabled, competition source present, Perch CC0 source present, Tsubasa CC0 source present, Google Perch model source present, and unknown-license Perch/SED/cache inputs excluded.
+- Kaggle Run-mode completed and saved output at about `683.4s`; nbconvert finished at about `696.8s`, below the 90-minute cap.
+- Schema passed for dry-run rows: `120 x 235`, sample column order matched, all finite, no duplicate row IDs, range `[0.013462, 0.999145]`.
+- Proxy improved over the clean branch: v120 `macro=0.98139925`, `micro=0.91435250`, `top5=0.47945205`; v114 baseline `macro=0.97920102`.
+- Correlation is high but controlled vs clean anchors: vs v110 Pearson `0.994670`, vs v114 Pearson `0.994543`; vs Tsubasa sidecar Pearson `0.827078`.
+- Refreshed `birdclef_goal_check.py` at `2026-05-19 07:47:21 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions were `2/5` before v120.
+- Decision: `SUBMIT - guarded slot 3`; v120 is a bold clean macro-proxy candidate, not a final selection until public score is recorded.
+- Real submission executed at `2026-05-19 07:49:31 UTC`, Kaggle ref `52802748`; initial status `PENDING`, public score blank. UTC `2026-05-19` visible submissions are now `3/5`.

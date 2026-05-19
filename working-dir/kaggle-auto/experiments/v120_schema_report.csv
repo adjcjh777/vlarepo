@@ -1,0 +1,2 @@
+candidate,path,rows,columns,matches_sample_columns,matches_sample_rows,duplicate_row_ids,all_finite,min,max,mean,std
+v120,birdclef-2026/outputs/v120-clean-tsubasa-sidecar-v1/submission.csv,120,235,True,False,0,True,0.013461866,0.9991453,0.5210780120264957,0.23614893664974163

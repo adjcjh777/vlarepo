@@ -1,0 +1,7 @@
+candidate,reference,reference_path,status,pearson_flat,mean_abs_diff,max_abs_diff
+v120,v103_hold_unknown_license,birdclef-2026/outputs/v103-guarded-macro-risk-rescue-v1/submission.csv,ok,0.7955145187312117,0.12470793841274927,0.80679131
+v120,v110_clean_anchor,birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/submission.csv,ok,0.9946696723387843,0.01935418369330484,0.13101002
+v120,v113_lantingguo,birdclef-2026/outputs/v113-lantingguo-melnorm-ecoproto-v1/submission.csv,ok,0.9785948966795447,0.02588107711153846,0.7245187
+v120,v114_selfblend,birdclef-2026/outputs/v114-v110-v113-selfblend-v1/submission.csv,ok,0.9945434530024347,0.019449008672685182,0.12698960000000004
+v120,v116_tsubasa_sidecar,birdclef-2026/outputs/v116-tsubasa-convnext-sed-v1/submission.csv,ok,0.8270775470601993,0.10967370714081195,0.74239006
+v120,v119_roniheka,birdclef-2026/outputs/v119-roniheka-hgnet-sed-v1/submission.csv,ok,0.7305622709283882,0.14453857494512107,0.7519408700000001

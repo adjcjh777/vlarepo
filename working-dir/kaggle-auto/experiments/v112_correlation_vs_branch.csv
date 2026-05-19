@@ -1,0 +1,5 @@
+name,rows,pearson,spearman,source
+v112_vs_v110,120,0.7797473879957812,0.7752954457887324,birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/submission.csv
+v112_vs_v111,120,0.8677480138857315,0.8668748263280363,birdclef-2026/outputs/v111-clean-sed-ecoproto-blend-v1/submission.csv
+v112_vs_v103,120,0.649594153787447,0.64594332395423,birdclef-2026/outputs/v103-guarded-macro-risk-rescue-v1/submission.csv
+v112_vs_v87,3,,,birdclef-2026/outputs/v87-attributed-nina-eos5-v38plus-v2/submission.csv (row_id mismatch or unavailable)

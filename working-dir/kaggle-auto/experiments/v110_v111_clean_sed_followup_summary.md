@@ -1,6 +1,6 @@
-# v110-v111 Clean Branch Follow-Up Summary
+# v110-v112 Clean Branch Follow-Up Summary
 
-Updated: 2026-05-19 05:12 UTC
+Updated: 2026-05-19 05:32 UTC
 
 ## v110
 
@@ -23,9 +23,21 @@ v111 tested a newly audited CC0 clean SED source:
 - Proxy: `macro=0.75704093`, `micro=0.77120047`, `top1=0.12328767`, `top5=0.27397260`
 - Decision: `REJECT`, clean but quality-breaking.
 
+## v112
+
+v112 tested an original train-window class-output remap for the same CC0 clean SED source:
+
+- Source: `backtracking/birdclef2026-clean-sed-b0`
+- Mechanism: 234-by-234 train-window output-to-target remap with per-class trust strength
+- Status: `COMPLETE`
+- Runtime: about `363.2s` before save
+- Remap diagnostics: `46/234` classes remapped; clean SED train-window AUC mean `0.9283`
+- Proxy: `macro=0.87568304`, `micro=0.83667571`, `top1=0.23287671`, `top5=0.53424658`
+- Decision: `REJECT`, diagnostic value only; train-window alignment did not transfer enough.
+
 ## Current Best Clean Fallback
 
-`v110-ecoproto-clean-blend` remains the best license-clean fallback among v104-v111.
+`v110-ecoproto-clean-blend` remains the best license-clean fallback among v104-v112.
 
 ## Current Goal Gate
 
@@ -38,8 +50,7 @@ v111 tested a newly audited CC0 clean SED source:
 
 ## Next Direction
 
-Stop direct use of the backtracking clean SED B0 model. Continue with:
+Stop direct or remapped strong use of the backtracking clean SED B0 model. Continue with:
 
 - backup CC0 SED audit (`lantingguo`, `tsubasatech`);
 - or internal distillation/class-order alignment before any clean SED can influence final predictions.
-

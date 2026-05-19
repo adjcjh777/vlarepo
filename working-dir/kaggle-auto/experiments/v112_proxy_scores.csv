@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v112-clean-sed-remap-ecoproto-v1/submission.csv,120,234,313,22,0.87568304,0.83667571,0.23287671,0.53424658,0.01261675,0.99924165,0.52086102,0.24959595

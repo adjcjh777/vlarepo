@@ -252,3 +252,12 @@
 - Best row: `v114_clean_selfblend_router_m0_w0.7_rankcal`, macro `0.98060057`, micro `0.91703497`, top5 `0.52054795`, Pearson vs anchor `0.99706961`, MAD `0.00218707`, routed classes `6`.
 - Routed classes: `47158son01`, `47158son13`, `47158son21`, `47158son22`, `47158son23`, `plcjay1`; routed sources are v112 and v119.
 - Decision: `HOLD - do not submit`. v125 is a genuine original/non-Tsubasa innovation probe and improves v114 by about `+0.00140` local macro, but the gain is narrow, includes a 1-positive class (`plcjay1`), does not improve top5, and would need separate memory-aware notebook materialization before any real slot.
+
+## 2026-05-19 v126 Router Robustness Probe
+- Added `birdclef-2026/scripts/birdclef_probe_v126_router_robustness.py` to stress-test the v125 router under explicit support floors.
+- Wrote `experiments/v126_router_robustness_probe.csv`, `experiments/v126_router_robustness_selection.csv`, and `experiments/v126_router_robustness_decision_brief.md`.
+- Baseline v114 macro remains `0.97920102`. v126 best row with all 6 classes matches v125 at `0.98060057`.
+- More importantly, excluding the fragile 1-positive `plcjay1` class still leaves `v126_min10_w0.7_rankcal` at macro `0.98021860`, micro `0.91700965`, top5 `0.52054795`, with 5 routed classes.
+- Support>=10 routed classes: `47158son01`, `47158son13`, `47158son21`, `47158son22`, `47158son23`; sources are v112 and v119.
+- Decision: `PLAN-MATERIALIZE - Run-mode only, no real submission yet`. v126 is robust enough to justify a memory-aware notebook materialization, but not a real submission before Run-mode, schema, proxy, correlation, compliance, and hidden-memory risk review pass.
+- Operational note: current shell PATH does not expose `kaggle`, but the installed CLI exists at `/Users/junhaocheng/Library/Python/3.9/bin/kaggle`.

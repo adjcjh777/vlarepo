@@ -26,7 +26,7 @@ Rank second:
 
 1. `v134_stable3_guarded_rescue`
    Evidence: macro `0.97979134`, micro `0.91924338`, top1 `0.23287671`, top5 `0.52054795`, `blocked stable3 with positive rescue and top-hit guard`.
-   Status: `next_day_or_later`, evidence `blocked_top5aware_guarded`, same-family recent fails `0`, risk `low_to_medium`, `same macro as v131 with slightly stronger anti-collapse guard and higher micro`.
+   Status: `next_day_or_later`, evidence `runmode_guarded_pool`, same-family recent fails `0`, risk `low_to_medium`, `same macro as v131 with slightly stronger anti-collapse guard, higher micro, and external Run-mode pass`.
 
 2. `v131_stable3_top5aware`
    Evidence: macro `0.97979134`, micro `0.91861043`, top1 `0.23287671`, top5 `0.52054795`, `blocked top5-aware stable3 on v110/v114`.

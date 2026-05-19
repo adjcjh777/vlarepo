@@ -141,6 +141,16 @@ CANDIDATES: dict[str, Candidate] = {
         ),
         priority_note="fourth UTC 2026-05-19 slot candidate; memory-safe original non-Tsubasa router after v120 RAM failure",
     ),
+    "v134": Candidate(
+        kernel="junhaochengadjcjh7u7/bc26-v134-stable3-guarded-rescue",
+        version=1,
+        message=(
+            "Original clean v134: stable3 guarded rescue over v110 EcoProto anchor; "
+            "CPU-only Run-mode COMPLETE; backtracking-only clean side evidence; "
+            "top-hit preservation guard; no prior CSV mounts"
+        ),
+        priority_note="next guarded-pool candidate after v127 fallout; do not submit without fresh slot and anti-collapse review",
+    ),
 }
 
 

@@ -45,9 +45,10 @@ At the same time, the similarity numbers show that `v134` is still a near-family
 
 Keep `v134` in the guarded candidate pool. It has earned continued consideration because the external Run-mode pass removes one class of operational risk, but it should not be real-submitted yet without a stronger anti-collapse screen than proximity to `v110/v114/v127`.
 
+Current guarded-pool position: `#1` for the next candidate window inside the clean stable3 family.
+
 ## Next Action
 
 - Keep today's slot 5 unused.
 - Use `v134` as the leading stable3 guarded notebook package for future guarded comparison work.
 - If a next real candidate is ever needed, compare it against `v134` with the anti-collapse scorecard before spending a slot.
-

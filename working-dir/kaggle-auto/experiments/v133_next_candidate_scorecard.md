@@ -24,31 +24,44 @@ Rank second:
 
 ## Current Ranking
 
-1. `v131_stable3_top5aware`
-   Evidence: blocked top5-aware stable3 on `v110/v114`, `macro=0.97979134`, `top5=0.52054795`, stable classes `47158son13/22/23 + v112_backtracking_remap + positive w0.7`.
-   Status: highest-priority local continuation, not a same-day slot5 candidate.
+1. `v134_stable3_guarded_rescue`
+   Evidence: macro `0.97979134`, micro `0.91924338`, top1 `0.23287671`, top5 `0.52054795`, `blocked stable3 with positive rescue and top-hit guard`.
+   Status: `next_day_or_later`, evidence `blocked_top5aware_guarded`, same-family recent fails `0`, risk `low_to_medium`, `same macro as v131 with slightly stronger anti-collapse guard and higher micro`.
 
-2. `v129_blocked_clean_router`
-   Evidence: grouped validation `macro=0.97970207`, `top1=0.24657534`, `top5=0.52054795`, stable `v112` triad.
-   Status: backup local continuation; weaker than `v131`.
+2. `v131_stable3_top5aware`
+   Evidence: macro `0.97979134`, micro `0.91861043`, top1 `0.23287671`, top5 `0.52054795`, `blocked top5-aware stable3 on v110/v114`.
+   Status: `next_day_or_later`, evidence `blocked_top5aware`, same-family recent fails `0`, risk `low_to_medium`, `stable3 component confirmed after v127 fallout`.
 
-3. `v126_min10_w0.7_rankcal`
-   Evidence: strongest clean-router broad proxy `macro=0.98021860`, `top5=0.52054795`.
-   Risk: same broad family neighborhood as `v127=0.883`, so it should not be promoted without a stronger anti-collapse screen.
-   Status: local-only until further guarded validation.
+3. `v129_blocked_clean_router`
+   Evidence: macro `0.97970207`, micro `0.91617178`, top1 `0.24657534`, top5 `0.52054795`, `leave-one-soundscape-out gain with stable v112 triad`.
+   Status: `next_day_or_later`, evidence `blocked_grouped`, same-family recent fails `0`, risk `low_to_medium`, `grouped validation positive but weaker than v131`.
 
-4. `v103/v102`
-   Evidence: strongest proxy family (`v103 macro=0.98906455`, `top5=0.71232877`; `v102 macro=0.98897867`, `top5=0.69863014`).
-   Risk: unknown-license runtime dependencies still block real submission.
-   Status: mechanism-rich evidence pool, not immediate submit candidates.
+4. `v103_guarded_macro_rescue`
+   Evidence: macro `0.98906455`, micro `0.92885549`, top1 `0.38356164`, top5 `0.71232877`, `strongest proxy but no real-score proof`.
+   Status: `local_only_until_compliance_clear`, evidence `same_row_high_proxy`, same-family recent fails `0`, risk `high`, `mechanism-rich evidence not today's slot5`.
 
-5. `v104/v105`
-   Evidence: license-clean but `top5=0.08219178`, `top1=0`.
-   Status: retired for real submission.
+5. `v102_original_macro_rescue`
+   Evidence: macro `0.98897867`, micro `0.92916937`, top1 `0.38356164`, top5 `0.69863014`, `strong proxy but weaker guard than v103`.
+   Status: `local_only_until_compliance_clear`, evidence `same_row_high_proxy`, same-family recent fails `0`, risk `high`, `mechanism base not immediate submit`.
 
-## Decision
+6. `v126_min10_w0.7_rankcal`
+   Evidence: macro `0.98021860`, micro `0.91700965`, top1 `0.23287671`, top5 `0.52054795`, `support>=10 macro gain without grouped proof`.
+   Status: `local_only_until_extra_screen`, evidence `same_row_support10`, same-family recent fails `2`, risk `medium_to_high`, `same family as v127; do not submit without stronger anti-collapse screen`.
 
-`NO-SLOT5-TODAY`
+7. `v127_memorysafe_nontsubasa_router`
+   Evidence: macro `0.98008089`, micro `0.91595668`, top1 `0.20547945`, top5 `0.52054795`, `real score invalidated same-family trust`.
+   Status: `retired`, evidence `real_submit`, same-family recent fails `2`, risk `very_high`, `real-score collapse; do not retry near-neighbor blindly`.
 
-The highest-value move is to preserve today's final slot and carry forward a narrower anti-collapse path. For the next real candidate window, start from the `v131` stable3 component, not from a broad near-neighbor of `v127`.
+8. `v105_rankrestored_perch`
+   Evidence: macro `0.97751210`, micro `0.81765567`, top1 `0.00000000`, top5 `0.08219178`, `small micro recovery but top5 still collapsed`.
+   Status: `do_not_submit`, evidence `same_row_clean_fallback`, same-family recent fails `0`, risk `very_high`, `retired`.
 
+9. `v104_perch_only_guarded`
+   Evidence: macro `0.97751210`, micro `0.78763929`, top1 `0.00000000`, top5 `0.08219178`, `license-clean but ranking collapse`.
+   Status: `do_not_submit`, evidence `same_row_clean_fallback`, same-family recent fails `0`, risk `very_high`, `retired`.
+
+## Current Guard
+
+- Anchor remains `v87 = 0.949`.
+- Completed non-positive streak after the anchor is `5`.
+- Decision remains `NO-SLOT5-TODAY`; for the next real candidate window, start from the stable3 component rather than a broad near-neighbor of `v127`.

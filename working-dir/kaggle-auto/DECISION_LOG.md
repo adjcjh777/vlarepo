@@ -319,6 +319,13 @@
 - Decision: `HOLD-confirmed-component - do not submit v131`. v131 confirms the stable 3-class component is the best current top5-aware clean grouped router, but it is still weaker than v127/v126 on macro and therefore not a fifth-slot candidate while v127 remains pending.
 - Follow-up decision: do not start a broad `v132` sweep now; wait for v127 score/error, and only reopen this lane with a narrow stable3-centric follow-up if v127 fails or scores poorly.
 
+## 2026-05-19 v134 Stable3 Guarded Rescue Probe
+- Added `birdclef-2026/scripts/birdclef_probe_v134_stable3_guarded_rescue.py` to test the stable3 `v112` component with a `v103`-style row-level top-hit guard.
+- Wrote `experiments/v134_stable3_guarded_rescue_probe.csv` and `experiments/v134_stable3_guarded_rescue_decision_brief.md`.
+- Best `v114` row: `macro=0.97979134`, `micro=0.91924338`, `top1=0.23287671`, `top5=0.52054795`, `active_cells=176`.
+- Interpretation: `v134` does not beat `v131` on macro/top5, but it preserves both while slightly improving micro and gives a cleaner guarded interpretation of the stable3 route.
+- Decision: `HOLD-guarded-component - do not submit v134`; treat it as the preferred local continuation over raw `v131`, while keeping today's slot 5 unused.
+
 ## 2026-05-19 Anchor-Streak Guard
 - Adopt the updated objective rule explicitly: stay on the current highest-score basis and avoid broad method-family changes until there are `5` consecutive real-submit outcomes without positive feedback over the best visible anchor.
 - Current visible anchor is `v87 = 0.949`.

@@ -445,6 +445,22 @@
   - `wrapper_verdict=NOT-READY`
 - Practical implication: the wrapper now fails closed in the correct direction and is safe to use as the final pre-submit automation layer once a new UTC window opens.
 
+## 2026-05-19 v140 Guarded State Refresh
+- Added `scripts/refresh_v134_guarded_state.py` and wrote `experiments/v140_v134_guarded_state_refresh.md`.
+- The new refresh entrypoint runs the entire guarded chain together:
+  - `check_v134_next_window_gate.py`
+  - `recheck_v134_guarded_candidate.py`
+  - `check_v134_window_bundle.py`
+  - `recheck_and_optionally_submit_v134.py`
+- Current consolidated result at `2026-05-19 13:15:40 UTC`:
+  - gate exit `0`
+  - recheck exit `0`
+  - bundle exit `0`
+  - wrapper exit `0`
+  - wrapper verdict still `NOT-READY`
+- Updated the heartbeat automation again so it now prefers `python3 scripts/refresh_v134_guarded_state.py --write` as the first-step refresh command.
+- Practical implication: once the UTC day changes, the automation can refresh every guarded decision layer from one stable entrypoint before taking any action.
+
 ## 2026-05-19 v134 Heartbeat Retarget v2
 - Updated the `BirdCLEF v134 next-window gate check` heartbeat again so it now prefers `python3 scripts/recheck_and_optionally_submit_v134.py --write` as the first-step refresh command, with `check_v134_window_bundle.py --write` as the expanded fallback summary.
 - Practical implication: once the UTC window changes, the automation now starts from the highest-level `NOT-READY / READY-BUT-DRYRUN-ONLY / EXECUTED` wrapper verdict instead of requiring a human to infer action from lower-level gate pieces.

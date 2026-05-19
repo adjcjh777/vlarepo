@@ -1,0 +1,5 @@
+name,rows,pearson,spearman,source
+v113_vs_v110,120,0.9819878080564177,0.9815665638178454,birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/submission.csv
+v113_vs_v112,120,0.7707399712481453,0.766366783593639,birdclef-2026/outputs/v112-clean-sed-remap-ecoproto-v1/submission.csv
+v113_vs_v111,120,0.757552928081343,0.7531872062125089,birdclef-2026/outputs/v111-clean-sed-ecoproto-blend-v1/submission.csv
+v113_vs_v103,120,0.777066660366985,0.7739829474157917,birdclef-2026/outputs/v103-guarded-macro-risk-rescue-v1/submission.csv

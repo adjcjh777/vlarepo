@@ -1,0 +1,2 @@
+name,source,rows,classes,target_positives,scored_classes,macro_auc,micro_auc,top1_hit,top5_hit,min,max,mean,std
+submission,birdclef-2026/outputs/v113-lantingguo-melnorm-ecoproto-v1/submission.csv,120,234,313,22,0.97755927,0.91558215,0.17808219,0.53424658,0.01114442,0.99950665,0.52102174,0.24324007

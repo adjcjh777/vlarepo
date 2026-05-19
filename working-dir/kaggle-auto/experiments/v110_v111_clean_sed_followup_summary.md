@@ -1,6 +1,6 @@
-# v110-v112 Clean Branch Follow-Up Summary
+# v110-v113 Clean Branch Follow-Up Summary
 
-Updated: 2026-05-19 05:32 UTC
+Updated: 2026-05-19 05:52 UTC
 
 ## v110
 
@@ -35,9 +35,24 @@ v112 tested an original train-window class-output remap for the same CC0 clean S
 - Proxy: `macro=0.87568304`, `micro=0.83667571`, `top1=0.23287671`, `top5=0.53424658`
 - Decision: `REJECT`, diagnostic value only; train-window alignment did not transfer enough.
 
+## v113
+
+v113 tested a second CC0 SED source with an original MelNormProbe:
+
+- Source: `lantingguo/birdclef2026-own-sed-b0-v5-onnx`
+- License: `CC0-1.0`
+- ONNX input/output: `mel [batch,1,128,time]` to `logits [batch,234]`
+- Mechanism: zscore/minmax 128-mel views with per-class train-window trust shrinkage
+- Status: `COMPLETE`
+- Runtime: about `466.6s` before save
+- Proxy: `macro=0.97755927`, `micro=0.91558215`, `top1=0.17808219`, `top5=0.53424658`
+- Correlation vs v110: `0.981988`
+- Decision: `HOLD`, clean diagnostic only; direct macro below v110.
+- Blend probe: `0.85*v110 + 0.15*v113` reaches `macro=0.979201`, a tiny local improvement worth a self-contained v114 check but not a real submission by itself.
+
 ## Current Best Clean Fallback
 
-`v110-ecoproto-clean-blend` remains the best license-clean fallback among v104-v112.
+`v110-ecoproto-clean-blend` remains the best standalone license-clean fallback among v104-v113.
 
 ## Current Goal Gate
 
@@ -52,5 +67,5 @@ v112 tested an original train-window class-output remap for the same CC0 clean S
 
 Stop direct or remapped strong use of the backtracking clean SED B0 model. Continue with:
 
-- backup CC0 SED audit (`lantingguo`, `tsubasatech`);
-- or internal distillation/class-order alignment before any clean SED can influence final predictions.
+- self-contained v114 clean blend (`0.85*v110 + 0.15*v113`) if the next run should exploit the small local blend gain;
+- or audit `tsubasatech` if a lower-correlation CC0 SED source is still needed.

@@ -1,0 +1,5 @@
+left,right,common_rows,common_classes,pearson_corr,mean_abs_diff,max_abs_diff,notes
+v87,v93,3,234,1.000000,0.000000,0.000000,v93 partial dry-run final is exactly identical to v87.
+v91,v93,3,234,0.698726,0.006061,0.037470,Same relation to v91 as v87 because v93 equals v87 on dry-run final.
+v92,v93,3,234,0.999061,0.000250,0.004056,v92 is also near v87; v93 adds no diversity.
+

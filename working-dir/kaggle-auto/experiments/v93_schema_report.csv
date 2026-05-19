@@ -1,0 +1,6 @@
+file,shape,row_dupes,finite,min,max,mean,std,unique_rounded6,row_order_vs_sample,column_order_vs_sample,notes
+submission.csv,"(3, 235)",0,True,0.47687027,0.5553993,0.5014082841025641,0.01083347306393473,221,pass,pass,Valid partial dry-run output, but kernel status is ERROR after a later missing-priors assertion.
+subm_karnakbayev_power_optimization.csv,"(3, 235)",0,True,0.47687027,0.5553993,0.5014082841025641,0.01083347306393473,221,pass,pass,Same values as submission.csv.
+submission_protossm.csv,"(240, 235)",0,True,0.0000000056709495,0.9981269,0.10312305604972716,0.16460621884786544,42909,n/a,n/a,Train-file dry-run intermediate output.
+submission_sed.csv,"(240, 235)",0,True,0.000021937494,0.97485524,0.01260963728861008,0.07037281377844962,13497,n/a,n/a,Train-file dry-run intermediate output.
+

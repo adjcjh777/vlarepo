@@ -26,6 +26,9 @@ def main() -> int:
     gate = run(["python3", "scripts/check_v134_next_window_gate.py", "--write"])
     recheck = run(["python3", "scripts/recheck_v134_guarded_candidate.py", "--write"])
     goal = run(["python3", "birdclef-2026/scripts/birdclef_goal_check.py", "--submissions-limit", "20"])
+    dryrun = run(
+        ["python3", "birdclef-2026/scripts/birdclef_guarded_submit.py", "--candidate", "v134", "--max-today", "4"]
+    )
 
     lines = [
         "# v138 v134 Window Bundle",
@@ -37,12 +40,14 @@ def main() -> int:
         "- `python3 scripts/check_v134_next_window_gate.py --write`",
         "- `python3 scripts/recheck_v134_guarded_candidate.py --write`",
         "- `python3 birdclef-2026/scripts/birdclef_goal_check.py --submissions-limit 20`",
+        "- `python3 birdclef-2026/scripts/birdclef_guarded_submit.py --candidate v134 --max-today 4`",
         "",
         "## Exit Codes",
         "",
         f"- gate: `{gate.returncode}`",
         f"- recheck: `{recheck.returncode}`",
         f"- goal_check: `{goal.returncode}`",
+        f"- guarded_submit_dryrun: `{dryrun.returncode}`",
         "",
         "## Gate Output",
         "",
@@ -62,6 +67,12 @@ def main() -> int:
         goal.stdout.strip(),
         "```",
         "",
+        "## Guarded Submit Dry-Run Output",
+        "",
+        "```text",
+        dryrun.stdout.strip(),
+        "```",
+        "",
     ]
 
     if args.write:
@@ -71,6 +82,7 @@ def main() -> int:
     print(f"gate_exit={gate.returncode}")
     print(f"recheck_exit={recheck.returncode}")
     print(f"goal_exit={goal.returncode}")
+    print(f"dryrun_exit={dryrun.returncode}")
     if args.write:
         print(f"status_path={STATUS_PATH}")
     return 0

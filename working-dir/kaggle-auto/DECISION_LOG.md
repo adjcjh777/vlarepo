@@ -427,3 +427,10 @@
   - goal_check exit `3`
   - same practical conclusion: `WAIT-SAME-UTC-DAY`, guarded candidate remains `v134`, and leaderboard goal is still not reached.
 - Updated the heartbeat automation again so it now prefers `python3 scripts/check_v134_window_bundle.py --write` as the first-step refresh command.
+- Upgraded the bundle at `2026-05-19 12:53:54 UTC` to also run `birdclef_guarded_submit.py --candidate v134 --max-today 4` in dry-run mode.
+- New bundle exit summary:
+  - gate exit `0`
+  - recheck exit `0`
+  - goal_check exit `3`
+  - guarded_submit_dryrun exit `0`
+- Practical implication: once the UTC window opens, the automation can now verify both readiness gates and the guarded-submit helper path from a single script before any real slot is spent.

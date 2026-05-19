@@ -291,3 +291,11 @@
 - Best row: `v128_v114_clean_selfblend_min5_d0_w0.9_rm0_t0.7`, macro `0.97987635`, micro `0.92085607`, top5 `0.52054795`, 6 classes, 350 active cells, Pearson vs anchor `0.99768118`.
 - Interpretation: v128 improves over v114 but is weaker than v126 support>=10 (`0.98021860`) and v127 (`0.98008089`) on macro. The micro gain is interesting, but positive-only cell rescue is too conservative for the macro objective.
 - Decision: `HOLD-quality - do not submit v128`; do not spend the fifth slot while v127 is pending. Next originality probe should move toward grouped clean meta-routing, support-aware full-column routing with a top5 term, or a v126/v127 follow-up after v127 score/error is known.
+
+## 2026-05-19 v129 Blocked Clean Router Probe
+- Refreshed external state at `2026-05-19 10:48:18 UTC`: v127 kernel remains `COMPLETE`, but competition submission ref `52807175` remains `PENDING`; best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.
+- Added `birdclef-2026/scripts/birdclef_probe_v129_blocked_clean_router.py` to test the clean non-Tsubasa router with leave-one-soundscape-out validation across 10 train soundscape files.
+- Wrote `experiments/v129_blocked_clean_router_probe.csv`, `experiments/v129_blocked_clean_router_selection.csv`, and `experiments/v129_blocked_clean_router_decision_brief.md`.
+- Best blocked row: `v129_v114_clean_selfblend_min5_d0.002_w0.35_top5guard0`, macro `0.97970207`, micro `0.91617178`, top1 `0.24657534`, top5 `0.52054795`, average selected classes/fold `3.4`, Pearson vs anchor `0.99937804`.
+- Stable classes across all 10 held-out folds are `47158son13`, `47158son22`, and `47158son23`, all routed from `v112_backtracking_remap`; other classes are fold-fragile.
+- Decision: `HOLD-validated-small-gain - do not submit v129`. The grouped validation supports the clean-router idea but the gain is too small and still weaker than v127/v128; keep the 3-class pattern as evidence for a future stricter router only after v127 score/error is known.

@@ -1,0 +1,123 @@
+[{"stream_name":"stderr","time":10.151009067,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.152319984,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.152346175,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.15235111,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":11.098706385,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.098754769,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.098814568,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.098819941,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":22.149178023,"data":"ONNX Runtime: 1.24.4\n"}
+,{"stream_name":"stdout","time":22.170739707,"data":"External Perch cache disabled for v127 EcoProto clean-blend run\n"}
+,{"stream_name":"stdout","time":22.233355515,"data":"Classes: 234\n"}
+,{"stream_name":"stdout","time":26.96715041,"data":"Using ONNX Perch: /kaggle/input/datasets/rishikeshjani/perch-onnx-for-birdclef-2026/perch_v2.onnx\n"}
+,{"stream_name":"stdout","time":26.967193031,"data":"Mapped: 203/234\n"}
+,{"stream_name":"stdout","time":27.015927136,"data":"Frog proxies: 0\n"}
+,{"stream_name":"stdout","time":27.039747453,"data":"V127: Perch train cache will be rebuilt in-notebook after inference helpers are defined\n"}
+,{"stream_name":"stdout","time":27.350553818,"data":"Full files: 59, Windows: 708, Active: 71\n"}
+,{"stream_name":"stdout","time":27.514424355,"data":"V127 rebuilding Perch train features for 59 files\n"}
+,{"stream_name":"stdout","time":70.064170534,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":70.064223545,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":70.064231405,"data":"Detected spatial_embedding output index: None\n"}
+,{"stream_name":"stdout","time":172.401530093,"data":"V127 rebuilt train features: meta=(708, 2), scores=(708, 234), emb=(708, 1536)\n"}
+,{"stream_name":"stdout","time":172.442048954,"data":"OOF logits shape: (708, 234)\n"}
+,{"stream_name":"stdout","time":172.602848456,"data":"Raw Perch OOF AUC: 0.6812\n"}
+,{"stream_name":"stdout","time":172.655919946,"data":"Per-class AUC: mean=0.6812, min=0.0862, max=1.0000\n"}
+,{"stream_name":"stdout","time":172.65599197,"data":"Classes with AUC \u003c 0.5: 19\n"}
+,{"stream_name":"stdout","time":173.251182357,"data":"Fitted 71 calibrators\n"}
+,{"stream_name":"stdout","time":173.251224412,"data":"Calibrated OOF AUC: 0.8020 (delta: +0.1208)\n"}
+,{"stream_name":"stdout","time":173.274218572,"data":"Calibrated per-class AUC: mean=0.8020, min=0.2949, max=1.0000\n"}
+,{"stream_name":"stdout","time":173.343214004,"data":"Thresholds: mean=0.429, min=0.050, max=0.550\n"}
+,{"stream_name":"stdout","time":173.475144391,"data":"No test files - using train soundscapes for dry run\n"}
+,{"stream_name":"stdout","time":174.679342274,"data":"Processing 10 files\n"}
+,{"stream_name":"stdout","time":197.489537689,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":197.48960222,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":197.489616435,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":197.489650341,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":197.489655992,"data":"Test embeddings: (120, 1536)\n"}
+,{"stream_name":"stdout","time":197.489660214,"data":"Test spatial features: (120, 4608)\n"}
+,{"stream_name":"stdout","time":197.513750386,"data":"V127 Perch-only surrogate view: shape=(120, 234), range=[0.000463, 0.999997]\n"}
+,{"stream_name":"stdout","time":197.722360462,"data":"Perch classwise soft suppression: 0.433, factor=[0.369,0.720]\n"}
+,{"stream_name":"stdout","time":197.722400849,"data":"Embedding probe aligned train rows: (708, 1536) unique cache rows 708\n"}
+,{"stream_name":"stdout","time":197.892344763,"data":"Embedding probe active: train=(708, 1536), test=(120, 1536), rank std=0.1590067446231842\n"}
+,{"stream_name":"stdout","time":199.254084989,"data":"MLP embedding probe active: train=(708, 96), test=(120, 96), n_iter=29, rank std=0.2886650860309601\n"}
+,{"stream_name":"stdout","time":236.214670994,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":236.214737713,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":236.214746251,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":236.214752703,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":334.861680554,"data":"Spatial probe aligned train rows: (708, 4608) unique spatial rows 708\n"}
+,{"stream_name":"stdout","time":334.861738138,"data":"Spatial probe active: train=(708, 4608), test=(120, 4608), rank std=0.15956220030784607\n"}
+,{"stream_name":"stdout","time":334.861745425,"data":"Dual probe active: embedding=0.64 spatial=0.26 mlp=0.10 combined std=0.14225563406944275\n"}
+,{"stream_name":"stdout","time":334.992384368,"data":"V127 EcoProto clean-blend guarded macro-risk rescue counts: {'protect_anchor': 35, 'rare_floor': 176, 'macro_weak': 12, 'macro_mild': 4, 'texture_prior_rescue': 0, 'active_rescue': 16, 'positive_rescue_cells': 2749, 'top_hit_guard_cells': 330, 'ctx_cells': 2}\n"}
+,{"stream_name":"stdout","time":334.992428307,"data":"V127 class rescue mix range/mean: [0.000, 0.340] / 0.0190\n"}
+,{"stream_name":"stdout","time":334.992435104,"data":"V127 effective rescue mix range/mean: [0.000, 0.340] / 0.0095\n"}
+,{"stream_name":"stdout","time":334.992441083,"data":"V127 components: macro mean/std=0.506653/0.230775; v84_like mean/std=0.506686/0.232786; rescue_view mean/std=0.506874/0.242758; dualprobe mean/std=0.506997/0.253222\n"}
+,{"stream_name":"stdout","time":334.992446894,"data":"OOF refs: Perch raw=0.681, Perch cal=0.802, SED=0.591, delta=-0.209\n"}
+,{"stream_name":"stdout","time":334.992452425,"data":"SED weights sedfirst=0.578, adaptive=0.489, safety=0.480\n"}
+,{"stream_name":"stdout","time":334.992457806,"data":"View mix: v127 = self-contained v107-like rank ceiling plus EcoProto rank-launch clean blend\n"}
+,{"stream_name":"stdout","time":334.992463235,"data":"Prior strength mean=1.000, applied mean=0.0103, file scale mean=0.999\n"}
+,{"stream_name":"stdout","time":334.99246856,"data":"Spike-smoothed score range: [0.011144, 0.999292]\n"}
+,{"stream_name":"stdout","time":334.99247378,"data":"Score mean/std: 0.507024/0.232823\n"}
+,{"stream_name":"stdout","time":334.992478892,"data":"V127 EcoProto active classes: 67/234; sim range=[-0.0414,0.9523]\n"}
+,{"stream_name":"stdout","time":334.992484141,"data":"V127 EcoProto cells: mix=3480, temporal=930, class_gate=29\n"}
+,{"stream_name":"stdout","time":334.992489362,"data":"V127 EcoProto mix mean/max: 0.02608/0.34000; temporal mean=0.00431\n"}
+,{"stream_name":"stdout","time":334.992494613,"data":"V127 post-EcoProto score range: [0.011144, 0.999292]\n"}
+,{"stream_name":"stdout","time":334.992522003,"data":"V127 post-EcoProto score mean/std: 0.510022/0.233074\n"}
+,{"stream_name":"stdout","time":334.992526336,"data":"V127 v107-like cells: restore=33, top_guard=374\n"}
+,{"stream_name":"stdout","time":334.992530374,"data":"V127 EcoProto rank-launch cells: launch=33, top_guard=376\n"}
+,{"stream_name":"stdout","time":334.992534621,"data":"V127 clean blend weights: v107_like=0.40, v109_like=0.60\n"}
+,{"stream_name":"stdout","time":334.992538643,"data":"V127 post-cleanblend score range: [0.011144, 0.999470]\n"}
+,{"stream_name":"stdout","time":334.992542904,"data":"V127 post-cleanblend score mean/std: 0.521132/0.242345\n"}
+,{"stream_name":"stdout","time":335.601928221,"data":"V127 Backtracking side model: /kaggle/input/datasets/backtracking/birdclef2026-clean-sed-b0/fold0_best_overall.onnx\n"}
+,{"stream_name":"stdout","time":343.446711663,"data":"V127 Roniheka side model: /kaggle/input/datasets/roniheka/birdclef-2026-a90v2-distilled-hgnet-onnx/a90v2_fold0.onnx\n"}
+,{"stream_name":"stdout","time":343.44679728,"data":"V127 Roniheka side model: /kaggle/input/datasets/roniheka/birdclef-2026-a90v2-distilled-hgnet-onnx/a90v2_fold1.onnx\n"}
+,{"stream_name":"stdout","time":343.940164717,"data":"V127 Roniheka side model: /kaggle/input/datasets/roniheka/birdclef-2026-a90v2-distilled-hgnet-onnx/a90v2_fold2.onnx\n"}
+,{"stream_name":"stdout","time":343.940206492,"data":"V127 Roniheka side model: /kaggle/input/datasets/roniheka/birdclef-2026-a90v2-distilled-hgnet-onnx/a90v2_fold3.onnx\n"}
+,{"stream_name":"stdout","time":344.082945876,"data":"V127 Roniheka side model: /kaggle/input/datasets/roniheka/birdclef-2026-a90v2-distilled-hgnet-onnx/a90v2_fold4.onnx\n"}
+,{"stream_name":"stdout","time":378.239787967,"data":"V127 selected router rows:\n"}
+,{"stream_name":"stdout","time":378.239838246,"data":"        label        source  side_col  support_proxy  support_gate       mix  \\\n"}
+,{"stream_name":"stdout","time":378.239847118,"data":"0  47158son01      roniheka        30             11      0.652778  0.456945   \n"}
+,{"stream_name":"stdout","time":378.239853435,"data":"1  47158son13  backtracking         0             22      0.823686  0.576580   \n"}
+,{"stream_name":"stdout","time":378.239859212,"data":"2  47158son21      roniheka        50             20      0.799788  0.559852   \n"}
+,{"stream_name":"stdout","time":378.239864603,"data":"3  47158son22  backtracking         0             22      0.823686  0.576580   \n"}
+,{"stream_name":"stdout","time":378.239871115,"data":"4  47158son23  backtracking         0             22      0.823686  0.576580   \n"}
+,{"stream_name":"stdout","time":378.239877197,"data":"\n"}
+,{"stream_name":"stdout","time":378.239882891,"data":"   anchor_mean  side_mean  rankcal_mean  final_mean  \n"}
+,{"stream_name":"stdout","time":378.239888169,"data":"0     0.605813   0.000252      0.605813    0.605813  \n"}
+,{"stream_name":"stdout","time":378.239893437,"data":"1     0.603775   0.138294      0.603775    0.603775  \n"}
+,{"stream_name":"stdout","time":378.239899232,"data":"2     0.604129   0.000531      0.604129    0.604129  \n"}
+,{"stream_name":"stdout","time":378.2399628,"data":"3     0.604004   0.138294      0.604004    0.604004  \n"}
+,{"stream_name":"stdout","time":378.239973609,"data":"4     0.603963   0.138294      0.603963    0.603963  \n"}
+,{"stream_name":"stdout","time":378.239977778,"data":"V127 router changed cells: 5 columns over 120 rows\n"}
+,{"stream_name":"stdout","time":378.239981639,"data":"V127 final score range: [0.011144, 0.999470]\n"}
+,{"stream_name":"stdout","time":378.239985392,"data":"V127 final score mean/std: 0.521132/0.241673\n"}
+,{"stream_name":"stdout","time":378.400577331,"data":"Saved: (120, 235)\n"}
+,{"stream_name":"stdout","time":378.400913128,"data":"                                     row_id   1161364    116570   1176823  \\\n"}
+,{"stream_name":"stdout","time":378.400953407,"data":"0   BC2026_Train_0001_S08_20250606_030007_5  0.695412  0.641742  0.608992   \n"}
+,{"stream_name":"stdout","time":378.400958465,"data":"1  BC2026_Train_0001_S08_20250606_030007_10  0.763076  0.788035  0.309009   \n"}
+,{"stream_name":"stdout","time":378.400961662,"data":"2  BC2026_Train_0001_S08_20250606_030007_15  0.760851  0.716123  0.460606   \n"}
+,{"stream_name":"stdout","time":378.400964508,"data":"\n"}
+,{"stream_name":"stdout","time":378.400967332,"data":"    1491113   1595929    209233     22930     22956     22961  ...   whnjay1  \\\n"}
+,{"stream_name":"stdout","time":378.40097032,"data":"0  0.617959  0.363710  0.494095  0.167047  0.764954  0.832114  ...  0.073880   \n"}
+,{"stream_name":"stdout","time":378.400973199,"data":"1  0.637635  0.345560  0.531877  0.047741  0.802855  0.617875  ...  0.226398   \n"}
+,{"stream_name":"stdout","time":378.400976281,"data":"2  0.922389  0.332773  0.479846  0.060343  0.691470  0.700350  ...  0.323614   \n"}
+,{"stream_name":"stdout","time":378.400978988,"data":"\n"}
+,{"stream_name":"stdout","time":378.400981768,"data":"     whtdov   whwpic1    y00678    yebcar   yebela1    yecmac    yecpar  \\\n"}
+,{"stream_name":"stdout","time":378.400984581,"data":"0  0.429690  0.604003  0.202415  0.568192  0.741776  0.600642  0.259524   \n"}
+,{"stream_name":"stdout","time":378.400987346,"data":"1  0.387806  0.884046  0.320471  0.165402  0.501788  0.652284  0.214024   \n"}
+,{"stream_name":"stdout","time":378.400990103,"data":"2  0.352083  0.810615  0.305071  0.208769  0.643510  0.674974  0.283948   \n"}
+,{"stream_name":"stdout","time":378.400992845,"data":"\n"}
+,{"stream_name":"stdout","time":378.400995401,"data":"    yehcar1   yeofly1  \n"}
+,{"stream_name":"stdout","time":378.400998102,"data":"0  0.324525  0.710095  \n"}
+,{"stream_name":"stdout","time":378.401000698,"data":"1  0.509926  0.589911  \n"}
+,{"stream_name":"stdout","time":378.40100333,"data":"2  0.486461  0.278476  \n"}
+,{"stream_name":"stdout","time":378.401006106,"data":"\n"}
+,{"stream_name":"stdout","time":378.40100866,"data":"[3 rows x 235 columns]\n"}
+,{"stream_name":"stderr","time":384.334465237,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":384.334505511,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":384.563819242,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":384.563861232,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":385.514562701,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":385.949511769,"data":"[NbConvertApp] Writing 160992 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":389.387704796,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":390.841690076,"data":"[NbConvertApp] Writing 678057 bytes to __results__.html\n"}
+]

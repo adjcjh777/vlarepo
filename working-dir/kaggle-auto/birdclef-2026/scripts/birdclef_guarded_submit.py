@@ -132,6 +132,15 @@ CANDIDATES: dict[str, Candidate] = {
         ),
         priority_note="third UTC 2026-05-19 slot candidate; bold clean macro-proxy uplift over v110/v114",
     ),
+    "v127": Candidate(
+        kernel="junhaochengadjcjh7u7/bc26-v127-nontsubasa-router",
+        version=1,
+        message=(
+            "Original clean v127: memory-safe non-Tsubasa raw-side router over v110 EcoProto anchor; "
+            "CPU-only Run-mode COMPLETE ~390s; Backtracking/Roniheka CC0 side evidence; no prior CSV mounts"
+        ),
+        priority_note="fourth UTC 2026-05-19 slot candidate; memory-safe original non-Tsubasa router after v120 RAM failure",
+    ),
 }
 
 

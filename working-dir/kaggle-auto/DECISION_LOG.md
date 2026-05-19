@@ -261,3 +261,16 @@
 - Support>=10 routed classes: `47158son01`, `47158son13`, `47158son21`, `47158son22`, `47158son23`; sources are v112 and v119.
 - Decision: `PLAN-MATERIALIZE - Run-mode only, no real submission yet`. v126 is robust enough to justify a memory-aware notebook materialization, but not a real submission before Run-mode, schema, proxy, correlation, compliance, and hidden-memory risk review pass.
 - Operational note: current shell PATH does not expose `kaggle`, but the installed CLI exists at `/Users/junhaocheng/Library/Python/3.9/bin/kaggle`.
+
+## 2026-05-19 v127 Memory-Safe Non-Tsubasa Router Materialization
+- Added `birdclef-2026/scripts/birdclef_prepare_v127_memorysafe_nontsubasa_router.py` and materialized `birdclef-2026/notebooks/v127-memorysafe-nontsubasa-router`.
+- v127 is intentionally separated from v126: exact v126 used v112/v119 final-output surfaces, while v127 is the notebook-compliant memory-safe adaptation that computes raw Backtracking/Roniheka side evidence inside the notebook and applies a post-final rank-calibrated router.
+- Static audit passed in `experiments/v127_static_audit.md`: private, CPU-only, internet disabled, BirdCLEF competition source present, Perch/Google model source present, Backtracking and Roniheka CC0 side sources present, no Tsubasa source, no kernel sources, no prior output CSV mounts.
+- Kaggle Run-mode completed in about `390.8s` through nbconvert and downloaded `submission.csv`, `v127_router_summary.csv`, `v127_router_branch_summary.csv`, and kernel log under `birdclef-2026/outputs/v127-memorysafe-nontsubasa-router-v1/`.
+- Schema passed: `120 x 235`, sample column order matched, all finite, no duplicate row IDs, range `[0.01114442, 0.99946990]`.
+- Proxy: macro `0.98008089`, micro `0.91595668`, top5 `0.52054795`.
+- Correlation: vs v110 Pearson `0.996646`, MAD `0.002296`; vs v114 Pearson `0.996229`, MAD `0.003581`; vs side references v112/v119 Pearson `0.783987` / `0.722441`.
+- Added v127 to `birdclef-2026/scripts/birdclef_guarded_submit.py` and wrote `experiments/submission_validation_report_v127.md`, `experiments/rules_compliance_report_v127.md`, and `experiments/v127_submission_decision_brief.md`.
+- Refreshed `birdclef_goal_check.py` at `2026-05-19 10:24:41 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions are `3/5` before v127 and no pending row is visible.
+- Decision: `SUBMIT - guarded slot 4`. v127 is not a final selection candidate yet, but it is the best current memory-safe original non-Tsubasa candidate after v120 hidden RAM failure and v122-v124 quality failures.
+- Real submission executed at `2026-05-19 10:27:41.813 UTC`, Kaggle ref `52807175`; initial status `PENDING`, public score blank. UTC `2026-05-19` visible submissions are now `4/5`.

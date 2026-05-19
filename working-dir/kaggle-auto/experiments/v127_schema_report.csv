@@ -1,0 +1,11 @@
+check,value
+path,/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v127-memorysafe-nontsubasa-router-v1/submission.csv
+shape,"(120, 235)"
+has_row_id,True
+column_order_match,True
+duplicate_row_id,False
+finite,True
+min,0.01114442
+max,0.99946990
+mean,0.52113223
+std,0.24167349

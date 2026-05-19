@@ -1,0 +1,9 @@
+candidate,family,submit_window,macro_proxy,top5_proxy,stability_signal,compliance_state,collapse_risk,decision
+v131_stable3_top5aware,clean_router_component,next_day_or_later,0.97979134,0.52054795,blocked top5-aware stable3 on v110/v114,HOLD-clean component,low_to_medium,highest priority local continuation but not today's slot5
+v129_blocked_clean_router,clean_router_grouped,next_day_or_later,0.97970207,0.52054795,leave-one-soundscape-out gain with stable v112 triad,HOLD-clean grouped evidence,medium,backup local continuation
+v126_min10_w0.7_rankcal,clean_router_broad,local_only_until_extra_screen,0.98021860,0.52054795,support>=10 macro gain but same family as v127,PLAN-MATERIALIZE only,medium_to_high,do not submit without stronger anti-collapse screen
+v103_guarded_macro_rescue,original_macro_rescue,local_only_until_compliance_clear,0.98906455,0.71232877,strongest proxy but no real-score proof,HOLD-for-real-submit unknown-license,high,mechanism-rich evidence not today's slot5
+v102_original_macro_rescue,original_macro_rescue,local_only_until_compliance_clear,0.98897867,0.69863014,strong proxy but weaker guard than v103,HOLD mixed proxy,high,mechanism base not immediate submit
+v104_perch_only_guarded,license_clean_perch_only,do_not_submit,0.97751210,0.08219178,license-clean but ranking collapse,REJECT,very_high,retired
+v105_rankrestored_perch,license_clean_perch_only,do_not_submit,0.97751210,0.08219178,small micro recovery but top5 still collapsed,REJECT,very_high,retired
+today_slot5,meta_decision,today,,,,,lowest confidence,keep unused unless materially new evidence appears

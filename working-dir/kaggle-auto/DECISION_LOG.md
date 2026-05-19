@@ -337,3 +337,14 @@
 - After reviewing that suggestion against the actual `v127=0.883` score, do **not** promote a same-family `v126` near-neighbor into today's fifth slot. The real-score collapse from `v127` is too severe to justify another adjacent clean-router gamble on the same UTC day.
 - Added `experiments/v132_post_v127_unlock_triage.md` to freeze the current policy: unlock acknowledged, but `NO-SLOT5-TODAY unless materially new evidence appears`.
 - Practical decision: preserve the remaining daily slot for now; use local-only work to separate `stable3`-centric top5-aware components from broader risky families and keep `v103/v102` as compliance-cleanup evidence, not immediate submit candidates.
+
+## 2026-05-19 v133 Next Candidate Scorecard
+- Added `experiments/v133_next_candidate_scorecard.csv` and `experiments/v133_next_candidate_scorecard.md` to turn the post-`v127` situation into a reusable anti-collapse ranking.
+- Ranking logic: filter known collapse branches first, then rank by `macro` lift, top5 preservation, grouped stability, compliance debt, and recent same-family collapse risk.
+- Current order:
+  - `v131_stable3_top5aware` as the highest-priority local continuation;
+  - `v129_blocked_clean_router` as backup local continuation;
+  - `v126_min10_w0.7_rankcal` as proxy-strong but same-family-risky;
+  - `v103/v102` as high-value mechanism evidence but compliance-blocked;
+  - `v104/v105` retired.
+- Decision remains `NO-SLOT5-TODAY`; next real-candidate window should start from the stable3 component, not another broad near-neighbor of `v127`.

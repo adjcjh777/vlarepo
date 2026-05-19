@@ -338,6 +338,8 @@
 - Recorded `experiments/v134_schema_report.csv`, `experiments/v134_correlation_vs_references.csv`, `experiments/v134_runmode_status.md`, and `experiments/v134_runmode_decision_brief.md`.
 - Current read: `v134` passes the external Run-mode gate and stays numerically valid, but remains very close to the `v110/v114/v127` family; keep it in the guarded pool rather than promoting it straight to a real slot.
 - A `gpt-5.3-codex-spark` explorer follow-up confirmed that `v134` should be treated as `guarded pool`, not `local-only`, and that if a new slot opens it ranks ahead of `v131` because it keeps the same macro/top5 with slightly better micro and an external Run-mode pass.
+- Added the missing standard pre-submit materials for this family: `experiments/rules_compliance_report_v134.md`, `experiments/submission_validation_report_v134.md`, and `experiments/v134_submission_decision_brief.md`.
+- Decision stays the same, but the evidence package is now aligned with v120/v127-style candidate handoff expectations and ready for next-window guarded recheck.
 
 ## 2026-05-19 Anchor-Streak Guard
 - Adopt the updated objective rule explicitly: stay on the current highest-score basis and avoid broad method-family changes until there are `5` consecutive real-submit outcomes without positive feedback over the best visible anchor.

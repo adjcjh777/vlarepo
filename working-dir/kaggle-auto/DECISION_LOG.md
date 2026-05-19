@@ -392,6 +392,11 @@
 - Refreshed again at `2026-05-19 12:23:09 UTC`: `check_v134_next_window_gate.py` still returns `WAIT-SAME-UTC-DAY`, visible submissions today remain `4`, and `v134_stable3_guarded_rescue` remains the top guarded candidate.
 - Practical implication unchanged: no real submission action before UTC rollover.
 
+## 2026-05-19 Goal Check Hardening
+- Hardened `birdclef-2026/scripts/birdclef_goal_check.py` with lightweight Kaggle API retry handling and a `GOAL_GATE=CHECK_FAILED_TRANSIENT` fallback instead of raw traceback failure.
+- Re-ran the script at `2026-05-19 12:36:36 UTC`; normal success path still works and reports best visible `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.
+- Practical implication: the heartbeat and local gate flow are now less fragile to transient Kaggle SSL/network errors.
+
 ## 2026-05-19 v134 Next-Window Heartbeat
 - Updated the existing heartbeat automation `birdclef-v91-score-monitor` into `BirdCLEF v134 next-window gate check`.
 - New behavior: every 30 minutes, refresh `scripts/check_v134_next_window_gate.py`, the Kaggle submissions table, and `birdclef_goal_check.py`; if the gate still says `WAIT-SAME-UTC-DAY`, only update local status files, and if a new UTC day opens with `v134` still ranked #1, perform the guarded recheck workflow under local-only rules.

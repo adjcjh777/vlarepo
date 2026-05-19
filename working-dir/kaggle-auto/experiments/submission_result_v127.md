@@ -102,10 +102,27 @@ Goal gate refresh:
 - Top5 cutoff: `0.958`.
 - `GOAL_GATE=NOT_REACHED`.
 
+## Refresh: 2026-05-19 11:19 UTC
+
+Kernel status: `KernelWorkerStatus.COMPLETE`
+
+Competition submission status: `SubmissionStatus.COMPLETE`
+
+Public score: `0.883`
+
+Private score: blank
+
+Goal gate refresh:
+
+- Best visible score remains `0.949`.
+- Top20 cutoff: `0.954`.
+- Top5 cutoff: `0.958`.
+- `GOAL_GATE=NOT_REACHED`.
+
 ## Notes
 
 This is a guarded real submission for a memory-safe original non-Tsubasa router. It is not a final selection candidate until public score and later private-risk review support promotion.
 
-Current anchor strategy: highest visible score remains `0.949` from v87. Completed non-positive feedback streak since that anchor is `4` (`v88`, `v91`, `v101`, `v120`). `v127` is the next gate result and should resolve whether the streak reaches `5`, which would unlock a method-family change under the current goal rules.
+Current anchor strategy: highest visible score remains `0.949` from v87. Completed non-positive feedback streak since that anchor is now `5` (`v88`, `v91`, `v101`, `v120`, `v127=0.883`). The method-family-change gate is therefore unlocked, but any next submit should still be filtered for low blow-up risk instead of broad blind exploration.
 
 Next check should wait for a coarse stabilization window rather than frequent polling.

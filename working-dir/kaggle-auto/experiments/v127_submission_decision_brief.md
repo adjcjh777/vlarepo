@@ -1,6 +1,6 @@
 # v127 Submission Decision Brief
 
-Updated: 2026-05-19 10:24 UTC
+Updated: 2026-05-19 11:22 UTC
 
 ## Candidate
 
@@ -18,6 +18,7 @@ Updated: 2026-05-19 10:24 UTC
 - Correlation vs v110: Pearson `0.996646`, MAD `0.002296`.
 - Correlation vs v114: Pearson `0.996229`, MAD `0.003581`.
 - Correlation vs raw side-family references: v112 Pearson `0.783987`; v119 Pearson `0.722441`.
+- Real competition outcome: ref `52807175` is now `SubmissionStatus.COMPLETE` with public score `0.883`.
 
 ## Rationale
 
@@ -34,6 +35,10 @@ The top5 proxy does not improve and the local gain is narrow, so v127 should not
 
 ## Decision
 
-`SUBMIT - guarded slot 4`
+`REJECT-score - retire v127 as a submit/final candidate`
 
-Do not final-select v127 unless public score and later private-risk review justify it.
+The real score `0.883` is a hard negative result. Even though the notebook was compliant, CPU-safe, and strong on the local proxy, it collapses too far below the `0.949` anchor to justify further near-neighbor submissions from this exact clean-router family.
+
+## Next Action
+
+Treat v127 as the fifth consecutive non-positive outcome after the `0.949` anchor and unlock method-family exploration under the updated goal rule. Even so, do not spend the next slot on another low-confidence branch; any follow-up should first clear a stronger anti-collapse screen than the v127 proxy did.

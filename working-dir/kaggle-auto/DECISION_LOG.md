@@ -325,3 +325,15 @@
 - Completed non-positive outcomes after that anchor: `v88=0.921`, `v91=0.948`, `v101=0.898`, `v120=ERROR-memory` -> streak count `4`.
 - `v127` is the next gate result. While its Kaggle row remains `PENDING`, do not spend slot 5 on a different method family and do not reopen a broad alternative sweep.
 - Practical implication: avoid another low-confidence off-family submission like the prior `0.898` Alexy CPU lane unless the streak actually reaches `5` or new evidence materially changes the guard.
+
+## 2026-05-19 v127 Score Resolution
+- Refreshed external state at `2026-05-19 11:19:58 UTC`: v127 competition row changed from `PENDING` to `SubmissionStatus.COMPLETE` with public score `0.883`; kernel status remains `COMPLETE`.
+- This is a strongly negative result relative to the visible anchor `0.949`, the original-like `0.925` line, and even the prior Alexy CPU miss `0.898`.
+- Update the anchor-streak guard: completed non-positive outcomes after `v87=0.949` are now `v88`, `v91`, `v101`, `v120`, `v127`, so streak count reaches `5`.
+- Decision: the method-family-change gate is now unlocked, but do not spend slot 5 on a blind broad gamble. The next candidate must be high-confidence and specifically filtered to avoid another `0.883`-style collapse.
+
+## 2026-05-19 Post-v127 Unlock Triage
+- A `gpt-5.3-codex-spark` explorer quick-check after the unlock suggested three buckets: `v126`-family memory-safe follow-up as the highest current clean-family candidate, `v129` stable3 upgrades as next-day/local work, and `v103/v102` clean-up as mechanism-rich but compliance-blocked work.
+- After reviewing that suggestion against the actual `v127=0.883` score, do **not** promote a same-family `v126` near-neighbor into today's fifth slot. The real-score collapse from `v127` is too severe to justify another adjacent clean-router gamble on the same UTC day.
+- Added `experiments/v132_post_v127_unlock_triage.md` to freeze the current policy: unlock acknowledged, but `NO-SLOT5-TODAY unless materially new evidence appears`.
+- Practical decision: preserve the remaining daily slot for now; use local-only work to separate `stable3`-centric top5-aware components from broader risky families and keep `v103/v102` as compliance-cleanup evidence, not immediate submit candidates.

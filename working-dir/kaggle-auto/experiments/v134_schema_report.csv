@@ -1,0 +1,2 @@
+path,rows,columns,matches_sample_columns,matches_sample_row_order,duplicate_row_id,has_nan,has_inf,finite_fraction,min_pred,max_pred,range_ok,mean,std,gt_0_9,lt_0_1
+birdclef-2026/outputs/v134-stable3-guarded-rescue-v1/submission.csv,120,235,True,False,False,False,False,1.00000000,0.011144416,0.9994699,True,0.521994338403,0.242283004113,1728,930

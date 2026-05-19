@@ -332,6 +332,11 @@
 - Pushed `birdclef-2026/notebooks/v134-stable3-guarded-rescue` to Kaggle successfully as kernel version `1`.
 - Refreshed kernel status immediately after push: `junhaochengadjcjh7u7/bc26-v134-stable3-guarded-rescue` is `KernelWorkerStatus.RUNNING`.
 - Decision: keep waiting for Run-mode completion; no real competition submission is attached to v134 at this stage.
+- Added `scripts/audit_v134_runmode.py` and ran it after kernel completion.
+- Refreshed external state: `junhaochengadjcjh7u7/bc26-v134-stable3-guarded-rescue` is now `COMPLETE`.
+- Retrieved `submission.csv` and `v134_guarded_branch_summary.csv`; one auxiliary fetch hit SSL EOF, but primary output validation succeeded.
+- Recorded `experiments/v134_schema_report.csv`, `experiments/v134_correlation_vs_references.csv`, `experiments/v134_runmode_status.md`, and `experiments/v134_runmode_decision_brief.md`.
+- Current read: `v134` passes the external Run-mode gate and stays numerically valid, but remains very close to the `v110/v114/v127` family; keep it in the guarded pool rather than promoting it straight to a real slot.
 
 ## 2026-05-19 Anchor-Streak Guard
 - Adopt the updated objective rule explicitly: stay on the current highest-score basis and avoid broad method-family changes until there are `5` consecutive real-submit outcomes without positive feedback over the best visible anchor.

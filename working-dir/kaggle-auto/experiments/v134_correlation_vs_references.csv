@@ -1,0 +1,4 @@
+reference_path,common_rows,common_cols,pearson,mad,max_abs_diff,note
+birdclef-2026/outputs/v110-ecoproto-clean-blend-v1/submission.csv,120,234,0.99855157,0.000862112496652,0.37557445,
+birdclef-2026/outputs/v114-v110-v113-selfblend-v1/submission.csv,120,234,0.99814262,0.0021472738088,0.37557445,
+birdclef-2026/outputs/v127-memorysafe-nontsubasa-router-v1/submission.csv,120,234,0.99746160,0.0018169546891,0.35419636,

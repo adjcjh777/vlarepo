@@ -274,3 +274,12 @@
 - Refreshed `birdclef_goal_check.py` at `2026-05-19 10:24:41 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions are `3/5` before v127 and no pending row is visible.
 - Decision: `SUBMIT - guarded slot 4`. v127 is not a final selection candidate yet, but it is the best current memory-safe original non-Tsubasa candidate after v120 hidden RAM failure and v122-v124 quality failures.
 - Real submission executed at `2026-05-19 10:27:41.813 UTC`, Kaggle ref `52807175`; initial status `PENDING`, public score blank. UTC `2026-05-19` visible submissions are now `4/5`.
+- Refreshed at `2026-05-19 10:31:57 UTC`: v127 remains `PENDING`, public score blank. `birdclef_goal_check.py` still reports best visible `0.949`, top20/top5 cutoffs `0.954/0.958`, and `GOAL_GATE=NOT_REACHED`. Do not spend the fifth slot while v127 is pending.
+
+## 2026-05-19 v128 Pending-Safe Originality Queue
+- Added `birdclef-2026/scripts/birdclef_pending_safe_candidate_queue.py` to rank existing Run-mode output artifacts without touching Kaggle submissions.
+- Wrote `experiments/v128_pending_safe_candidate_queue.csv` and `experiments/v128_pending_safe_candidate_queue_decision.md`.
+- Queue result: v103/v102 are still the strongest local proxy family (`v103 macro=0.98906455`, `top5=0.71232877`), but they remain blocked for direct prize-route use by unknown-license dependencies already recorded in v103 compliance.
+- v121 is the strongest clean-sidecar idea but inherits the v120 hidden-RAM pattern; v120 itself is retired after hidden-test memory failure; v127 is still pending and therefore locks the fifth real slot.
+- Originality decision: do not keep copying or direct-blending public work. The next useful research lane is a license-clean transfer of the v103 guard/rescue mechanism onto allowed in-notebook evidence, with row-level confidence preservation, positive-evidence rescue gating, per-class support floors, rank calibration, and memory-safe single-final-layer/post-final execution.
+- Decision: `RESEARCH-NEXT - no real submission while v127 is PENDING`; prepare v128/v129 only as an original, clean, memory-safe mechanism candidate after v127 score/error is known.

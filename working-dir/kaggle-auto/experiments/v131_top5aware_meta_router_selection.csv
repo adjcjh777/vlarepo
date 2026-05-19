@@ -1,0 +1,7 @@
+anchor,step,class_name,source_name,weight,mode,mean_delta,mean_support,objective_top5,objective_macro,objective_micro
+v110_clean,1,47158son13,v112_backtracking_remap,0.7,positive,0.00602968,22.0,0.52054795,0.97932287,0.91578081
+v110_clean,2,47158son22,v112_backtracking_remap,0.7,positive,0.00649351,22.0,0.52054795,0.97951262,0.91679967
+v110_clean,3,47158son23,v112_backtracking_remap,0.7,positive,0.00649351,22.0,0.52054795,0.97970236,0.91772625
+v114_clean_selfblend,1,47158son13,v112_backtracking_remap,0.7,positive,0.00602968,22.0,0.52054795,0.97941185,0.91668340
+v114_clean_selfblend,2,47158son22,v112_backtracking_remap,0.7,positive,0.00649351,22.0,0.52054795,0.97960159,0.91768880
+v114_clean_selfblend,3,47158son23,v112_backtracking_remap,0.7,positive,0.00649351,22.0,0.52054795,0.97979134,0.91861043

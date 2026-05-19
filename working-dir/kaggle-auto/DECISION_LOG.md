@@ -308,3 +308,20 @@
 - Blocked best full-column row: `v130_v114_clean_selfblend_blocked_full_w0.35`, macro `0.97987567`, micro `0.91638119`, top5 `0.50684932`.
 - Blocked top5-preserving row: `v130_v114_clean_selfblend_blocked_positive_w0.9`, macro `0.97979134`, micro `0.91924338`, top5 `0.52054795`.
 - Decision: `HOLD-component - do not submit v130`. The stable 3-class structure is a useful clean component, but it is not a standalone fifth-slot candidate while v127 is pending; any follow-up should combine it with a top5-aware grouped meta-router after v127 score/error is known.
+
+## 2026-05-19 v131 Top5-Aware Meta Router Probe
+- Refreshed external state at `2026-05-19 11:02:32 UTC`: v127 kernel remains `COMPLETE`, but competition submission ref `52807175` remains `PENDING`; best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.
+- Added `birdclef-2026/scripts/birdclef_probe_v131_top5aware_meta_router.py` to search for a compact grouped clean router under a lexicographic blocked objective: preserve/improve top5 first, then macro, then micro.
+- Wrote `experiments/v131_top5aware_meta_router_probe.csv`, `experiments/v131_top5aware_meta_router_selection.csv`, and `experiments/v131_top5aware_meta_router_decision_brief.md`.
+- The greedy blocked search for both `v110` and `v114` converged to the same stable 3-class positive component: `47158son13`, `47158son22`, `47158son23`, all from `v112_backtracking_remap`, all at weight `0.7`.
+- Best `v114` row after 3 steps: macro `0.97979134`, micro `0.91861043`, top5 `0.52054795`. Best `v110` row after 3 steps: macro `0.97970236`, micro `0.91772625`, top5 `0.52054795`.
+- A `gpt-5.3-codex-spark` explorer quick-check over the current CSV/brief set found no stronger omitted support>=10 top5-preserving clean set. The only remaining such combinations are `v119_roniheka_hgnet` on `47158son20`, `47158son21`, and `47158son25`, but they do not beat the stable `v112` triad under the current blocked objective.
+- Decision: `HOLD-confirmed-component - do not submit v131`. v131 confirms the stable 3-class component is the best current top5-aware clean grouped router, but it is still weaker than v127/v126 on macro and therefore not a fifth-slot candidate while v127 remains pending.
+- Follow-up decision: do not start a broad `v132` sweep now; wait for v127 score/error, and only reopen this lane with a narrow stable3-centric follow-up if v127 fails or scores poorly.
+
+## 2026-05-19 Anchor-Streak Guard
+- Adopt the updated objective rule explicitly: stay on the current highest-score basis and avoid broad method-family changes until there are `5` consecutive real-submit outcomes without positive feedback over the best visible anchor.
+- Current visible anchor is `v87 = 0.949`.
+- Completed non-positive outcomes after that anchor: `v88=0.921`, `v91=0.948`, `v101=0.898`, `v120=ERROR-memory` -> streak count `4`.
+- `v127` is the next gate result. While its Kaggle row remains `PENDING`, do not spend slot 5 on a different method family and do not reopen a broad alternative sweep.
+- Practical implication: avoid another low-confidence off-family submission like the prior `0.898` Alexy CPU lane unless the streak actually reaches `5` or new evidence materially changes the guard.

@@ -448,6 +448,9 @@
 - Practical implication: the wrapper now fails closed in the correct direction and is safe to use as the final pre-submit automation layer once a new UTC window opens.
 - Re-ran the wrapper with `--execute-if-ready` at `2026-05-19 13:42:34 UTC`; it still failed closed with `execute_if_ready=True`, `ready_for_guarded_submit=False`, and `wrapper_verdict=NOT-READY`.
 - Practical implication: even an explicit execute path will not spend the same-day slot before the UTC rollover and gate transition.
+- Hardened `birdclef-2026/scripts/birdclef_guarded_submit.py` with retry handling for `competition_submissions`, `kernels_status`, and `competition_submit_code`, so transient Kaggle SSL failures no longer turn the guarded dry-run path into a traceback.
+- Re-ran `scripts/recheck_and_optionally_submit_v134.py --write --execute-if-ready` at `2026-05-19 13:59:17 UTC`; `guarded_submit_dryrun_exit` is now back to `0`, while the wrapper still correctly returns `NOT-READY` under the same-day gate.
+- Practical implication: the submission helper and the wrapper now both fail closed in the *right* way, rather than failing because of transient network noise.
 
 ## 2026-05-19 v140 Guarded State Refresh
 - Added `scripts/refresh_v134_guarded_state.py` and wrote `experiments/v140_v134_guarded_state_refresh.md`.

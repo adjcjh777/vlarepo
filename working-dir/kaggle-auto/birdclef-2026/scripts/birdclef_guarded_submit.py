@@ -12,12 +12,15 @@ import re
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import time
 
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
 COMPETITION = "birdclef-2026"
 FILE_NAME = "submission.csv"
+MAX_RETRIES = 3
+RETRY_SLEEP_SECONDS = 2.0
 
 
 @dataclass(frozen=True)
@@ -200,6 +203,20 @@ def print_recent_submissions(subs: list[object]) -> None:
         )
 
 
+def call_with_retry(fn, label: str):
+    last_exc = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            return fn()
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            print(f"{label}_attempt_{attempt}=FAILED")
+            print(f"{label}_error_{attempt}={type(exc).__name__}: {exc}")
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_SLEEP_SECONDS)
+    raise last_exc
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -249,7 +266,14 @@ def main() -> int:
     api.authenticate()
 
     today = utc_day_prefix()
-    subs = api.competition_submissions(COMPETITION)[:20]
+    try:
+        subs = call_with_retry(lambda: api.competition_submissions(COMPETITION)[:20], "competition_submissions")
+    except Exception as exc:  # noqa: BLE001
+        print(
+            f"REFUSE: transient failure while loading submissions: {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
+        return 10
     today_subs = [s for s in subs if str(s.date).startswith(today)]
 
     print(f"utc_today={today}")
@@ -264,7 +288,14 @@ def main() -> int:
         )
         return 2
 
-    status = api.kernels_status(candidate.kernel)
+    try:
+        status = call_with_retry(lambda: api.kernels_status(candidate.kernel), "kernels_status")
+    except Exception as exc:  # noqa: BLE001
+        print(
+            f"REFUSE: transient failure while loading kernel status: {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
+        return 11
     print("candidate_key=", args.candidate)
     print("candidate_kernel=", candidate.kernel)
     print("candidate_version=", candidate.version)
@@ -326,13 +357,16 @@ def main() -> int:
         print("DRY_RUN: pass --execute after confirming quota reset and candidate choice.")
         return 0
 
-    response = api.competition_submit_code(
-        FILE_NAME,
-        candidate.message,
-        COMPETITION,
-        kernel=candidate.kernel,
-        kernel_version=candidate.version,
-        quiet=False,
+    response = call_with_retry(
+        lambda: api.competition_submit_code(
+            FILE_NAME,
+            candidate.message,
+            COMPETITION,
+            kernel=candidate.kernel,
+            kernel_version=candidate.version,
+            quiet=False,
+        ),
+        "competition_submit_code",
     )
     print("SUBMIT_RESPONSE=", response)
     return 0

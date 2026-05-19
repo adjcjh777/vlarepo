@@ -1,0 +1,7 @@
+name,macro_auc,micro_auc,top1_hit,top5_hit,decision_note
+submission_v103,0.98906455,0.92885549,0.38356164,0.71232877,best_macro_keep_as_original_candidate
+submission_blend_v103_v94_subm2_w35,0.98518780,0.90757900,0.21917808,0.54794521,reject_macro_and_tophit_regress
+submission_blend_v103_v91_protossm_w35,0.98148553,0.96086731,0.41095890,0.78082192,reject_macro_loss_too_large
+submission_blend_v103_v87_protossm_w35,0.98119903,0.96246590,0.46575342,0.80821918,reject_macro_loss_too_large
+submission_blend_v103_v87_sed_w35,0.98004596,0.96596491,0.72602740,0.89041096,bold_tophit_only_not_macro_safe
+submission_blend_v103_v87_sed_w25,0.97948832,0.95601575,0.67123288,0.87671233,bold_tophit_only_not_macro_safe

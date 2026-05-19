@@ -27,3 +27,12 @@ Submit v101 as the second real submission of UTC `2026-05-19`.
 Rationale: after v91 scored below the v87 anchor, v101 is a materially different CNN route rather than another near-EoS/Proto-SED replay. It is CPU-only, no-internet, provenance-recorded, and has strong dry-run proxy evidence. The guarded submission is necessary to measure hidden-test runtime and score because Kaggle Run mode does not mount hidden test files.
 
 Risk: this is an attributed public-reference derivative and its Run-mode output is sample prior only; hidden-test behavior is not proven until the code submission completes.
+
+## Result Update
+
+Updated: 2026-05-19 03:25 UTC
+
+- Status: `COMPLETE`
+- Public score: `0.898`
+- Outcome: retire v101. It is below the `0.949` anchor, below v91 `0.948`, below v88 `0.921`, and below the original-like `0.925` floor.
+- Next action: do not submit further Alexy CNN derivatives from this lane; continue with original/compliance-clean candidates.

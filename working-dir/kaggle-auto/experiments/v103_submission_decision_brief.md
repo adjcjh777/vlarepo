@@ -1,6 +1,6 @@
 # v103 Submission Decision Brief
 
-Updated: 2026-05-19 03:20 UTC
+Updated: 2026-05-19 03:38 UTC
 
 ## Candidate
 
@@ -43,16 +43,15 @@ v103 is not a public notebook copy. It continues the private v86/v102 line and a
 
 ## Decision
 
-`HOLD - do not submit v103 while v101 is still pending`
+`HOLD - do not submit v103 as-is`
 
 Reason:
 
-- v103 is the best current original Run-mode candidate on the local proxy tradeoff, but v101 ref `52795021` is still `PENDING`.
+- v103 is the best current original Run-mode candidate on the local proxy tradeoff, and v101 ref `52795021` has now completed at `0.898`, far below the anchor.
 - The goal gate is still not reached: latest known best visible score is `0.949`, top20 cutoff is `0.953`, and top5 cutoff is `0.958`.
+- Candidate-specific compliance is `HOLD-for-real-submit`: `jaejohn/perch-meta` and `tuckerarrants/bc2026-distilled-sed-public` return license `unknown` in Kaggle metadata, so v103 is not final-clean until this risk is accepted, resolved, or removed in a license-reduced variant.
 
 ## Next Action
 
-When v101 scores:
-
-- if v101 reaches or clearly improves the anchor, reassess whether an original v103 slot is worth the risk;
-- if v101 fails or underperforms, consider v103 as the next original real-submission candidate after a final quota check.
+- Prefer building or validating a v104/v105 license-reduced original branch before real submission.
+- Submit v103 only as a guarded non-final probe if the unknown-license risk is explicitly recorded as accepted.

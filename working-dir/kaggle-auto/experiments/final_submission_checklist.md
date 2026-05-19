@@ -1,6 +1,6 @@
 # Final Submission Checklist
 
-Updated: 2026-05-19 09:21 UTC
+Updated: 2026-05-19 09:45 UTC
 
 ## Current State
 - No final submission selection has been made.
@@ -10,6 +10,7 @@ Updated: 2026-05-19 09:21 UTC
 - v121 completed Run-mode with strong local proxy, but is not submit/final-selection eligible as-is because it inherits v120's double-final-layer memory risk.
 - v122 completed Run-mode with a single-pass memory-safe structure, but macro proxy is below clean baselines.
 - v123 completed Run-mode with rank-calibrated single-pass sidecar, but the proxy gain is too small and output is near-duplicate of v110/v114.
+- v124 completed Run-mode with a post-final lightweight sidecar, but macro proxy dropped to `0.97115717`.
 - Current best visible fallback is v87 `0.949`, but final promotion still requires private-LB robustness reasoning and complete provenance/compliance evidence.
 
 ## Required Before Any Final Judging Selection
@@ -37,6 +38,7 @@ Updated: 2026-05-19 09:21 UTC
 | v121 | `HOLD-memory-risk` | Run-mode proxy strong, but double-final-layer structure is not safe after v120 hidden RAM failure |
 | v122 | `REJECT-quality` | single-pass memory fix works, but macro proxy `0.97709863` is below clean baselines |
 | v123 | `HOLD-too-small-gain` | rank-calibrated single-pass works, but macro gain over v114 is only about `+0.000010` |
+| v124 | `REJECT-quality` | post-final lightweight sidecar is memory-safe but macro proxy `0.97115717` is too weak |
 
 ## Next Automatic Action
-Do not submit the current Tsubasa sidecar variants. The next real candidate needs a larger proxy improvement or materially different low-correlation evidence while preserving single-pass memory safety.
+Do not submit the current Tsubasa sidecar variants. The next real candidate needs a materially different low-correlation signal or stronger train-window evidence while preserving single-pass memory safety.

@@ -235,3 +235,11 @@
 - v123 correlation is too high to justify a slot: vs v110 Pearson `0.999952`, vs v114 Pearson `0.999546`; macro gain over v114 is only about `+0.000010`.
 - Refreshed `birdclef_goal_check.py` at `2026-05-19 09:21:17 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `3/5`.
 - Decision: `HOLD-too-small-gain - do not submit v123 as-is`. Stop tuning this Tsubasa sidecar lane unless new train-window evidence appears; any future sidecar must remain single-pass and should bring materially larger proxy or diversity evidence.
+
+## 2026-05-19 v124 Post-Final Tsubasa Negative Result
+- Built `birdclef-2026/notebooks/v124-postfinal-rankcal-tsubasa` to test a final alternative for the Tsubasa lane: run the clean final layer once, then apply a lightweight post-final rank-calibrated Tsubasa sidecar on the same 10 selected classes.
+- Static compliance passed: private kernel, CPU-only, internet disabled, BirdCLEF competition source present, Perch/Google model source present, Tsubasa CC0 source present, no unknown-license Perch/SED/cache inputs, and no prior output CSV mounts.
+- Kaggle Run-mode completed at about `462.5s` before output save; schema passed for dry-run rows: `120 x 235`, finite values, no duplicate row IDs, range `[0.011144, 0.999470]`.
+- Proxy was weak: `macro=0.97115717`, `micro=0.90281675`, `top5=0.52054795`; post-final sidecar gate cells were `555 / 28080`.
+- Refreshed `birdclef_goal_check.py` at `2026-05-19 09:45:14 UTC`: best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`; today's UTC real submissions remain `3/5`.
+- Decision: `REJECT-quality - do not submit v124`. The Tsubasa sidecar lane is exhausted for now: v121 was quality-strong but memory-unsafe, v122/v123 were memory-safe but not slot-worthy, and v124 is memory-safe but quality-negative.

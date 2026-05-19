@@ -1,0 +1,2 @@
+candidate,source,rows,cols,matches_sample_columns,matches_sample_row_order,duplicate_row_id,finite,min,max,mean,std
+v124-postfinal-rankcal-tsubasa,birdclef-2026/outputs/v124-postfinal-rankcal-tsubasa-v1/submission.csv,120,235,True,False,False,True,0.011144416,0.9994699,0.5220403212962964,0.24145220157983707

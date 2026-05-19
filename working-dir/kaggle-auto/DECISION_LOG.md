@@ -374,3 +374,14 @@
 - Added `experiments/v135_next_window_runbook.md` to freeze the exact next-window procedure instead of reopening more same-day exploration.
 - Key policy: wait for the UTC reset, rebuild the anti-collapse scorecard, re-confirm `v134` guarded-pool rank `#1`, and only then decide whether it should be promoted to a real-submit candidate.
 - Fallback order is fixed as `v134 -> v131 -> v129 -> (only after compliance cleanup) v103/v102`; `v126` stays below that line until it earns a stronger anti-collapse screen than the current same-family evidence.
+
+## 2026-05-19 v136 Next Window Gate
+- Added `scripts/check_v134_next_window_gate.py` to make the next-window promotion rule executable instead of manual.
+- Wrote `experiments/v136_next_window_gate_status.md` from the current state.
+- Current gate output:
+  - UTC day: `2026-05-19`
+  - visible submissions today: `4`
+  - top guarded candidate: `v134_stable3_guarded_rescue`
+  - `v134` kernel status: `COMPLETE`
+  - decision: `WAIT-SAME-UTC-DAY`
+- Practical implication: even though `v134` is now the guarded-pool leader with completed Run-mode evidence, the correct move before UTC rollover is still to preserve the final same-day slot.

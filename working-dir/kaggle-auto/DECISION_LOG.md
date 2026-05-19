@@ -327,6 +327,11 @@
 - Decision: `HOLD-guarded-component - do not submit v134`; treat it as the preferred local continuation over raw `v131`, while keeping today's slot 5 unused.
 - Materialized `birdclef-2026/notebooks/v134-stable3-guarded-rescue` via `birdclef-2026/scripts/birdclef_prepare_v134_stable3_guarded_rescue.py`.
 - Static local package check passed: notebook exists, router cell is inserted, metadata is private CPU-only/no-internet, dataset sources were reduced to Perch + Backtracking only, and `ATTRIBUTION.md` records the stable3 guarded change.
+- Added `experiments/v134_static_audit.md` and `experiments/v134_runmode_status.md`.
+- Decision update: `PUSH-RUNMODE-ONLY`; Run-mode is the next evidence step because v134 is a narrower, lower-risk stable3 continuation and does not consume a real submission slot.
+- Pushed `birdclef-2026/notebooks/v134-stable3-guarded-rescue` to Kaggle successfully as kernel version `1`.
+- Refreshed kernel status immediately after push: `junhaochengadjcjh7u7/bc26-v134-stable3-guarded-rescue` is `KernelWorkerStatus.RUNNING`.
+- Decision: keep waiting for Run-mode completion; no real competition submission is attached to v134 at this stage.
 
 ## 2026-05-19 Anchor-Streak Guard
 - Adopt the updated objective rule explicitly: stay on the current highest-score basis and avoid broad method-family changes until there are `5` consecutive real-submit outcomes without positive feedback over the best visible anchor.

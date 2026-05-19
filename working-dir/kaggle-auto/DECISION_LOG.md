@@ -434,3 +434,13 @@
   - goal_check exit `3`
   - guarded_submit_dryrun exit `0`
 - Practical implication: once the UTC window opens, the automation can now verify both readiness gates and the guarded-submit helper path from a single script before any real slot is spent.
+
+## 2026-05-19 v139 Submit Wrapper
+- Added `scripts/recheck_and_optionally_submit_v134.py` and wrote `experiments/v139_v134_submit_wrapper_status.md`.
+- The wrapper combines gate, guarded recheck, window bundle, and guarded-submit dry-run into one decision layer; by default it remains dry-run-only, and only `--execute-if-ready` would allow a real submit path.
+- After hardening `scripts/check_v134_next_window_gate.py` against Kaggle submission-list SSL failures and adding file-based fallback parsing in the wrapper, the current wrapper status is stable:
+  - `gate_decision=WAIT-SAME-UTC-DAY`
+  - `recheck_verdict=WAIT-SAME-UTC-DAY`
+  - `ready_for_guarded_submit=False`
+  - `wrapper_verdict=NOT-READY`
+- Practical implication: the wrapper now fails closed in the correct direction and is safe to use as the final pre-submit automation layer once a new UTC window opens.

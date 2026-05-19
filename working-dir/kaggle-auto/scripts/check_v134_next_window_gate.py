@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 from pathlib import Path
+import time
 
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
@@ -17,6 +18,8 @@ LEDGER = EXP / "submission_ledger.csv"
 TOP_CANDIDATE = "v134_stable3_guarded_rescue"
 KERNEL = "junhaochengadjcjh7u7/bc26-v134-stable3-guarded-rescue"
 COMPETITION = "birdclef-2026"
+MAX_RETRIES = 3
+RETRY_SLEEP_SECONDS = 2.0
 
 
 def utc_now() -> datetime:
@@ -25,6 +28,20 @@ def utc_now() -> datetime:
 
 def utc_day(ts: str) -> str:
     return str(ts).split(" ")[0]
+
+
+def call_with_retry(fn, label: str):
+    last_exc = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            return fn()
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            print(f"{label}_attempt_{attempt}=FAILED")
+            print(f"{label}_error_{attempt}={type(exc).__name__}: {exc}")
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_SLEEP_SECONDS)
+    raise last_exc
 
 
 def main() -> int:
@@ -39,9 +56,36 @@ def main() -> int:
     scorecard = pd.read_csv(SCORECARD)
     api = KaggleApi()
     api.authenticate()
-    submissions = api.competition_submissions(COMPETITION)[:20]
+    try:
+        submissions = call_with_retry(lambda: api.competition_submissions(COMPETITION)[:20], "competition_submissions")
+        kernel_status = call_with_retry(lambda: api.kernels_status(KERNEL), "kernel_status")
+    except Exception as exc:  # noqa: BLE001
+        decision = "CHECK_FAILED_TRANSIENT"
+        lines = [
+            "# v136 Next Window Gate Status",
+            "",
+            f"Updated: {now.strftime('%Y-%m-%d %H:%M:%S UTC')}",
+            "",
+            "## Snapshot",
+            "",
+            f"- Current UTC day: `{today}`",
+            "## Decision",
+            "",
+            f"`{decision}`",
+            "",
+            "## Meaning",
+            "",
+            f"- gate refresh failed transiently: `{type(exc).__name__}: {exc}`",
+            "- Do not submit; rerun the gate after the network/API recovers.",
+        ]
+        if args.write:
+            STATUS_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print(f"utc_day={today}")
+        print(f"decision={decision}")
+        if args.write:
+            print(f"status_path={STATUS_PATH}")
+        return 2
     today_visible = [s for s in submissions if str(s.date).startswith(today)]
-    kernel_status = api.kernels_status(KERNEL)
 
     last_submission_day = utc_day(str(ledger.iloc[-1]["timestamp"]))
     anchor_score = 0.949

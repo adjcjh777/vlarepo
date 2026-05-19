@@ -368,3 +368,9 @@
   - `v103/v102` as high-value mechanism evidence but compliance-blocked;
   - `v104/v105` retired.
 - Decision remains `NO-SLOT5-TODAY`; next real-candidate window should start from the stable3 component, not another broad near-neighbor of `v127`.
+
+## 2026-05-19 v135 Next Window Runbook
+- Current external state still shows UTC `2026-05-19`, visible real submissions today remain `4`, and best visible anchor remains `0.949`.
+- Added `experiments/v135_next_window_runbook.md` to freeze the exact next-window procedure instead of reopening more same-day exploration.
+- Key policy: wait for the UTC reset, rebuild the anti-collapse scorecard, re-confirm `v134` guarded-pool rank `#1`, and only then decide whether it should be promoted to a real-submit candidate.
+- Fallback order is fixed as `v134 -> v131 -> v129 -> (only after compliance cleanup) v103/v102`; `v126` stays below that line until it earns a stronger anti-collapse screen than the current same-family evidence.

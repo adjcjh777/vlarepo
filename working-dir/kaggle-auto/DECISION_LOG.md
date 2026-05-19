@@ -299,3 +299,12 @@
 - Best blocked row: `v129_v114_clean_selfblend_min5_d0.002_w0.35_top5guard0`, macro `0.97970207`, micro `0.91617178`, top1 `0.24657534`, top5 `0.52054795`, average selected classes/fold `3.4`, Pearson vs anchor `0.99937804`.
 - Stable classes across all 10 held-out folds are `47158son13`, `47158son22`, and `47158son23`, all routed from `v112_backtracking_remap`; other classes are fold-fragile.
 - Decision: `HOLD-validated-small-gain - do not submit v129`. The grouped validation supports the clean-router idea but the gain is too small and still weaker than v127/v128; keep the 3-class pattern as evidence for a future stricter router only after v127 score/error is known.
+
+## 2026-05-19 v130 Stable-3 Router Probe
+- Refreshed external state at `2026-05-19 10:55:30 UTC`: v127 kernel remains `COMPLETE`, but competition submission ref `52807175` remains `PENDING`; best visible remains `0.949`, top20/top5 cutoffs `0.954/0.958`, `GOAL_GATE=NOT_REACHED`.
+- Added `birdclef-2026/scripts/birdclef_probe_v130_stable3_router.py` to isolate the stable v129 classes `47158son13/47158son22/47158son23` with clean `v112_backtracking_remap` evidence.
+- Wrote `experiments/v130_stable3_router_probe.csv` and `experiments/v130_stable3_router_decision_brief.md`.
+- Same-row best: `v130_v114_clean_selfblend_same_full_w0.9`, macro `0.98008650`, micro `0.91663030`, top5 `0.50684932`.
+- Blocked best full-column row: `v130_v114_clean_selfblend_blocked_full_w0.35`, macro `0.97987567`, micro `0.91638119`, top5 `0.50684932`.
+- Blocked top5-preserving row: `v130_v114_clean_selfblend_blocked_positive_w0.9`, macro `0.97979134`, micro `0.91924338`, top5 `0.52054795`.
+- Decision: `HOLD-component - do not submit v130`. The stable 3-class structure is a useful clean component, but it is not a standalone fifth-slot candidate while v127 is pending; any follow-up should combine it with a top5-aware grouped meta-router after v127 score/error is known.

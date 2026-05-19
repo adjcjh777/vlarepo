@@ -16,12 +16,13 @@ Updated: 2026-05-19 00:34 UTC
 - UTC `2026-05-19` submissions used: `1/5`
 
 ## Latest Check
-- Checked at: `2026-05-19 00:36:59 UTC`
+- Checked at: `2026-05-19 00:39:48 UTC`
 - Status: `PENDING`
 - Public score: not available yet
 - Error: none visible
 - Goal gate: `GOAL_GATE=NOT_REACHED`
 - Visible best: v87 `0.949`; top20/top5 cutoffs `0.953` / `0.958`
+- Monitor output: `NEXT: wait; target score is not available yet.`
 - Decision: keep slot two locked; wait for v91 scored row or error.
 
 ## Gate

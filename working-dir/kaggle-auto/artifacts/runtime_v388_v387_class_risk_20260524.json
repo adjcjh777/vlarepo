@@ -1,0 +1,74 @@
+{
+  "active_cells": 323,
+  "anchor": {
+    "corr_vs_anchor": 1.0,
+    "fold_mean": 0.7622183742183742,
+    "fold_min": 0.4743265993265993,
+    "fold_std": 0.15524729835150838,
+    "macro_auc": 0.9773635566756887,
+    "micro_auc": 0.9128266815447716,
+    "top1_hit": 0.273972602739726,
+    "top5_hit": 0.5068493150684932,
+    "weak_followup_auc": 0.9498433157647795
+  },
+  "best_class": {
+    "anchor_auc": 0.7620416966211359,
+    "auc_delta": 0.0647016534867002,
+    "candidate_auc": 0.8267433501078361,
+    "changed_rows": 43,
+    "followup_label": true,
+    "max_abs_delta": 0.12445188233738624,
+    "mean_abs_delta": 0.01773991408673165,
+    "primary_label": "516975"
+  },
+  "block_count": 0,
+  "candidate": {
+    "corr_vs_anchor": 0.9998365047552008,
+    "fold_mean": 0.77393265993266,
+    "fold_min": 0.4743265993265993,
+    "fold_std": 0.15441704015998192,
+    "macro_auc": 0.980281813652357,
+    "micro_auc": 0.9158379329774201,
+    "top1_hit": 0.273972602739726,
+    "top5_hit": 0.5068493150684932,
+    "weak_followup_auc": 0.959014980548594
+  },
+  "checks": {
+    "fold_std_not_worse": true,
+    "followup_mean_positive": true,
+    "limited_minor_class_regressions": true,
+    "macro_gate": true,
+    "no_fold_macro_regression_gt_001": true,
+    "no_material_class_regression": true,
+    "top5_not_worse": true,
+    "weak_gate": true
+  },
+  "class_regressions_lt_001": 0,
+  "decision": "READY-v388-v387-class-risk-pass-NO-PUSH-NO-SUBMIT",
+  "elapsed_seconds": 0.1203,
+  "experiment_id": "v388-v387-class-risk",
+  "followup_mean_auc_delta": 0.009171664783814324,
+  "material_class_regressions_lt_003": 0,
+  "next_recommended_action": "Wait for v387 Run-mode proof, then run submit-readiness only if this audit remains pass.",
+  "timestamp_utc": "2026-05-24 15:04:50 UTC",
+  "worst_class": {
+    "anchor_auc": 0.987,
+    "auc_delta": -0.0004999999999999449,
+    "candidate_auc": 0.9865,
+    "changed_rows": 50,
+    "followup_label": true,
+    "max_abs_delta": 0.11399138545173541,
+    "mean_abs_delta": 0.009114791507322728,
+    "primary_label": "47158son21"
+  },
+  "worst_fold": {
+    "anchor_macro_auc": 0.5905844155844155,
+    "anchor_top5": 0.8181818181818182,
+    "candidate_macro_auc": 0.5905844155844155,
+    "candidate_top5": 0.8181818181818182,
+    "group": "BC2026_Train_0001_S08_20250606_030007",
+    "macro_delta": 0.0,
+    "rows": 12,
+    "top5_delta": 0.0
+  }
+}

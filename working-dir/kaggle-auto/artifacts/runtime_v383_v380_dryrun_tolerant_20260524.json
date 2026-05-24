@@ -1,0 +1,57 @@
+{
+  "audit": {
+    "block_count": 0,
+    "checks": {
+      "attribution_exists": true,
+      "competition_source": true,
+      "cpu_disabled_gpu": true,
+      "cpu_disabled_tpu": true,
+      "destination_exists": true,
+      "dryrun_tolerant_message": true,
+      "internet_disabled": true,
+      "keeps_clean_dataset_sources": true,
+      "keeps_clean_model_sources": true,
+      "local_fold_std_not_worse": true,
+      "local_macro_gate": true,
+      "local_top5_not_worse": true,
+      "marker_cell_once": true,
+      "metadata_exists": true,
+      "no_unknown_patch_runtime_sources": true,
+      "notebook_exists": true,
+      "real_sample_guard_present": true
+    },
+    "decision": "READY-v383-dryrun-tolerant-static-audit-NO-PUSH-NO-SUBMIT",
+    "next_recommended_action": "Push v383 for Run-mode proof if live pending count is zero."
+  },
+  "decision": "READY-v383-dryrun-tolerant-static-audit-NO-PUSH-NO-SUBMIT",
+  "elapsed_seconds": 0.0992,
+  "experiment_id": "v383-v380-dryrun-tolerant",
+  "local_metrics": {
+    "active_cells": 323,
+    "anchor_fold_std": 0.15524729835150838,
+    "anchor_macro_auc": 0.9773635566756887,
+    "anchor_top1_hit": 0.273972602739726,
+    "anchor_top5_hit": 0.5068493150684932,
+    "anchor_weak_followup_auc": 0.9498433157647795,
+    "corr_vs_anchor": 0.9999487544303441,
+    "fold_std_delta": -0.0002265860787013796,
+    "local_fold_std": 0.155020712272807,
+    "local_macro_auc": 0.9789647592114707,
+    "local_top1_hit": 0.273972602739726,
+    "local_top5_hit": 0.5068493150684932,
+    "local_weak_followup_auc": 0.954875666591523,
+    "macro_gain": 0.0016012025357819981,
+    "weak_followup_gain": 0.00503235082674347
+  },
+  "materialization": {
+    "dest_dir": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v383-v380-dryrun-tolerant",
+    "kernel_id": "junhaochengadjcjh7u7/bc26-v383-v380-dryrun-tolerant",
+    "notebook": "submission.ipynb",
+    "patch_marker_count": 1,
+    "patch_mode": "append-final-cell",
+    "patched": true,
+    "source_dir": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v107-rankceiling-perch-guarded",
+    "title": "bc26-v383-v380-dryrun-tolerant"
+  },
+  "timestamp_utc": "2026-05-24 13:52:30 UTC"
+}

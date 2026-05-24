@@ -1,0 +1,9 @@
+{
+  "experiment_id": "v380_runmode_status",
+  "outputs": [
+    "birdclef-2026/outputs/v380-v379-static-distill-runmode/bc26-v380-v379-static-distill.log",
+    "birdclef-2026/outputs/v380-v379-static-distill-runmode/submission.csv"
+  ],
+  "source_notebook": "birdclef-2026/notebooks/v380-v379-static-distill",
+  "submitted": false
+}

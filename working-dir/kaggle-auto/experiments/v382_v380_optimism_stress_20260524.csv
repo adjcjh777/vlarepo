@@ -1,0 +1,6 @@
+metric,v379_oof_value,v380_fullcoef_value,delta_full_minus_oof,decision,note
+macro_gain,0.00096449,0.00160120,0.00063671,WATCH-optimism,full-coefficient materialization compared to blocked OOF proxy
+weak_followup_gain,0.00303125,0.00503235,0.00200110,WATCH-optimism,full-coefficient materialization compared to blocked OOF proxy
+fold_std_delta,-0.00022659,-0.00022659,0.00000000,PASS-no-extra-optimism,full-coefficient materialization compared to blocked OOF proxy
+top5_hit,0.50684932,0.50684932,0.00000000,PASS-no-extra-optimism,full-coefficient materialization compared to blocked OOF proxy
+corr_vs_anchor,0.99996142,0.99994875,-0.00001267,PASS-no-extra-optimism,full-coefficient materialization compared to blocked OOF proxy

@@ -1,0 +1,70 @@
+{
+  "blocker_count": 0,
+  "blockers": [],
+  "decision": "READY-v385-v383-final-submit-gate",
+  "evidence": {
+    "candidate": "v383-v380-dryrun-tolerant",
+    "corr_vs_v107_anchor": "MISSING",
+    "fold_std_delta": -0.0002265860787013796,
+    "kernel": "junhaochengadjcjh7u7/bc26-v383-v380-dryrun-tolerant",
+    "kernel_version": 1,
+    "live": {
+      "duplicate_pending": false,
+      "duplicate_scored": false,
+      "kernel_status": "{\"status\": \"COMPLETE\", \"failureMessage\": \"\"}",
+      "latest": [
+        {
+          "date": "2026-05-24 05:48:20.487000",
+          "description": "v298 taxonomy-context swap over the v289/v288/v285/v87 high-score anchor; allows a tiny rank-6..12 top5-boundary swap only when v288 context and v289 official taxonomy-sibling signals agree, excludes inactive public0952/v296 evidence, CPU-only no-internet",
+          "score": "0.949",
+          "status": "SubmissionStatus.COMPLETE"
+        },
+        {
+          "date": "2026-05-24 04:01:13.187000",
+          "description": "v299 context-frontier swap over the v288/v285/v87 high-score anchor; uses official secondary/file-local context only to swap at most two rank-6/7 frontier classes into top5, keeps top1 immutable, blocks public0952 as positive evidence, CPU-only no-internet",
+          "score": "0.949",
+          "status": "SubmissionStatus.COMPLETE"
+        },
+        {
+          "date": "2026-05-22 07:04:34",
+          "description": "v288 adaptive context finch over the v285/v87 high-score anchor; combines official secondary cooccurrence, file-local context, and conservative margin gates to move non-top5 cells only, with zero top1/top5 drift, CPU-only no-internet",
+          "score": "0.949",
+          "status": "SubmissionStatus.COMPLETE"
+        },
+        {
+          "date": "2026-05-22 04:16:22.473000",
+          "description": "v285 secondary-context stack over the v278/v87 high-score anchor; freezes top1/top5 membership while applying official secondary cooccurrence and file-local context to non-top5 cells, requires active context movement, zero top5 drift, CPU-only no-internet",
+          "score": "0.949",
+          "status": "SubmissionStatus.COMPLETE"
+        },
+        {
+          "date": "2026-05-22 02:08:05.243000",
+          "description": "v278 NFNet active-only fail-closed verifier over the v265/v87 high-score anchor; uses CC0 brendancarlin NFNet checkpoints, removes the failed AVES branch, requires NFNet checkpoint plus smoke/hidden active evidence, CPU-only no-internet",
+          "score": "0.949",
+          "status": "SubmissionStatus.COMPLETE"
+        }
+      ],
+      "ok": true,
+      "pending": 0,
+      "today_count": 2
+    },
+    "macro_gain": 0.0016012025357819981,
+    "max_today": 4,
+    "metadata_enable_gpu": false,
+    "metadata_enable_internet": false,
+    "metadata_enable_tpu": false,
+    "metadata_id": "junhaochengadjcjh7u7/bc26-v383-v380-dryrun-tolerant",
+    "v383_runmode_decision": "READY-v383-runmode-dryrun-runtime-proof",
+    "v383_runtime_seconds": 346,
+    "v383_static_block_count": 0,
+    "v383_static_decision": "READY-v383-dryrun-tolerant-static-audit-NO-PUSH-NO-SUBMIT",
+    "v384_blocker_count": 0,
+    "v384_decision": "READY-v383-submit-readiness-AWAIT-EXPLICIT-SUBMIT-GATE",
+    "weak_followup_gain": 0.00503235082674347
+  },
+  "execute_requested": false,
+  "experiment_id": "v385-v383-final-submit-gate",
+  "submit_response": "",
+  "submitted": false,
+  "timestamp_utc": "2026-05-24 14:43:17 UTC"
+}

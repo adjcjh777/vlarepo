@@ -1,0 +1,51 @@
+{
+  "blocker_count": 1,
+  "blockers": [
+    "no_live_pending"
+  ],
+  "class_risk_decision": "READY-v388-v387-class-risk-pass-NO-PUSH-NO-SUBMIT",
+  "decision": "WAIT-v391-submit-readiness-blocked-NO-SUBMIT",
+  "experiment_id": "v393-v391-submit-readiness",
+  "live": {
+    "duplicate_v391": false,
+    "latest": [
+      {
+        "date": "2026-05-24 15:21:09.597000",
+        "description": "v387 v386 parameter-stressed fixed-coefficient distill over the clean v107 Perch anchor; uses hidden-test-computable row_id temporal context and train soundscape priors, retains real sample-row guards, CPU-only no-internet; submitted only after v387 Run-mode runtime proof, v388 class-risk audit, and v389 submit-readiness gate",
+        "score": "",
+        "status": "SubmissionStatus.PENDING"
+      },
+      {
+        "date": "2026-05-24 05:48:20.487000",
+        "description": "v298 taxonomy-context swap over the v289/v288/v285/v87 high-score anchor; allows a tiny rank-6..12 top5-boundary swap only when v288 context and v289 official taxonomy-sibling signals agree, excludes inactive public0952/v296 evidence, CPU-only no-internet",
+        "score": "0.949",
+        "status": "SubmissionStatus.COMPLETE"
+      },
+      {
+        "date": "2026-05-24 04:01:13.187000",
+        "description": "v299 context-frontier swap over the v288/v285/v87 high-score anchor; uses official secondary/file-local context only to swap at most two rank-6/7 frontier classes into top5, keeps top1 immutable, blocks public0952 as positive evidence, CPU-only no-internet",
+        "score": "0.949",
+        "status": "SubmissionStatus.COMPLETE"
+      },
+      {
+        "date": "2026-05-22 07:04:34",
+        "description": "v288 adaptive context finch over the v285/v87 high-score anchor; combines official secondary cooccurrence, file-local context, and conservative margin gates to move non-top5 cells only, with zero top1/top5 drift, CPU-only no-internet",
+        "score": "0.949",
+        "status": "SubmissionStatus.COMPLETE"
+      },
+      {
+        "date": "2026-05-22 04:16:22.473000",
+        "description": "v285 secondary-context stack over the v278/v87 high-score anchor; freezes top1/top5 membership while applying official secondary cooccurrence and file-local context to non-top5 cells, requires active context movement, zero top5 drift, CPU-only no-internet",
+        "score": "0.949",
+        "status": "SubmissionStatus.COMPLETE"
+      }
+    ],
+    "pending": 1,
+    "today_count": 3
+  },
+  "next_recommended_action": "Resolve blockers before any separate v391 final-submit gate.",
+  "runmode_decision": "READY-v391-runmode-dryrun-runtime-proof",
+  "runtime_seconds": 0.7176,
+  "static_decision": "READY-v391-v386-safe-static-materializer-audit-NO-PUSH-NO-SUBMIT",
+  "timestamp_utc": "2026-05-24 15:31:51 UTC"
+}

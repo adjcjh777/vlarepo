@@ -1,0 +1,74 @@
+# v383 Run-mode Status
+
+Updated: 2026-05-24 14:18:42 UTC
+
+- Kernel: `junhaochengadjcjh7u7/bc26-v383-v380-dryrun-tolerant`
+- Kaggle status: `{"status": "STATUS_ERROR", "failureMessage": "SSLError: HTTPSConnectionPool(host='www.kaggle.com', port=443): Max retries exceeded with url: /api/v1/kernels/status?username=junhaochengadjcjh7u7&kernelslug=bc26-v383-v380-dryrun-tolerant (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)')))"}`
+- Output dir: `birdclef-2026/outputs/v383-v380-dryrun-tolerant-runmode`
+- Fetched: `False`
+- Runtime seconds: `346`
+- Runtime target seconds: `4200`
+- Runtime hard cap seconds: `5400`
+- Decision: `READY-v383-runmode-dryrun-runtime-proof`
+
+## Submission Schema
+
+- available: `True`
+- path: `/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v383-v380-dryrun-tolerant-runmode/submission.csv`
+- rows: `120`
+- columns: `235`
+- matches_sample_columns: `True`
+- matches_sample_row_order: `False`
+- matches_sample_row_set: `False`
+- contains_train_rows: `True`
+- duplicate_row_id: `False`
+- has_nan: `False`
+- has_inf: `False`
+- range_ok: `True`
+- min_pred: `0.011144416`
+- max_pred: `0.9997021`
+- mean: `0.5218332132758904`
+- std: `0.24413728727110967`
+
+## Diagnostics
+
+### v383_static_distill_diagnostics.csv
+- available: `True`
+- path: `/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v383-v380-dryrun-tolerant-runmode/v383_static_distill_diagnostics.csv`
+- rows: `1`
+- columns: `7`
+- column_names: `['patch', 'rows', 'cols', 'active_cells', 'dryrun_row_mismatch', 'min', 'max']`
+
+### v383_static_distill_summary.csv
+- available: `True`
+- path: `/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v383-v380-dryrun-tolerant-runmode/v383_static_distill_summary.csv`
+- rows: `7`
+- columns: `4`
+- column_names: `['class_name', 'active_rows', 'anchor_mean', 'final_mean']`
+
+### submission_v107_anchor.csv
+- available: `True`
+- path: `/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v383-v380-dryrun-tolerant-runmode/submission_v107_anchor.csv`
+- rows: `120`
+- columns: `235`
+- column_names: `['row_id', '1161364', '116570', '1176823', '1491113', '1595929', '209233', '22930', '22956', '22961', '22967', '22973', '22983', '22985', '23150', '23154', '23158', '23176', '23724', '24279', '24285', '24287', '24321', '244024', '25073', '25092', '25214', '326272', '41970', '43435', '47144', '47158son01', '47158son02', '47158son03', '47158son04', '47158son05', '47158son06', '47158son07', '47158son08', '47158son09', '47158son10', '47158son11', '47158son12', '47158son13', '47158son14', '47158son15', '47158son16', '47158son17', '47158son18', '47158son19', '47158son20', '47158son21', '47158son22', '47158son23', '47158son24', '47158son25', '476521', '516975', '517063', '555123', '555145', '555146', '64898', '65377', '65380', '66971', '67107', '67252', '70711', '738183', '74113', '74580', '760266', 'ashgre1', 'astcra1', 'bafcur1', 'baffal1', 'banana', 'barant1', 'batbel1', 'baymac', 'bbwduc', 'bcwfin2', 'bkcdon', 'bkhpar', 'blchaw1', 'blheag1', 'blttit1', 'bncfly', 'bobfly1', 'brcmar1', 'brnowl', 'bucmot4', 'bucpar', 'bufpar', 'bunibi1', 'burowl', 'camfli1', 'chacha1', 'chbmoc1', 'chobla1', 'chvcon1', 'cibspi1', 'coffal1', 'compau', 'compot1', 'crbthr1', 'crebec1', 'dwatin1', 'epaori4', 'eulfly1', 'fabwre1', 'fepowl', 'ficman1', 'flawar1', 'fotfly', 'fusfly1', 'gilhum1', 'giwrai1', 'glteme1', 'grasal3', 'greani1', 'greant1', 'greela', 'grekis', 'grepot1', 'gretho2', 'greyel', 'grfdov1', 'grhtan1', 'gycwor1', 'horscr1', 'houspa', 'hyamac1', 'larela1', 'lesela1', 'lesgrf1', 'limpki', 'linwoo1', 'litcuc2', 'litnig1', 'mabpar', 'magant1', 'magtan2', 'masgna1', 'nacnig1', 'ocecra1', 'oliwoo1', 'orbtro3', 'orwpar', 'osprey', 'pabspi1', 'palhor3', 'paltan1', 'phecuc1', 'picpig2', 'pirfly1', 'plasla1', 'platyr1', 'plcjay1', 'pluibi1', 'purjay1', 'pvttyr1', 'ragmac1', 'rebscy1', 'recfin1', 'redjun', 'relser1', 'rinkin1', 'rivwar1', 'roahaw', 'rubthr1', 'rufcac2', 'rufcas2', 'rufgna3', 'rufhor2', 'rufnig1', 'ruftho1', 'ruftof1', 'rumfly1', 'ruther1', 'rutjac1', 'sabspa1', 'saffin', 'saytan1', 'scadov1', 'schpar1', 'scther1', 'shcfly1', 'shshaw', 'shtnig1', 'sibtan2', 'smbani', 'smbtin1', 'sobcac1', 'sobtyr1', 'socfly1', 'sofspi1', 'souant1', 'soulap1', 'souscr1', 'spbant3', 'spispi1', 'sptnig1', 'squcuc1', 'stbwoo2', 'strcuc1', 'strher2', 'strowl1', 'swthum1', 'swtman1', 'tattin1', 'thlwre1', 'toctou1', 'trokin', 'trsowl', 'undtin1', 'varant1', 'watjac1', 'wesfie1', 'wfwduc1', 'whbant2', 'whbwar2', 'whiwoo1', 'whlspi1', 'whnjay1', 'whtdov', 'whwpic1', 'y00678', 'yebcar', 'yebela1', 'yecmac', 'yecpar', 'yehcar1', 'yeofly1']`
+
+## Log Flags
+
+- available: `True`
+- traceback: `False`
+- v383_printed: `True`
+- dryrun_row_mismatch_tolerated: `True`
+- unknown_license_dataset_text: `False`
+
+## Files
+
+- `bc26-v383-v380-dryrun-tolerant.log`
+- `submission.csv`
+- `submission_v107_anchor.csv`
+- `v383_static_distill_diagnostics.csv`
+- `v383_static_distill_summary.csv`
+
+## Submit Gate
+
+No real competition submission is made by this audit. v383 may become a candidate for later guarded submission only if this audit reports READY and a separate competition-submit gate is explicitly authorized.

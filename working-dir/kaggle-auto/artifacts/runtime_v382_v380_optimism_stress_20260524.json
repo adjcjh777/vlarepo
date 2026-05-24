@@ -1,0 +1,13 @@
+{
+  "decision": "READY-v380-optimism-stress-pass-RUNMODE-ONLY-NO-SUBMIT",
+  "experiment_id": "v382-v380-optimism-stress",
+  "fold_not_worse": true,
+  "full_meets_macro_gate": true,
+  "macro_optimism": 0.0006367149027951546,
+  "next_recommended_action": "Continue Run-mode proof. Even if Run-mode passes, require a separate competition-submit gate before any real submission.",
+  "oof_positive": true,
+  "runtime_seconds": 0.0008,
+  "timestamp_utc": "2026-05-24 13:46:13 UTC",
+  "top5_not_worse": true,
+  "weak_optimism": 0.002001103980213359
+}

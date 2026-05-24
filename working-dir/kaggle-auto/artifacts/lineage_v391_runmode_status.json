@@ -1,0 +1,12 @@
+{
+  "experiment_id": "v391_runmode_status",
+  "outputs": [
+    "birdclef-2026/outputs/v391-v386-safe-static-distill-runmode/bc26-v391-v386-safe-static-distill.log",
+    "birdclef-2026/outputs/v391-v386-safe-static-distill-runmode/submission.csv",
+    "birdclef-2026/outputs/v391-v386-safe-static-distill-runmode/submission_v107_anchor.csv",
+    "birdclef-2026/outputs/v391-v386-safe-static-distill-runmode/v391_static_distill_diagnostics.csv",
+    "birdclef-2026/outputs/v391-v386-safe-static-distill-runmode/v391_static_distill_summary.csv"
+  ],
+  "source_notebook": "birdclef-2026/notebooks/v391-v386-safe-static-distill",
+  "submitted": false
+}

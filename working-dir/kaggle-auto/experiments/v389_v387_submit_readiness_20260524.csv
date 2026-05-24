@@ -1,0 +1,14 @@
+check,status,evidence,blocker
+v387_runmode_ready,PASS,decision=READY-v387-runmode-dryrun-runtime-proof runtime_seconds=298,False
+v387_runmode_not_failed,PASS,decision=READY-v387-runmode-dryrun-runtime-proof,False
+v387_static_ready,PASS,decision=READY-v387-v386-static-materializer-audit-NO-PUSH-NO-SUBMIT,False
+v387_static_no_blockers,PASS,block_count=0,False
+macro_gate,PASS,macro_gain=0.0029182569766682542,False
+weak_gate,PASS,weak_followup_gain=0.009171664783814482,False
+top5_no_regression,PASS,top5=0.5068493150684932->0.5068493150684932,False
+fold_std_not_worse,PASS,fold_std_delta=-0.0008302581915264617,False
+class_risk_pass,PASS,decision=READY-v388-v387-class-risk-pass-NO-PUSH-NO-SUBMIT block_count=0,False
+no_live_pending,PASS,pending=0 today_count=2,False
+submission_quota_visible,PASS,today_count=2,False
+no_duplicate_v387_submission,PASS,duplicate_v387=False,False
+explicit_competition_submit_not_made,PASS,this audit has no submit call,False

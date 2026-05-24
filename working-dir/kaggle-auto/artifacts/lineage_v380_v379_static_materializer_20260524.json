@@ -1,0 +1,10 @@
+{
+  "destination_notebook": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v380-v379-static-distill",
+  "kernel_id": "junhaochengadjcjh7u7/bc26-v380-v379-static-distill",
+  "local_submission": "/Users/junhaocheng/working-dir/kaggle-auto/experiments/v380_v379_static_distill_local_submission.csv",
+  "patch_marker": "CODEX_V380_V379_STATIC_DISTILL_PATCH",
+  "source_notebook": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v107-rankceiling-perch-guarded",
+  "source_probe": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/scripts/birdclef_probe_v379_v377_deployable_distill.py",
+  "spec": "/Users/junhaocheng/working-dir/kaggle-auto/experiments/v380_v379_static_distill_spec.json",
+  "timestamp_utc": "2026-05-24 13:38:12 UTC"
+}

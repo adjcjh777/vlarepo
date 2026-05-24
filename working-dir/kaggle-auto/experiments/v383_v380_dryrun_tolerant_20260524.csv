@@ -1,0 +1,2 @@
+experiment_id,updated_utc,kernel_id,block_count,macro_gain,fold_std_delta,weak_followup_gain,corr_vs_anchor,decision
+v383-v380-dryrun-tolerant,2026-05-24 13:52:30 UTC,junhaochengadjcjh7u7/bc26-v383-v380-dryrun-tolerant,0,0.0016012025357819981,-0.0002265860787013796,0.00503235082674347,0.9999487544303441,READY-v383-dryrun-tolerant-static-audit-NO-PUSH-NO-SUBMIT

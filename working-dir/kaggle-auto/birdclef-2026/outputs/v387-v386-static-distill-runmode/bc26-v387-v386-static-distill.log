@@ -1,0 +1,95 @@
+[{"stream_name":"stderr","time":7.213275982,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.213330685,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.21333572,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.213338533,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.937261689,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.937297476,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.937302909,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.937307464,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":15.704119167,"data":"ONNX Runtime: 1.24.4\n"}
+,{"stream_name":"stdout","time":15.71960249,"data":"External Perch cache disabled for v107 license-reduced run\n"}
+,{"stream_name":"stdout","time":15.766865061,"data":"Classes: 234\n"}
+,{"stream_name":"stdout","time":20.849032542,"data":"Using ONNX Perch: /kaggle/input/datasets/rishikeshjani/perch-onnx-for-birdclef-2026/perch_v2.onnx\n"}
+,{"stream_name":"stdout","time":20.849066815,"data":"Mapped: 203/234\n"}
+,{"stream_name":"stdout","time":20.907654803,"data":"Frog proxies: 0\n"}
+,{"stream_name":"stdout","time":20.924717407,"data":"V107: Perch train cache will be rebuilt in-notebook after inference helpers are defined\n"}
+,{"stream_name":"stdout","time":21.179736782,"data":"Full files: 59, Windows: 708, Active: 71\n"}
+,{"stream_name":"stdout","time":21.313789802,"data":"V107 rebuilding Perch train features for 59 files\n"}
+,{"stream_name":"stdout","time":57.780797332,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":57.780845701,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":57.780853535,"data":"Detected spatial_embedding output index: None\n"}
+,{"stream_name":"stdout","time":146.903434214,"data":"V107 rebuilt train features: meta=(708, 2), scores=(708, 234), emb=(708, 1536)\n"}
+,{"stream_name":"stdout","time":146.931931599,"data":"OOF logits shape: (708, 234)\n"}
+,{"stream_name":"stdout","time":147.103536558,"data":"Raw Perch OOF AUC: 0.6812\n"}
+,{"stream_name":"stdout","time":147.112701619,"data":"Per-class AUC: mean=0.6812, min=0.0862, max=1.0000\n"}
+,{"stream_name":"stdout","time":147.112749814,"data":"Classes with AUC \u003c 0.5: 19\n"}
+,{"stream_name":"stdout","time":147.625633999,"data":"Fitted 71 calibrators\n"}
+,{"stream_name":"stdout","time":147.625670657,"data":"Calibrated OOF AUC: 0.8020 (delta: +0.1208)\n"}
+,{"stream_name":"stdout","time":147.628359561,"data":"Calibrated per-class AUC: mean=0.8020, min=0.2949, max=1.0000\n"}
+,{"stream_name":"stdout","time":147.684097202,"data":"Thresholds: mean=0.429, min=0.050, max=0.550\n"}
+,{"stream_name":"stdout","time":147.829079939,"data":"No test files - using train soundscapes for dry run\n"}
+,{"stream_name":"stdout","time":148.126337626,"data":"Processing 10 files\n"}
+,{"stream_name":"stdout","time":168.144092993,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":168.144139547,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":168.144147513,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":168.144169472,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":168.144173908,"data":"Test embeddings: (120, 1536)\n"}
+,{"stream_name":"stdout","time":168.144177721,"data":"Test spatial features: (120, 4608)\n"}
+,{"stream_name":"stdout","time":168.164767309,"data":"V107 Perch-only surrogate view: shape=(120, 234), range=[0.000463, 0.999997]\n"}
+,{"stream_name":"stdout","time":168.372668745,"data":"Perch classwise soft suppression: 0.433, factor=[0.369,0.720]\n"}
+,{"stream_name":"stdout","time":168.372711254,"data":"Embedding probe aligned train rows: (708, 1536) unique cache rows 708\n"}
+,{"stream_name":"stdout","time":168.372716649,"data":"Embedding probe active: train=(708, 1536), test=(120, 1536), rank std=0.1590067446231842\n"}
+,{"stream_name":"stdout","time":169.928049666,"data":"MLP embedding probe active: train=(708, 96), test=(120, 96), n_iter=29, rank std=0.2886650860309601\n"}
+,{"stream_name":"stdout","time":202.12665781,"data":"Perch output names: ['embedding', 'spatial_embedding', 'spectrogram', 'label']\n"}
+,{"stream_name":"stdout","time":202.12670497,"data":"Detected embedding output index: 0\n"}
+,{"stream_name":"stdout","time":202.126711584,"data":"Detected spatial_embedding output index: 1\n"}
+,{"stream_name":"stdout","time":202.126716746,"data":"Spatial feature dim: 4608\n"}
+,{"stream_name":"stdout","time":288.487881812,"data":"Spatial probe aligned train rows: (708, 4608) unique spatial rows 708\n"}
+,{"stream_name":"stdout","time":288.487936001,"data":"Spatial probe active: train=(708, 4608), test=(120, 4608), rank std=0.15956220030784607\n"}
+,{"stream_name":"stdout","time":288.48794353,"data":"Dual probe active: embedding=0.64 spatial=0.26 mlp=0.10 combined std=0.14225563406944275\n"}
+,{"stream_name":"stdout","time":288.514112731,"data":"V107 rank-ceiling Perch-only guarded macro-risk rescue counts: {'protect_anchor': 35, 'rare_floor': 176, 'macro_weak': 12, 'macro_mild': 4, 'texture_prior_rescue': 0, 'active_rescue': 16, 'positive_rescue_cells': 2749, 'top_hit_guard_cells': 330, 'ctx_cells': 2}\n"}
+,{"stream_name":"stdout","time":288.514158994,"data":"V107 class rescue mix range/mean: [0.000, 0.340] / 0.0190\n"}
+,{"stream_name":"stdout","time":288.514166947,"data":"V107 effective rescue mix range/mean: [0.000, 0.340] / 0.0095\n"}
+,{"stream_name":"stdout","time":288.514172362,"data":"V107 components: macro mean/std=0.506653/0.230775; v84_like mean/std=0.506686/0.232786; rescue_view mean/std=0.506874/0.242758; dualprobe mean/std=0.506997/0.253222\n"}
+,{"stream_name":"stdout","time":288.514178739,"data":"OOF refs: Perch raw=0.681, Perch cal=0.802, SED=0.591, delta=-0.209\n"}
+,{"stream_name":"stdout","time":288.514183931,"data":"SED weights sedfirst=0.578, adaptive=0.489, safety=0.480\n"}
+,{"stream_name":"stdout","time":288.514189379,"data":"View mix: v107 = Perch-only guarded rescue plus near-pure rank-ceiling restoration without unknown-license cache/SED dependencies\n"}
+,{"stream_name":"stdout","time":288.514195047,"data":"Prior strength mean=1.000, applied mean=0.0103, file scale mean=0.999\n"}
+,{"stream_name":"stdout","time":288.51420051,"data":"Spike-smoothed score range: [0.011144, 0.999292]\n"}
+,{"stream_name":"stdout","time":288.514221864,"data":"Score mean/std: 0.507024/0.232823\n"}
+,{"stream_name":"stdout","time":288.514227087,"data":"V107 rank-ceiling restore cells: restore=33, top_guard=374\n"}
+,{"stream_name":"stdout","time":288.514231311,"data":"V107 post-restore score range: [0.011144, 0.999702]\n"}
+,{"stream_name":"stdout","time":288.514236137,"data":"V107 post-restore score mean/std: 0.521658/0.244231\n"}
+,{"stream_name":"stdout","time":288.636672923,"data":"Saved: (120, 235)\n"}
+,{"stream_name":"stdout","time":288.636727492,"data":"                                     row_id   1161364    116570   1176823  \\\n"}
+,{"stream_name":"stdout","time":288.636732672,"data":"0   BC2026_Train_0001_S08_20250606_030007_5  0.695412  0.628637  0.608992   \n"}
+,{"stream_name":"stdout","time":288.636743163,"data":"1  BC2026_Train_0001_S08_20250606_030007_10  0.763076  0.819039  0.309009   \n"}
+,{"stream_name":"stdout","time":288.636745906,"data":"2  BC2026_Train_0001_S08_20250606_030007_15  0.760851  0.708985  0.460606   \n"}
+,{"stream_name":"stdout","time":288.63674859,"data":"\n"}
+,{"stream_name":"stdout","time":288.636751806,"data":"    1491113   1595929    209233     22930     22956     22961  ...   whnjay1  \\\n"}
+,{"stream_name":"stdout","time":288.636754361,"data":"0  0.553123  0.363710  0.494095  0.167047  0.764954  0.820139  ...  0.073880   \n"}
+,{"stream_name":"stdout","time":288.636757042,"data":"1  0.522239  0.345560  0.531877  0.047741  0.802855  0.587558  ...  0.226398   \n"}
+,{"stream_name":"stdout","time":288.636759562,"data":"2  0.840334  0.332773  0.479846  0.060343  0.691470  0.677530  ...  0.323614   \n"}
+,{"stream_name":"stdout","time":288.636762141,"data":"\n"}
+,{"stream_name":"stdout","time":288.636764522,"data":"     whtdov   whwpic1    y00678    yebcar   yebela1    yecmac    yecpar  \\\n"}
+,{"stream_name":"stdout","time":288.636767033,"data":"0  0.429690  0.604003  0.202415  0.568192  0.741776  0.600642  0.259524   \n"}
+,{"stream_name":"stdout","time":288.636770541,"data":"1  0.387806  0.884046  0.320471  0.165402  0.501788  0.652284  0.214024   \n"}
+,{"stream_name":"stdout","time":288.636774696,"data":"2  0.352083  0.810615  0.305071  0.208769  0.643510  0.674974  0.283948   \n"}
+,{"stream_name":"stdout","time":288.636778782,"data":"\n"}
+,{"stream_name":"stdout","time":288.636782659,"data":"    yehcar1   yeofly1  \n"}
+,{"stream_name":"stdout","time":288.636786974,"data":"0  0.324525  0.710095  \n"}
+,{"stream_name":"stdout","time":288.636791054,"data":"1  0.509926  0.589911  \n"}
+,{"stream_name":"stdout","time":288.636794962,"data":"2  0.486461  0.278476  \n"}
+,{"stream_name":"stdout","time":288.636798939,"data":"\n"}
+,{"stream_name":"stdout","time":288.636802633,"data":"[3 rows x 235 columns]\n"}
+,{"stream_name":"stdout","time":288.709338904,"data":"v387 dry-run row mismatch tolerated: v107 fallback rows do not match sample\n"}
+,{"stream_name":"stdout","time":288.868730005,"data":"v387 dry-run tolerant static distill patch complete\n"}
+,{"stream_name":"stderr","time":293.011872544,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":293.01191033,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":293.186200509,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":293.186252411,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":293.938587533,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":294.336839918,"data":"[NbConvertApp] Writing 135219 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":297.206128322,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":298.495545423,"data":"[NbConvertApp] Writing 633005 bytes to __results__.html\n"}
+]

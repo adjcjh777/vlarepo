@@ -1,0 +1,47 @@
+{
+  "decision": "REJECT-v380-runmode-failed",
+  "diagnostics": {
+    "submission_v107_anchor.csv": {
+      "available": false,
+      "path": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v380-v379-static-distill-runmode/submission_v107_anchor.csv"
+    },
+    "v380_static_distill_diagnostics.csv": {
+      "available": false,
+      "path": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v380-v379-static-distill-runmode/v380_static_distill_diagnostics.csv"
+    },
+    "v380_static_distill_summary.csv": {
+      "available": false,
+      "path": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v380-v379-static-distill-runmode/v380_static_distill_summary.csv"
+    }
+  },
+  "experiment_id": "v380_runmode_status",
+  "fetched": false,
+  "kernel": "junhaochengadjcjh7u7/bc26-v380-v379-static-distill",
+  "log_flags": {
+    "available": true,
+    "traceback": true,
+    "unknown_license_dataset_text": false,
+    "v380_printed": false
+  },
+  "runtime_seconds": null,
+  "status": "{\"status\": \"ERROR\", \"failureMessage\": \"\"}",
+  "submission": {
+    "available": true,
+    "columns": 235,
+    "contains_train_rows": true,
+    "duplicate_row_id": false,
+    "has_inf": false,
+    "has_nan": false,
+    "matches_sample_columns": true,
+    "matches_sample_row_order": false,
+    "matches_sample_row_set": false,
+    "max_pred": 0.9997021,
+    "mean": 0.5216580362880697,
+    "min_pred": 0.011144416,
+    "path": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/outputs/v380-v379-static-distill-runmode/submission.csv",
+    "range_ok": true,
+    "rows": 120,
+    "std": 0.2442313517735209
+  },
+  "updated_utc": "2026-05-24 13:49:22 UTC"
+}

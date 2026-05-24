@@ -1,0 +1,63 @@
+{
+  "audit": {
+    "block_count": 0,
+    "checks": {
+      "attribution_exists": true,
+      "competition_source": true,
+      "cpu_disabled_gpu": true,
+      "cpu_disabled_tpu": true,
+      "destination_exists": true,
+      "dryrun_tolerant_message": true,
+      "internet_disabled": true,
+      "keeps_clean_dataset_sources": true,
+      "keeps_clean_model_sources": true,
+      "local_fold_std_not_worse": true,
+      "local_macro_gate": true,
+      "local_top5_not_worse": true,
+      "marker_cell_once": true,
+      "metadata_exists": true,
+      "no_unknown_patch_runtime_sources": true,
+      "notebook_exists": true,
+      "real_sample_guard_present": true
+    },
+    "decision": "READY-v391-v386-safe-static-materializer-audit-NO-PUSH-NO-SUBMIT",
+    "next_recommended_action": "Build a guarded v391 Run-mode push/audit pair only if a safe_final slot is needed after v387/v390."
+  },
+  "decision": "READY-v391-v386-safe-static-materializer-audit-NO-PUSH-NO-SUBMIT",
+  "elapsed_seconds": 0.1938,
+  "experiment_id": "v391-v386-safe-static-materializer",
+  "local_metrics": {
+    "active_cells": 98,
+    "anchor_fold_std": 0.15524729835150838,
+    "anchor_macro_auc": 0.9773635566756887,
+    "anchor_top1_hit": 0.273972602739726,
+    "anchor_top5_hit": 0.5068493150684932,
+    "anchor_weak_followup_auc": 0.9498433157647795,
+    "corr_vs_anchor": 0.9999444686761522,
+    "fold_std_delta": -0.0018808458385290716,
+    "local_fold_std": 0.1533664525129793,
+    "local_macro_auc": 0.9801837808440439,
+    "local_top1_hit": 0.273972602739726,
+    "local_top5_hit": 0.5068493150684932,
+    "local_weak_followup_auc": 0.9587068774367526,
+    "macro_gain": 0.0028202241683551454,
+    "weak_followup_gain": 0.008863561671973108
+  },
+  "materialization": {
+    "dest_dir": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v391-v386-safe-static-distill",
+    "kernel_id": "junhaochengadjcjh7u7/bc26-v391-v386-safe-static-distill",
+    "notebook": "submission.ipynb",
+    "patch_marker_count": 1,
+    "patch_mode": "append-final-cell",
+    "patched": true,
+    "source_dir": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v107-rankceiling-perch-guarded",
+    "title": "bc26-v391-v386-safe-static-distill"
+  },
+  "selected_v386_params": {
+    "blend": 1.0,
+    "delta_scale": 1.25,
+    "min_delta": 0.0025,
+    "min_prior_rank": 0.7
+  },
+  "timestamp_utc": "2026-05-24 15:15:19 UTC"
+}

@@ -1,0 +1,10 @@
+{
+  "destination_notebook": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v383-v380-dryrun-tolerant",
+  "kernel_id": "junhaochengadjcjh7u7/bc26-v383-v380-dryrun-tolerant",
+  "local_submission": "/Users/junhaocheng/working-dir/kaggle-auto/experiments/v383_v380_dryrun_tolerant_local_submission.csv",
+  "patch_marker": "CODEX_V383_V380_DRYRUN_TOLERANT_PATCH",
+  "source_materializer": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/scripts/birdclef_prepare_v380_v379_static_materializer.py",
+  "source_notebook": "/Users/junhaocheng/working-dir/kaggle-auto/birdclef-2026/notebooks/v107-rankceiling-perch-guarded",
+  "spec": "/Users/junhaocheng/working-dir/kaggle-auto/experiments/v383_v380_dryrun_tolerant_spec.json",
+  "timestamp_utc": "2026-05-24 13:52:30 UTC"
+}

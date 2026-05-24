@@ -1,0 +1,2 @@
+patch,rows,cols,active_cells,dryrun_row_mismatch,min,max
+CODEX_V387_V386_STATIC_DISTILL_PATCH,120,235,323,True,0.011144416406750679,0.9997020959854126

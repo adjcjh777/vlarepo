@@ -1,0 +1,2 @@
+experiment_id,updated_utc,kernel_id,block_count,macro_gain,fold_std_delta,weak_followup_gain,corr_vs_anchor,decision
+v387-v386-static-materializer,2026-05-24 14:58:42 UTC,junhaochengadjcjh7u7/bc26-v387-v386-static-distill,0,0.0029182569766682,-0.0008302581915264,0.0091716647838144,0.9998365047552008,READY-v387-v386-static-materializer-audit-NO-PUSH-NO-SUBMIT

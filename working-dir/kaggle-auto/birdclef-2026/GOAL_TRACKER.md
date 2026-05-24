@@ -1686,3 +1686,18 @@ Updated: 2026-05-24 10:46 UTC
 - Result: screened `21` safe/bold blend weights. The selected portfolio candidate is `safe0.80_bold0.20`, with macro gain `+0.00308164`, fold std delta `-0.00188085`, weak follow-up gain `+0.00968517`, top5 unchanged at `0.50684932`, no material class regression below `-0.003`, and corr vs anchor `0.99994021`.
 - Comparison: safe v391 has macro gain `+0.00282022`, fold std delta `-0.00188085`, weak gain `+0.00886356`; bold v387 has macro gain `+0.00291826`, fold std delta `-0.00083026`, weak gain `+0.00917166`.
 - Decision: v394 is a stronger local portfolio candidate, but it is not materialized or submitted while v387 ref `52991496` is pending. If v387 fails/ties and slots remain, materialize v394 before considering v391.
+
+## v395 Static-distill Family Failure Audit
+
+- Experiment: `v395-static-distill-failure`
+- Status: `RETIRE-static-distill-family / NO-SUBMIT`
+- Script: `birdclef-2026/scripts/birdclef_audit_v395_static_distill_failure.py`
+- Report: `experiments/v395_static_distill_failure_20260524.md`
+- Structured log: `artifacts/runtime_v395_static_distill_failure_20260524.json`
+- Output: `experiments/v395_static_distill_failure_20260524.csv`
+- Research question: after v387 scored publicly, should any v380/v383/v387/v391/v394 fixed-coefficient static-distill sibling remain submit-eligible?
+- Validation: `python3 -m py_compile birdclef-2026/scripts/birdclef_audit_v395_static_distill_failure.py && /usr/bin/time -p python3 birdclef-2026/scripts/birdclef_audit_v395_static_distill_failure.py`
+- Result: v387 ref `52991496` completed with public score `0.881`, which is `-0.068` below the visible `0.949` anchor. This invalidates the local static-distill proxy for this family, despite v387's pre-submit local macro gain `+0.00291826`, fold std delta `-0.00083026`, and weak follow-up gain `+0.00917166`.
+- Family decision: retire v380/v383/v387 and block v391/v394 from real submission. v391 and v394 are not independent fallbacks because they inherit the same failed fixed-coefficient static-distill mechanism.
+- Current goal state: visible best remains `0.949` from v298; Top5 cutoff remains `0.960`; gap to Top5 remains `0.011`; `GOAL_GATE=NOT_REACHED`.
+- Next action: do not spend the remaining 2026-05-24 slots on static-distill siblings. Pivot to a non-static-distill, hidden-test-computable route with stronger real-score evidence, or protect the 0.949 visible-best fallback.

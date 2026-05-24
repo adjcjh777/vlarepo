@@ -1,0 +1,6 @@
+family_member,status,reason,local_macro_gain,fold_std_delta,weak_followup_gain,submit_allowed
+v380,RETIRE-family-extrapolation-risk,same fixed-coefficient static-distill lineage as v387; v387 public score invalidates proxy trust,0.0016012025357819981,-0.0002265860787013796,0.00503235082674347,False
+v383,RETIRE-family-extrapolation-risk,dry-run tolerant v380 repair; same public-score failure risk as v387,0.0016012025357819981,-0.0002265860787013796,0.00503235082674347,False
+v387,RETIRE-scored-collapse,public score 0.881 vs anchor 0.949; score underperformed 0.949 anchor; retire v387 unless a concrete implementation bug is found,0.0029182569766682542,-0.0008302581915264617,0.009171664783814482,False
+v391,BLOCK-sibling-of-scored-collapse,safe_final changes gates/active cells but inherits v387's failed fixed-coefficient static-distill mechanism,0.0028202241683551454,-0.0018808458385290716,0.008863561671973108,False
+v394,BLOCK-blend-of-scored-collapse,blend of v391 and v387 endpoints; local dominance no longer counts as submit evidence after v387 public collapse,0.0030816449905235466,-0.0018808458385290716,0.009685169970216734,False

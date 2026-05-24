@@ -1,6 +1,6 @@
 # Submission Result: v387
 
-Updated: 2026-05-24 15:37:07 UTC
+Updated: 2026-05-24 15:44:57 UTC
 
 ## Candidate
 
@@ -12,12 +12,12 @@ Updated: 2026-05-24 15:37:07 UTC
 
 ## Current Status
 
-`WAIT-pending`
+`RETIRE-no-progress`
 
-- Kaggle status: `SubmissionStatus.PENDING`
-- Public score: ``
+- Kaggle status: `SubmissionStatus.COMPLETE`
+- Public score: `0.881`
 - Error: ``
-- Latest check: `2026-05-24 15:37:07 UTC`
+- Latest check: `2026-05-24 15:44:57 UTC`
 
 ## Why It Was Submitted
 

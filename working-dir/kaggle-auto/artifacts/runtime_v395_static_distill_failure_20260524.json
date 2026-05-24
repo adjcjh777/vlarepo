@@ -1,0 +1,64 @@
+{
+  "anchor_score": 0.949,
+  "decision": "RETIRE-static-distill-family-NO-SUBMIT",
+  "elapsed_seconds": 0.0019,
+  "experiment_id": "v395-static-distill-failure",
+  "family": [
+    "v380",
+    "v383",
+    "v387",
+    "v391",
+    "v394"
+  ],
+  "next_recommended_action": "Do not submit v383/v391/v394. Move to a non-static-distill, hidden-test-computable route with real public evidence or explicit fresh submit gate.",
+  "rows": [
+    {
+      "family_member": "v380",
+      "fold_std_delta": -0.0002265860787013796,
+      "local_macro_gain": 0.0016012025357819981,
+      "reason": "same fixed-coefficient static-distill lineage as v387; v387 public score invalidates proxy trust",
+      "status": "RETIRE-family-extrapolation-risk",
+      "submit_allowed": false,
+      "weak_followup_gain": 0.00503235082674347
+    },
+    {
+      "family_member": "v383",
+      "fold_std_delta": -0.0002265860787013796,
+      "local_macro_gain": 0.0016012025357819981,
+      "reason": "dry-run tolerant v380 repair; same public-score failure risk as v387",
+      "status": "RETIRE-family-extrapolation-risk",
+      "submit_allowed": false,
+      "weak_followup_gain": 0.00503235082674347
+    },
+    {
+      "family_member": "v387",
+      "fold_std_delta": -0.0008302581915264617,
+      "local_macro_gain": 0.0029182569766682542,
+      "reason": "public score 0.881 vs anchor 0.949; score underperformed 0.949 anchor; retire v387 unless a concrete implementation bug is found",
+      "status": "RETIRE-scored-collapse",
+      "submit_allowed": false,
+      "weak_followup_gain": 0.009171664783814482
+    },
+    {
+      "family_member": "v391",
+      "fold_std_delta": -0.0018808458385290716,
+      "local_macro_gain": 0.0028202241683551454,
+      "reason": "safe_final changes gates/active cells but inherits v387's failed fixed-coefficient static-distill mechanism",
+      "status": "BLOCK-sibling-of-scored-collapse",
+      "submit_allowed": false,
+      "weak_followup_gain": 0.008863561671973108
+    },
+    {
+      "family_member": "v394",
+      "fold_std_delta": -0.0018808458385290716,
+      "local_macro_gain": 0.0030816449905235466,
+      "reason": "blend of v391 and v387 endpoints; local dominance no longer counts as submit evidence after v387 public collapse",
+      "status": "BLOCK-blend-of-scored-collapse",
+      "submit_allowed": false,
+      "weak_followup_gain": 0.009685169970216734
+    }
+  ],
+  "score_delta_vs_anchor": -0.06799999999999995,
+  "timestamp_utc": "2026-05-24 15:46:48 UTC",
+  "v387_public_score": "0.881"
+}

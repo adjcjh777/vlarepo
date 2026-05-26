@@ -104,6 +104,28 @@ def save(img: Image.Image, name: str) -> str:
     return str(path.relative_to(ROOT))
 
 
+def use_codex_generated(name: str) -> str:
+    source = ASSET_DIR / "codex_generated" / name
+    target = ASSET_DIR / name
+    if not source.exists():
+        raise FileNotFoundError(f"Missing Codex generated image: {source}")
+    ASSET_DIR.mkdir(parents=True, exist_ok=True)
+    im = Image.open(source).convert("RGB")
+    w, h = im.size
+    target_ratio = 16 / 9
+    if w / h > target_ratio:
+        new_w = int(h * target_ratio)
+        left = (w - new_w) // 2
+        im = im.crop((left, 0, left + new_w, h))
+    elif w / h < target_ratio:
+        new_h = int(w / target_ratio)
+        top = (h - new_h) // 2
+        im = im.crop((0, top, w, top + new_h))
+    im = im.resize((1600, 900), Image.Resampling.LANCZOS)
+    im.save(target, "PNG", optimize=True)
+    return str(target.relative_to(ROOT))
+
+
 def draw_overview() -> str:
     img, draw = base_canvas(title="第 7-12 项模型的三条主线")
     lanes = [
@@ -720,13 +742,13 @@ def postprocess_docx() -> None:
 
 def main() -> None:
     paths = {
-        "overview": draw_overview(),
-        "perceptron": draw_perceptron(),
-        "gmm": draw_gmm(),
-        "hmm": draw_hmm(),
-        "bayes": draw_bayes(),
-        "knn": draw_knn(),
-        "svm": draw_svm(),
+        "overview": use_codex_generated("overview.png"),
+        "perceptron": use_codex_generated("perceptron.png"),
+        "gmm": use_codex_generated("gmm.png"),
+        "hmm": use_codex_generated("hmm.png"),
+        "bayes": use_codex_generated("bayes.png"),
+        "knn": use_codex_generated("knn.png"),
+        "svm": use_codex_generated("svm.png"),
     }
     MD_PATH.write_text(build_markdown(paths), encoding="utf-8")
 

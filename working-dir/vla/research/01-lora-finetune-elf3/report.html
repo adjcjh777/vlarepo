@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoRA 微调 Kimodo 直接生成 ELF3 运动 — 研究报告</title>
+<style>
+  :root {
+    --primary: #1a365d;
+    --secondary: #2b6cb0;
+    --accent: #e53e3e;
+    --bg: #f7fafc;
+    --card: #ffffff;
+    --text: #1a202c;
+    --muted: #718096;
+    --border: #e2e8f0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 60px 0 48px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+  header .subtitle {
+    font-size: 1.05rem;
+    opacity: 0.9;
+    max-width: 750px;
+    margin: 0 auto 16px;
+  }
+  header .meta {
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+
+  /* Navigation */
+  nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 0;
+  }
+  nav a {
+    display: block;
+    padding: 6px 14px;
+    color: var(--secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  nav a:hover { background: #ebf4ff; }
+
+  /* Sections */
+  section {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-child { border-bottom: none; }
+  h2 {
+    font-size: 1.55rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--secondary);
+    display: inline-block;
+  }
+  h3 {
+    font-size: 1.15rem;
+    color: var(--secondary);
+    margin: 24px 0 12px;
+  }
+  h4 {
+    font-size: 1rem;
+    color: var(--primary);
+    margin: 16px 0 8px;
+  }
+  p { margin-bottom: 14px; }
+  ul, ol { margin: 10px 0 14px 24px; }
+  li { margin-bottom: 6px; }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card-title {
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 6px;
+    font-size: 1.02rem;
+  }
+  .card-venue {
+    font-size: 0.82rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .card-body { font-size: 0.95rem; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  th {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+  }
+  tr:nth-child(even) { background: #f9fafb; }
+
+  /* Pipeline */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+    font-size: 0.92rem;
+  }
+  .pipeline .step {
+    background: var(--secondary);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 120px;
+  }
+  .pipeline .arrow {
+    font-size: 1.4rem;
+    color: var(--muted);
+  }
+
+  /* Code block */
+  pre {
+    background: #1a202c;
+    color: #e2e8f0;
+    padding: 16px 20px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 12px 0;
+  }
+  code {
+    font-family: 'Fira Code', 'SF Mono', Consolas, monospace;
+    font-size: 0.88em;
+  }
+  p code, li code {
+    background: #edf2f7;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  /* Highlight box */
+  .highlight {
+    background: #fffbeb;
+    border-left: 4px solid #d69e2e;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .info-box {
+    background: #ebf8ff;
+    border-left: 4px solid var(--secondary);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .risk-box {
+    background: #fff5f5;
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* References */
+  .ref-list { list-style: decimal; }
+  .ref-list li {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .ref-list .ref-id {
+    font-weight: 700;
+    color: var(--secondary);
+  }
+
+  /* Step list */
+  .step-list { counter-reset: step-counter; list-style: none; margin-left: 0; }
+  .step-list li {
+    counter-increment: step-counter;
+    padding: 12px 16px 12px 52px;
+    position: relative;
+    margin-bottom: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .step-list li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    width: 28px;
+    height: 28px;
+    background: var(--secondary);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.4rem; }
+    .pipeline { flex-direction: column; }
+    nav ul { gap: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>LoRA 微调 Kimodo 直接生成 ELF3 运动</h1>
+    <p class="subtitle">
+      探索通过参数高效微调（PEFT）将 NVIDIA Kimodo 运动扩散模型适配至 ELF3 人形机器人，跳过中间重定向步骤的技术可行性研究
+    </p>
+    <p class="meta">研究报告 &mdash; 2026 年 6 月 &mdash; VLA 项目组</p>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <ul>
+      <li><a href="#overview">概述</a></li>
+      <li><a href="#literature">文献综述</a></li>
+      <li><a href="#approach">技术方案</a></li>
+      <li><a href="#prerequisites">知识储备</a></li>
+      <li><a href="#getting-started">入门指南</a></li>
+      <li><a href="#experiments">实验计划</a></li>
+      <li><a href="#benchmarks">预期结果</a></li>
+      <li><a href="#risks">风险与缓解</a></li>
+      <li><a href="#references">参考文献</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ==================== 1. Overview ==================== -->
+<section id="overview">
+<div class="container">
+<h2>一、研究概述</h2>
+
+<h3>1.1 背景与动机</h3>
+<p>
+  <strong>Kimodo</strong>（Kinematic Motion Diffusion Model）是 NVIDIA 于 2026 年 3 月发布的运动学运动扩散模型 [1]，基于 700 小时光学动作捕捉数据训练，能够从文本提示和运动学约束生成高质量的 3D 人体运动。该模型采用两阶段 Transformer 去噪器架构，将根运动与身体运动解耦预测，支持文本、全身关键帧、稀疏关节位置/旋转、2D 路点和密集 2D 路径等多种控制模态。
+</p>
+<p>
+  当前将 Kimodo 应用于 <strong>ELF3</strong>（半醒/BXI 人形机器人）的流程为：<code>Kimodo → Unitree G1 运动 → 重定向到 ELF3</code>。这一流水线存在两个关键问题：
+</p>
+<ul>
+  <li><strong>重定向误差累积</strong>：从 G1 骨架到 ELF3 骨架的运动学映射会引入关节角度误差和末端执行器位置偏差</li>
+  <li><strong>物理可行性损失</strong>：重定向后的运动可能违反 ELF3 的关节限位、碰撞约束和动力学可行性</li>
+  <li><strong>延迟与复杂性</strong>：额外的重定向步骤增加了推理延迟和系统复杂度</li>
+</ul>
+
+<div class="highlight">
+  <strong>核心目标</strong>：通过 LoRA 微调使 Kimodo 直接在 ELF3 的骨架/关节空间中生成运动，消除中间重定向步骤，提高运动质量和部署效率。
+</div>
+
+<h3>1.2 技术路线</h3>
+<div class="pipeline">
+  <div class="step">文本/约束输入</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step">Kimodo (冻结)</div>
+  <div class="arrow">+</div>
+  <div class="step">LoRA 适配器</div>
+  <div class="arrow">&rarr;</div>
+  <div class="step">ELF3 运动输出</div>
+</div>
+<p>
+  本方案的核心思想是：冻结 Kimodo 预训练权重，在 Transformer 的注意力层注入可训练的低秩分解矩阵（LoRA），使用 ELF3 专有运动数据进行微调。这样既保留了 Kimodo 从大规模 MoCap 数据中学到的通用运动先验，又能使其输出适配 ELF3 的特定骨架结构。
+</p>
+
+<h3>1.3 预期贡献</h3>
+<ol>
+  <li>证明 LoRA 微调在运动扩散模型跨骨架适配中的有效性</li>
+  <li>建立 Kimodo → ELF3 的端到端运动生成流水线</li>
+  <li>提供运动扩散模型 PEFT 的最佳实践指南</li>
+  <li>量化消除重定向步骤带来的运动质量提升</li>
+</ol>
+</div>
+</section>
+
+<!-- ==================== 2. Literature Review ==================== -->
+<section id="literature">
+<div class="container">
+<h2>二、文献综述</h2>
+
+<h3>2.1 运动扩散模型</h3>
+
+<div class="card">
+  <div class="card-title">[1] Kimodo: Scaling Controllable Human Motion Generation</div>
+  <div class="card-venue">arXiv:2603.15546, 2026 年 3 月 | NVIDIA Research</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Davis Rempe, Mathis Petrovich, Ye Yuan, Haotian Zhang, Xue Bin Peng 等（24 人）</p>
+    <p><strong>方法</strong>：Kimodo 是一个运动学运动扩散模型，在 700 小时光学 MoCap 数据上训练。采用两阶段 Transformer 去噪器，第一阶段预测根运动，第二阶段在局部坐标系中预测身体运动，以减少运动伪影。支持文本、关键帧、稀疏关节约束、2D 路点等多种控制条件。</p>
+    <p><strong>关键设计</strong>：</p>
+    <ul>
+      <li>运动表示包含平滑根运动、全局关节旋转和位置</li>
+      <li>约束条件通过覆盖噪声信号中的对应值并使用二进制掩码指示约束元素来施加</li>
+      <li>在 SOMA 和 G1 骨架上训练，通过 Newton-based SOMA 重定向器转换数据</li>
+    </ul>
+    <p><strong>结果</strong>：在大规模 MoCap 数据集上的实验验证了数据集规模和模型规模对性能的正向影响，支持的控制模态包括文本到运动、全身约束、末端执行器约束和根约束。</p>
+    <p><strong>与本研究的关联</strong>：这是我们要微调的基础模型。其两阶段架构和灵活的约束条件机制为 LoRA 微调提供了良好的结构基础。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[2] MDM: Human Motion Diffusion Model</div>
+  <div class="card-venue">ICLR 2023 | Tel Aviv University</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Guy Tevet, Sigal Raab, Brian Gordon, Yonatan Shafir, Daniel Cohen-Or, Amit H. Bermano</p>
+    <p><strong>方法</strong>：MDM 是首个将扩散模型系统性地应用于人体运动生成的工作。采用 Transformer 作为去噪网络，在每个扩散步预测样本而非噪声，从而可以使用几何损失函数（如足部接触损失）。支持文本到运动、动作到运动等多种条件生成模式。</p>
+    <p><strong>结果</strong>：以轻量级训练资源达到领先基准上的最先进结果。MDM 的设计选择（样本预测 vs 噪声预测）对后续运动扩散模型产生了深远影响。</p>
+    <p><strong>与本研究的关联</strong>：MDM 建立了运动扩散模型的基本范式，Kimodo 在此基础上进行了大规模数据和架构扩展。理解 MDM 的设计决策有助于分析 Kimodo 中可微调的关键组件。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[3] MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model</div>
+  <div class="card-venue">TPAMI 2024 | NTU S-Lab</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Mingyuan Zhang, Zhongang Cai, Lei Pan, Fangzhou Hong, Xinying Guo, Lei Yang, Ziwei Liu</p>
+    <p><strong>方法</strong>：提出文本驱动的运动扩散框架，采用空间-时间注意力机制实现更好的运动-文本对齐。支持文本到运动、运动预测、运动插值和多模态运动生成等任务。</p>
+    <p><strong>结果</strong>：在 HumanML3D 和 KIT-ML 基准上达到最先进水平。</p>
+    <p><strong>与本研究的关联</strong>：展示了扩散模型在运动生成中的文本条件控制能力，为理解 Kimodo 的文本条件机制提供了参考。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[4] MLD: Motion Latent Diffusion</div>
+  <div class="card-venue">ECCV 2022 | ByteDance</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Xin Chen, Biao Jiang, Wen Liu, Bin Huang, Bin Fu, Tao Chen, Pei Zhou, Fan Zhou</p>
+    <p><strong>方法</strong>：在压缩的潜在空间中进行扩散而非直接在高维运动空间中操作。使用 VAE 将人体运动序列编码为紧凑的潜在表示，然后在潜在空间中进行扩散生成。这种方法显著提高了生成效率。</p>
+    <p><strong>结果</strong>：在 HumanML3D 和 KIT-ML 基准上达到最先进水平。</p>
+    <p><strong>与本研究的关联</strong>：潜在空间扩散的思想对理解 Kimodo 的运动表示设计有重要启发。如果 Kimodo 使用类似的潜在空间编码，LoRA 微调需要同时考虑编码器和解码器的适配。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[5] MotionLCM: Real-Time Motion Generation via Latent Consistency Model</div>
+  <div class="card-venue">arXiv:2401.09926, 2024 年 1 月</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Xin Chen, Biao Jiang, Wen Liu, Bin Huang, Lvmin Zhang, Yi Yang, Zhicheng Wang, Chenyang Lei</p>
+    <p><strong>方法</strong>：将潜在一致性模型（LCM）应用于运动生成。首先使用自编码器将运动压缩到潜在空间，然后通过一致性蒸馏将预训练的运动扩散模型蒸馏为一致性模型，将推理步数从 20-100 步减少到 1-4 步。</p>
+    <p><strong>结果</strong>：实现与多步扩散模型相当的生成质量，同时速度提升数个数量级，达到实时运动生成。</p>
+    <p><strong>与本研究的关联</strong>：MotionLCM 的一致性蒸馏方法可以与 LoRA 微调结合，在微调后进一步加速推理，对实时机器人部署至关重要。</p>
+  </div>
+</div>
+
+<h3>2.2 参数高效微调（PEFT）方法</h3>
+
+<div class="card">
+  <div class="card-title">[6] LoRA: Low-Rank Adaptation of Large Language Models</div>
+  <div class="card-venue">ICLR 2022 | Microsoft Research</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, Weizhu Chen</p>
+    <p><strong>方法</strong>：冻结预训练模型权重，在 Transformer 每一层注入可训练的低秩分解矩阵。对于预训练权重矩阵 W₀ ∈ ℝ<sup>d×k</sup>，LoRA 将权重更新分解为 W₀ + ΔW = W₀ + BA，其中 B ∈ ℝ<sup>d×r</sup>，A ∈ ℝ<sup>r×k</sup>，r ≪ min(d, k)。</p>
+    <p><strong>关键结果</strong>：</p>
+    <ul>
+      <li>相比 GPT-3 175B 的 Adam 全量微调，可训练参数减少 10,000 倍</li>
+      <li>GPU 内存需求降低 3 倍</li>
+      <li>在 RoBERTa、DeBERTa、GPT-2、GPT-3 上性能与全量微调持平或更优</li>
+      <li>推理时无额外延迟（与 adapter 不同）</li>
+    </ul>
+    <p><strong>与本研究的关联</strong>：LoRA 是本研究的核心技术。其在 LLM 上的成功已被广泛验证，将其应用于运动扩散模型的 Transformer 去噪器是本研究的关键创新点。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[7] ControlNet: Adding Conditional Control to Text-to-Image Diffusion Models</div>
+  <div class="card-venue">ICCV 2023 | Lvmin Zhang et al.</div>
+  <div class="card-body">
+    <p><strong>方法</strong>：ControlNet 通过复制扩散模型的编码器层并锁定原始模型来添加空间条件控制。使用"零卷积"层逐步引入控制信号，确保预训练模型的原始能力得以保留。</p>
+    <p><strong>与本研究的关联</strong>：ControlNet 的设计哲学——在保留预训练模型能力的同时添加新条件——与 LoRA 微调的目标一致。其零初始化策略可以借鉴用于 LoRA 矩阵的初始化。</p>
+  </div>
+</div>
+
+<h3>2.3 跨具身运动迁移</h3>
+
+<div class="card">
+  <div class="card-title">[8] Open X-Embodiment: Robotic Learning Datasets and RT-X Models</div>
+  <div class="card-venue">CoRL 2023 | Google DeepMind, UC Berkeley 等 21 个机构</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Open X-Embodiment Collaboration（293 位作者）</p>
+    <p><strong>方法</strong>：构建了来自 22 种不同机器人平台的大规模数据集（527 个技能、160,266 个任务），训练了 RT-1-X 和 RT-2-X 模型。使用标准化数据格式实现跨机器人学习。</p>
+    <p><strong>关键结果</strong>：</p>
+    <ul>
+      <li>跨具身数据训练的模型在新任务上比单机器人数据训练的模型性能提升 3 倍</li>
+      <li>证明了跨平台数据的正向迁移效应</li>
+    </ul>
+    <p><strong>与本研究的关联</strong>：RT-X 证明了跨具身迁移学习的可行性。虽然 Kimodo 是运动生成模型而非控制策略，但其跨骨架迁移的思想可以直接借鉴。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[9] Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</div>
+  <div class="card-venue">RSS 2023 + T-RO 2024 | Columbia, MIT, Toyota Research</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun Du, Benjamin Burchfiel, Russ Tedrake, Shuran Song</p>
+    <p><strong>方法</strong>：将机器人的视觉运动策略表示为条件去噪扩散过程，学习动作分布得分函数的梯度。使用递归视界控制、视觉条件和时间序列扩散 Transformer 三个关键创新。</p>
+    <p><strong>结果</strong>：在 4 个机器人操作基准的 12 个任务上一致超越现有最先进方法，平均提升 46.9%。</p>
+    <p><strong>与本研究的关联</strong>：Diffusion Policy 证明了扩散模型在机器人控制中的强大能力。其架构设计（特别是视觉条件机制）对理解如何在 Kimodo 中施加骨架条件有重要参考价值。已有研究探索使用 LoRA 适配 Diffusion Policy 到新机器人形态。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[10] Octo: An Open-Source Generalist Robot Policy</div>
+  <div class="card-venue">arXiv 2024 | UC Berkeley</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Octo Model Team（Dibya Ghosh, Homer Walke, Karl Pertsch, Kevin Black 等）</p>
+    <p><strong>方法</strong>：基于 Transformer 的通用机器人策略，在 Open X-Embodiment 数据集上训练。使用分词化的动作表示处理不同具身的动作空间差异，采用扩散动作头生成动作序列。</p>
+    <p><strong>关键特性</strong>：支持零样本泛化到新任务，也可在小规模机器人特定数据集上微调以适配新具身或任务。</p>
+    <p><strong>与本研究的关联</strong>：Octo 展示了在多样化机器人数据上训练通用模型并高效适配到特定机器人的范式，与 Kimodo + LoRA 的思路高度一致。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[11] OpenVLA: An Open-Source Vision-Language-Action Model</div>
+  <div class="card-venue">arXiv 2024 | Stanford, UC Berkeley 等</div>
+  <div class="card-body">
+    <p><strong>方法</strong>：基于 Prismatic VLM（约 7B 参数）构建的开源视觉-语言-动作模型，在 Open X-Embodiment 数据集上训练。提供 LoRA 微调配方，支持在仅数百个示范上高效适配到自定义机器人数据集。</p>
+    <p><strong>与本研究的关联</strong>：OpenVLA 的 LoRA 微调配方（学习率、秩选择、训练策略）为 Kimodo 的 LoRA 微调提供了直接参考。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[12] Physical Intelligence &pi;0: Foundation Model for Robotics</div>
+  <div class="card-venue">2024 | Physical Intelligence</div>
+  <div class="card-body">
+    <p><strong>方法</strong>：基于 PaliGemma VLM 构建的视觉-语言-动作基础模型，支持多种机器人具身。使用 LoRA 适配器进行特定任务微调，实现跨具身泛化。</p>
+    <p><strong>与本研究的关联</strong>：&pi;0 验证了 LoRA 在机器人基础模型跨具身适配中的有效性，为 Kimodo + LoRA 方案提供了工业级验证。</p>
+  </div>
+</div>
+
+<h3>2.4 人形机器人运动跟踪</h3>
+
+<div class="card">
+  <div class="card-title">[13] ExBody2: Advanced Expressive Humanoid Whole-Body Control</div>
+  <div class="card-venue">arXiv 2024</div>
+  <div class="card-body">
+    <p><strong>方法</strong>：专注于人形机器人的表现力全身运动跟踪，使用扩散模型和模仿学习在 Unitree H1/G1 等平台上实现上半身表现力、面部表情和手势的全身控制。</p>
+    <p><strong>与本研究的关联</strong>：ExBody2 在 Unitree G1 上的运动跟踪经验与 Kimodo 的 G1 训练数据直接相关，其 sim-to-real 迁移方法可为 ELF3 部署提供参考。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[14] HumanPlus: Humanoid Shadowing and Imitation Learning</div>
+  <div class="card-venue">arXiv 2024 | Stanford University</div>
+  <div class="card-body">
+    <p><strong>作者</strong>：Zipeng Fu 等</p>
+    <p><strong>方法</strong>：通过影子遥操作系统（使用 Apple Vision Pro 或身体标记物）实时遥操作 Unitree H1 人形机器人，收集人类示范后使用端到端模仿学习训练策略。仅需 2-5 个示范即可泛化到新情境。</p>
+    <p><strong>与本研究的关联</strong>：HumanPlus 的数据收集流程（人类示范 → 骨架映射 → 机器人执行）与 Kimodo 的运动生成 → 重定向 → 执行流水线类似。其从少量示范学习的能力为 ELF3 数据收集提供了参考。</p>
+  </div>
+</div>
+
+<h3>2.5 运动表示与骨架模型</h3>
+
+<div class="card">
+  <div class="card-title">[15] SOMA: Skeletal Open Motion Atlas</div>
+  <div class="card-venue">NVIDIA Research, 2024-2025</div>
+  <div class="card-body">
+    <p><strong>方法</strong>：SOMA 是 NVIDIA 开发的骨架身体模型，用于运动重定向——将运动从一个角色（或人体 MoCap 数据）转移到另一个，包括机器人和数字角色。提供标准化的骨架/身体模型，实现不同体型之间的无缝运动迁移。</p>
+    <p><strong>与本研究的关联</strong>：Kimodo 在 SOMA 和 G1 骨架上训练，使用 Newton-based SOMA 重定向器转换数据。理解 SOMA 的关节层次结构和参数化方式对于设计 ELF3 的运动表示至关重要。</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">[16] T2M-GPT: Text-to-Motion Generation with GPT</div>
+  <div class="card-venue">arXiv 2023</div>
+  <div class="card-body">
+    <p><strong>方法</strong>：使用 VQ-VAE 将连续运动数据编码为离散 token，然后使用 GPT 架构进行自回归运动生成。将运动生成视为类似于语言模型的自回归序列预测任务。</p>
+    <p><strong>与本研究的关联</strong>：T2M-GPT 的离散化运动表示方法为理解运动 token 化提供了另一种视角，可与 Kimodo 的连续扩散方法进行对比分析。</p>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ==================== 3. Technical Approach ==================== -->
+<section id="approach">
+<div class="container">
+<h2>三、技术方案</h2>
+
+<h3>3.1 系统架构总览</h3>
+<p>
+  本方案的核心是将 LoRA 适配器注入 Kimodo 的 Transformer 去噪器，使其输出空间从 SOMA/G1 骨架映射到 ELF3 骨架。以下是详细的架构设计：
+</p>
+
+<div class="info-box">
+  <strong>关键设计原则</strong>：冻结 Kimodo 的预训练权重，仅训练 LoRA 矩阵和可能的运动编码/解码头，以最小的参数量实现跨骨架适配。
+</div>
+
+<h3>3.2 LoRA 注入策略</h3>
+
+<h4>3.2.1 目标层选择</h4>
+<p>Kimodo 的 Transformer 去噪器包含多头自注意力（MHSA）和前馈网络（FFN）层。基于 LoRA 在扩散模型中的最佳实践，建议注入以下层：</p>
+
+<table>
+  <tr>
+    <th>目标层</th>
+    <th>注入矩阵</th>
+    <th>理由</th>
+  </tr>
+  <tr>
+    <td>自注意力 Q/K/V 投影</td>
+    <td>W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub></td>
+    <td>控制运动特征的注意力分布，适配 ELF3 的关节关联模式</td>
+  </tr>
+  <tr>
+    <td>自注意力输出投影</td>
+    <td>W<sub>O</sub></td>
+    <td>调整注意力输出的特征空间</td>
+  </tr>
+  <tr>
+    <td>交叉注意力（文本条件）</td>
+    <td>W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub></td>
+    <td>保持文本条件控制能力</td>
+  </tr>
+  <tr>
+    <td>FFN 层</td>
+    <td>W<sub>up</sub>, W<sub>down</sub></td>
+    <td>可选，用于更深度的特征适配</td>
+  </tr>
+  <tr>
+    <td>根运动去噪器</td>
+    <td>全部注意力层</td>
+    <td>ELF3 的根运动模式可能与 G1 不同</td>
+  </tr>
+  <tr>
+    <td>身体运动去噪器</td>
+    <td>全部注意力层</td>
+    <td>身体关节映射的核心适配层</td>
+  </tr>
+</table>
+
+<h4>3.2.2 秩（Rank）选择</h4>
+<p>LoRA 的秩 r 是最关键的超参数。基于文献和实践经验：</p>
+<table>
+  <tr>
+    <th>秩</th>
+    <th>适用场景</th>
+    <th>预期效果</th>
+  </tr>
+  <tr>
+    <td>r = 8</td>
+    <td>ELF3 骨架与 G1 差异较小</td>
+    <td>轻量适配，防止过拟合</td>
+  </tr>
+  <tr>
+    <td>r = 16</td>
+    <td>推荐起始值</td>
+    <td>平衡表达能力和训练效率</td>
+  </tr>
+  <tr>
+    <td>r = 32</td>
+    <td>骨架差异较大或数据充足</td>
+    <td>更强的适配能力</td>
+  </tr>
+  <tr>
+    <td>r = 64</td>
+    <td>极端差异或大规模数据</td>
+    <td>接近全量微调能力</td>
+  </tr>
+</table>
+
+<div class="highlight">
+  <strong>建议</strong>：从 r=16 开始，学习率设为 1e-4 ~ 5e-4，alpha 设为 r/2 或 r。如果欠拟合则增大秩，过拟合则减小秩。
+</div>
+
+<h3>3.3 运动表示设计</h3>
+
+<p>ELF3 的运动表示需要与 Kimodo 的输出空间对齐。关键考虑因素：</p>
+
+<h4>3.3.1 骨架映射</h4>
+<p>需要建立 ELF3 关节到 Kimodo 运动表示的映射关系：</p>
+<ul>
+  <li><strong>关节对应</strong>：确定 ELF3 的每个自由度对应 Kimodo 运动表示中的哪个维度</li>
+  <li><strong>关节限位</strong>：ELF3 的关节限位可能与 G1 不同，需要在损失函数中加入关节限位约束</li>
+  <li><strong>运动学链</strong>：ELF3 的运动学链结构（连杆长度、关节类型）需要编码到模型中</li>
+</ul>
+
+<h4>3.3.2 输出头适配</h4>
+<p>如果 Kimodo 的输出维度与 ELF3 的关节数不匹配，需要设计适配层：</p>
+<ul>
+  <li><strong>线性投影层</strong>：在 Kimodo 输出后添加可训练的线性层，将输出维度映射到 ELF3 关节空间</li>
+  <li><strong>MLP 解码头</strong>：使用小型 MLP 进行更复杂的非线性映射</li>
+  <li><strong>共享 LoRA</strong>：如果差异主要在于关节子集的映射，可以仅在输出相关的层使用更大的秩</li>
+</ul>
+
+<h3>3.4 训练策略</h3>
+
+<h4>3.4.1 数据准备</h4>
+<ul>
+  <li><strong>ELF3 运动数据</strong>：通过遥操作、MoCap 重定向或仿真采集 ELF3 专有运动数据</li>
+  <li><strong>文本标注</strong>：为每个运动序列提供文本描述（可使用现有标注工具或人工标注）</li>
+  <li><strong>数据增强</strong>：时间缩放、速度扰动、镜像翻转等</li>
+  <li><strong>数据规模</strong>：建议至少 10-50 小时的 ELF3 运动数据</li>
+</ul>
+
+<h4>3.4.2 损失函数</h4>
+<pre><code>L_total = L_diffusion + λ₁ · L_joint_limit + λ₂ · L_foot_contact + λ₃ · L_smoothness
+
+其中：
+- L_diffusion: 标准扩散去噪损失（MSE）
+- L_joint_limit: 关节限位违反惩罚
+- L_foot_contact: 足部接触约束（防止滑步）
+- L_smoothness: 运动平滑性正则化</code></pre>
+
+<h4>3.4.3 训练超参数</h4>
+<table>
+  <tr>
+    <th>参数</th>
+    <th>推荐值</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>学习率</td>
+    <td>1e-4 ~ 5e-4</td>
+    <td>LoRA 微调典型范围</td>
+  </tr>
+  <tr>
+    <td>LoRA 秩</td>
+    <td>16</td>
+    <td>起始值，根据结果调整</td>
+  </tr>
+  <tr>
+    <td>LoRA alpha</td>
+    <td>8 ~ 16</td>
+    <td>通常设为秩的一半或相等</td>
+  </tr>
+  <tr>
+    <td>Dropout</td>
+    <td>0.05 ~ 0.1</td>
+    <td>防止过拟合</td>
+  </tr>
+  <tr>
+    <td>Batch size</td>
+    <td>32 ~ 64</td>
+    <td>根据 GPU 内存调整</td>
+  </tr>
+  <tr>
+    <td>训练轮数</td>
+    <td>50 ~ 200</td>
+    <td>根据验证集性能确定</td>
+  </tr>
+  <tr>
+    <td>优化器</td>
+    <td>AdamW</td>
+    <td>权重衰减 0.01</td>
+  </tr>
+  <tr>
+    <td>学习率调度</td>
+    <td>Cosine annealing</td>
+    <td>配合 warmup</td>
+  </tr>
+</table>
+
+<h3>3.5 约束条件适配</h3>
+<p>Kimodo 支持多种运动学约束（关键帧、末端执行器位置、2D 路点等）。微调时需要确保这些约束在 ELF3 骨架上仍然有效：</p>
+<ul>
+  <li><strong>关键帧约束</strong>：约束值需要在 ELF3 的关节空间中指定</li>
+  <li><strong>末端执行器约束</strong>：ELF3 的手部/足部位置需要通过 ELF3 的正运动学计算</li>
+  <li><strong>2D 路点约束</strong>：根运动路点与具体骨架无关，可以直接保留</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== 4. Knowledge Prerequisites ==================== -->
+<section id="prerequisites">
+<div class="container">
+<h2>四、知识储备</h2>
+
+<h3>4.1 扩散模型基础</h3>
+
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>优先级</th>
+  </tr>
+  <tr>
+    <td>扩散模型理论</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：Ho et al., "Denoising Diffusion Probabilistic Models" (DDPM, 2020)</li>
+        <li><strong>论文</strong>：Song et al., "Score-Based Generative Modeling through SDEs" (2021)</li>
+        <li><strong>教程</strong>：Lil'Log 博客 — "What are Diffusion Models?"</li>
+        <li><strong>课程</strong>：Stanford CS236 — Deep Generative Models</li>
+      </ul>
+    </td>
+    <td>必需</td>
+  </tr>
+  <tr>
+    <td>分类器无关引导</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：Ho & Salimans, "Classifier-Free Diffusion Guidance" (2022)</li>
+      </ul>
+    </td>
+    <td>必需</td>
+  </tr>
+  <tr>
+    <td>潜在扩散模型</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：Rombach et al., "High-Resolution Image Synthesis with Latent Diffusion Models" (2022)</li>
+      </ul>
+    </td>
+    <td>推荐</td>
+  </tr>
+</table>
+
+<h3>4.2 LoRA 与 PEFT</h3>
+
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>优先级</th>
+  </tr>
+  <tr>
+    <td>LoRA 原理</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：Hu et al., "LoRA: Low-Rank Adaptation of Large Language Models" (ICLR 2022)</li>
+        <li><strong>代码</strong>：github.com/microsoft/LoRA</li>
+        <li><strong>博客</strong>：Hugging Face PEFT 文档 — https://huggingface.co/docs/peft</li>
+      </ul>
+    </td>
+    <td>必需</td>
+  </tr>
+  <tr>
+    <td>扩散模型微调</td>
+    <td>
+      <ul>
+        <li><strong>工具</strong>：Hugging Face Diffusers + PEFT 库</li>
+        <li><strong>教程</strong>：Hugging Face — "LoRA for Stable Diffusion"</li>
+        <li><strong>工具</strong>：kohya-ss GUI（SD LoRA 训练）</li>
+      </ul>
+    </td>
+    <td>必需</td>
+  </tr>
+  <tr>
+    <td>ControlNet</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：Zhang et al., "Adding Conditional Control to Text-to-Image Diffusion Models" (2023)</li>
+      </ul>
+    </td>
+    <td>推荐</td>
+  </tr>
+</table>
+
+<h3>4.3 运动表示与运动生成</h3>
+
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>优先级</th>
+  </tr>
+  <tr>
+    <td>人体运动表示</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：SMPL — "SMPL: A Skinned Multi-Person Linear Model" (2015)</li>
+        <li><strong>论文</strong>：SMPL-X — "Expressive Body Capture: 3D Hands, Face, and Body from a Single Image" (2019)</li>
+        <li><strong>数据集</strong>：AMOS, HumanML3D, KIT-ML</li>
+      </ul>
+    </td>
+    <td>必需</td>
+  </tr>
+  <tr>
+    <td>运动扩散模型</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：MDM (Tevet et al., 2023)</li>
+        <li><strong>论文</strong>：MotionDiffuse (Zhang et al., 2022)</li>
+        <li><strong>论文</strong>：MLD (Chen et al., 2022)</li>
+        <li><strong>代码</strong>：github.com/GuyTevet/mdm-page</li>
+      </ul>
+    </td>
+    <td>必需</td>
+  </tr>
+  <tr>
+    <td>运动重定向</td>
+    <td>
+      <ul>
+        <li><strong>工具</strong>：NVIDIA SOMA Retargeter</li>
+        <li><strong>论文</strong>：Villegas et al., "Neural Kinematic Networks for Unsupervised Motion Retargeting" (2018)</li>
+      </ul>
+    </td>
+    <td>推荐</td>
+  </tr>
+</table>
+
+<h3>4.4 机器人运动控制</h3>
+
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>优先级</th>
+  </tr>
+  <tr>
+    <td>人形机器人控制</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：Radosavovic et al., "Humanoid Locomotion as Next Token Prediction" (2024)</li>
+        <li><strong>工具</strong>：NVIDIA Isaac Sim / Isaac Lab</li>
+        <li><strong>框架</strong>：MuJoCo, PyBullet</li>
+      </ul>
+    </td>
+    <td>推荐</td>
+  </tr>
+  <tr>
+    <td>Sim-to-Real 迁移</td>
+    <td>
+      <ul>
+        <li><strong>论文</strong>：Tobin et al., "Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World" (2017)</li>
+        <li><strong>教程</strong>：Isaac Lab 文档</li>
+      </ul>
+    </td>
+    <td>推荐</td>
+  </tr>
+</table>
+
+<h3>4.5 工具链</h3>
+
+<table>
+  <tr>
+    <th>工具</th>
+    <th>用途</th>
+    <th>学习资源</th>
+  </tr>
+  <tr>
+    <td>PyTorch</td>
+    <td>深度学习框架</td>
+    <td>官方教程 pytorch.org/tutorials</td>
+  </tr>
+  <tr>
+    <td>Hugging Face Diffusers</td>
+    <td>扩散模型训练/推理</td>
+    <td>huggingface.co/docs/diffusers</td>
+  </tr>
+  <tr>
+    <td>Hugging Face PEFT</td>
+    <td>LoRA 实现</td>
+    <td>huggingface.co/docs/peft</td>
+  </tr>
+  <tr>
+    <td>Weights & Biases</td>
+    <td>实验跟踪</td>
+    <td>wandb.ai</td>
+  </tr>
+  <tr>
+    <td>MuJoCo</td>
+    <td>物理仿真验证</td>
+    <td>mujoco.org</td>
+  </tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5. Getting Started ==================== -->
+<section id="getting-started">
+<div class="container">
+<h2>五、入门指南</h2>
+
+<h3>5.1 从零到首次实验的完整路径</h3>
+
+<ol class="step-list">
+  <li>
+    <strong>环境搭建（1-2 天）</strong>
+    <p>安装 PyTorch、Hugging Face Diffusers 和 PEFT 库。配置 GPU 环境（建议至少 1 张 A100 80GB 或 2 张 RTX 4090）。</p>
+    <pre><code>pip install torch torchvision
+pip install diffusers transformers accelerate
+pip install peft
+pip install wandb</code></pre>
+  </li>
+  <li>
+    <strong>研究 Kimodo 架构（2-3 天）</strong>
+    <p>深入阅读 Kimodo 论文 [1]，理解其两阶段去噪器架构、运动表示和控制机制。如果 Kimodo 代码开源，克隆仓库并运行推理示例。重点关注：</p>
+    <ul>
+      <li>Transformer 去噪器的层结构和注意力机制</li>
+      <li>运动表示的维度和编码方式</li>
+      <li>约束条件的施加方式</li>
+      <li>SOMA/G1 骨架的关节定义</li>
+    </ul>
+  </li>
+  <li>
+    <strong>准备 ELF3 运动数据（1-2 周）</strong>
+    <p>收集或生成 ELF3 专有运动数据：</p>
+    <ul>
+      <li><strong>方法 A</strong>：使用 Kimodo 生成 G1 运动，通过 SOMA 重定向器转换为 ELF3 运动（快速但有重定向误差）</li>
+      <li><strong>方法 B</strong>：通过遥操作系统直接采集 ELF3 运动数据（高质量但耗时）</li>
+      <li><strong>方法 C</strong>：在 MuJoCo/Isaac Sim 中仿真 ELF3 并生成运动（可控但需要仿真环境）</li>
+    </ul>
+    <p>为每个运动序列添加文本标注。</p>
+  </li>
+  <li>
+    <strong>实现 LoRA 注入（2-3 天）</strong>
+    <p>使用 Hugging Face PEFT 库在 Kimodo 的 Transformer 去噪器中注入 LoRA 层：</p>
+    <pre><code>from peft import LoraConfig, get_peft_model
+
+lora_config = LoraConfig(
+    r=16,
+    lora_alpha=16,
+    target_modules=["to_q", "to_k", "to_v", "to_out.0"],
+    lora_dropout=0.05,
+    bias="none",
+)
+
+model = get_peft_model(kimodo_model, lora_config)
+model.print_trainable_parameters()
+# 预期：可训练参数约占总参数的 0.1% - 1%</code></pre>
+  </li>
+  <li>
+    <strong>设计运动适配层（1-2 天）</strong>
+    <p>如果 Kimodo 的输出维度与 ELF3 不匹配，添加可训练的线性投影层或 MLP 解码头：</p>
+    <pre><code>import torch.nn as nn
+
+class ELF3MotionHead(nn.Module):
+    def __init__(self, kimodo_dim, elf3_dim):
+        super().__init__()
+        self.proj = nn.Linear(kimodo_dim, elf3_dim)
+        # 初始化为近似恒等映射
+        nn.init.eye_(self.proj.weight[:min(kimodo_dim, elf3_dim)])
+
+    def forward(self, x):
+        return self.proj(x)</code></pre>
+  </li>
+  <li>
+    <strong>编写训练脚本（2-3 天）</strong>
+    <p>基于 Diffusers 的训练框架编写微调脚本。关键组件：</p>
+    <ul>
+      <li>数据加载器：加载 ELF3 运动数据和文本标注</li>
+      <li>扩散过程：复用 Kimodo 的噪声调度</li>
+      <li>损失函数：标准扩散损失 + 关节限位约束 + 平滑性正则化</li>
+      <li>验证循环：定期生成样本并计算指标</li>
+    </ul>
+  </li>
+  <li>
+    <strong>运行首次实验（1 天）</strong>
+    <p>使用小规模数据集（~100 个运动序列）运行首次微调实验，验证流水线是否正常工作。检查：</p>
+    <ul>
+      <li>损失是否正常下降</li>
+      <li>生成的运动是否在 ELF3 关节空间中合理</li>
+      <li>文本条件是否仍然有效</li>
+    </ul>
+  </li>
+  <li>
+    <strong>迭代优化（持续）</strong>
+    <p>根据首次实验结果调整超参数、数据策略和架构设计，逐步扩大实验规模。</p>
+  </li>
+</ol>
+</div>
+</section>
+
+<!-- ==================== 6. Experiment Plan ==================== -->
+<section id="experiments">
+<div class="container">
+<h2>六、实验计划</h2>
+
+<h3>6.1 实验矩阵</h3>
+
+<table>
+  <tr>
+    <th>实验编号</th>
+    <th>实验名称</th>
+    <th>目标</th>
+    <th>关键变量</th>
+    <th>预期时长</th>
+  </tr>
+  <tr>
+    <td>E1</td>
+    <td>基线建立</td>
+    <td>评估当前 G1→ELF3 重定向流水线的运动质量</td>
+    <td>无（现有流水线）</td>
+    <td>2 天</td>
+  </tr>
+  <tr>
+    <td>E2</td>
+    <td>LoRA 秩消融</td>
+    <td>确定最优 LoRA 秩</td>
+    <td>r = {8, 16, 32, 64}</td>
+    <td>5 天</td>
+  </tr>
+  <tr>
+    <td>E3</td>
+    <td>目标层消融</td>
+    <td>确定最优 LoRA 注入层组合</td>
+    <td>Q/K/V only, +Output, +FFN</td>
+    <td>5 天</td>
+  </tr>
+  <tr>
+    <td>E4</td>
+    <td>数据规模消融</td>
+    <td>确定所需最小数据量</td>
+    <td>数据量 = {1h, 5h, 10h, 50h, 100h}</td>
+    <td>7 天</td>
+  </tr>
+  <tr>
+    <td>E5</td>
+    <td>完整微调 vs LoRA</td>
+    <td>对比 LoRA 与全量微调的效果</td>
+    <td>LoRA r=16 vs 全量微调</td>
+    <td>5 天</td>
+  </tr>
+  <tr>
+    <td>E6</td>
+    <td>约束保持测试</td>
+    <td>验证微调后约束条件是否仍然有效</td>
+    <td>关键帧约束、末端执行器约束</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>E7</td>
+    <td>运动学验证</td>
+    <td>检查生成运动的物理可行性</td>
+    <td>关节限位、碰撞检测、稳定性</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>E8</td>
+    <td>仿真部署验证</td>
+    <td>在 MuJoCo/Isaac Sim 中验证运动可执行性</td>
+    <td>运动跟踪误差</td>
+    <td>5 天</td>
+  </tr>
+</table>
+
+<h3>6.2 评估指标</h3>
+
+<h4>6.2.1 生成质量指标</h4>
+<table>
+  <tr>
+    <th>指标</th>
+    <th>描述</th>
+    <th>计算方式</th>
+    <th>目标值</th>
+  </tr>
+  <tr>
+    <td>FID (Fréchet Inception Distance)</td>
+    <td>生成运动分布与真实运动分布的距离</td>
+    <td>在运动特征空间中计算两个高斯分布的 Fréchet 距离</td>
+    <td>< 0.5（与基线相当或更优）</td>
+  </tr>
+  <tr>
+    <td>R-Precision</td>
+    <td>文本-运动匹配精度</td>
+    <td>生成运动的最近邻文本描述与输入文本的匹配率</td>
+    <td>> 0.75</td>
+  </tr>
+  <tr>
+    <td>Matching Score</td>
+    <td>运动-文本余弦相似度</td>
+    <td>运动嵌入和文本嵌入的平均余弦相似度</td>
+    <td>> 0.70</td>
+  </tr>
+  <tr>
+    <td>Diversity</td>
+    <td>生成运动的多样性</td>
+    <td>不同文本生成的运动特征的平均方差</td>
+    <td>与基线相当</td>
+  </tr>
+  <tr>
+    <td>MultiModality</td>
+    <td>同一文本生成运动的多样性</td>
+    <td>同一文本多次生成的运动特征方差</td>
+    <td>> 2.0</td>
+  </tr>
+</table>
+
+<h4>6.2.2 骨架适配指标</h4>
+<table>
+  <tr>
+    <th>指标</th>
+    <th>描述</th>
+    <th>目标值</th>
+  </tr>
+  <tr>
+    <td>关节限位违反率</td>
+    <td>生成运动中违反 ELF3 关节限位的比例</td>
+    <td>< 1%</td>
+  </tr>
+  <tr>
+    <td>足部穿透深度</td>
+    <td>足部穿透地面的最大深度</td>
+    <td>< 1cm</td>
+  </tr>
+  <tr>
+    <td>足部滑步距离</td>
+    <td>支撑相期间足部的滑动距离</td>
+    <td>< 2cm</td>
+  </tr>
+  <tr>
+    <td>运动平滑度</td>
+    <td>关节加速度的二阶导数</td>
+    <td>与真实运动相当</td>
+  </tr>
+  <tr>
+    <td>重心稳定性</td>
+    <td>ZMP（零力矩点）是否在支撑多边形内</td>
+    <td>> 95% 时间稳定</td>
+  </tr>
+</table>
+
+<h4>6.2.3 效率指标</h4>
+<table>
+  <tr>
+    <th>指标</th>
+    <th>描述</th>
+    <th>目标值</th>
+  </tr>
+  <tr>
+    <td>可训练参数量</td>
+    <td>LoRA 引入的可训练参数占总参数的比例</td>
+    <td>< 1%</td>
+  </tr>
+  <tr>
+    <td>GPU 内存占用</td>
+    <td>微调时的峰值 GPU 内存</td>
+    <td>< 24GB（单卡 RTX 4090 可训练）</td>
+  </tr>
+  <tr>
+    <td>训练时间</td>
+    <td>在 100h 数据上收敛所需时间</td>
+    <td>< 24h（单卡 A100）</td>
+  </tr>
+  <tr>
+    <td>推理延迟</td>
+    <td>单次运动生成的端到端延迟</td>
+    <td>与原始 Kimodo 相当（< 1s）</td>
+  </tr>
+</table>
+
+<h3>6.3 实验流程</h3>
+<pre><code>阶段 1：基线与数据准备（第 1-2 周）
+├── E1: 建立当前重定向流水线的基线指标
+├── 准备 ELF3 运动数据集（目标：50+ 小时）
+├── 建立评估流水线（自动计算所有指标）
+└── 验证 Kimodo 推理在本地环境正常工作
+
+阶段 2：核心微调实验（第 3-4 周）
+├── E2: LoRA 秩消融实验
+├── E3: 目标层消融实验
+├── 选择最优配置
+└── E5: 与全量微调对比
+
+阶段 3：规模与验证实验（第 5-6 周）
+├── E4: 数据规模消融实验
+├── E6: 约束保持测试
+├── E7: 运动学验证
+└── E8: 仿真部署验证
+
+阶段 4：分析与论文（第 7-8 周）
+├── 汇总所有实验结果
+├── 生成可视化对比图
+├── 撰写技术报告/论文
+└── 准备代码开源</code></pre>
+</div>
+</section>
+
+<!-- ==================== 7. Benchmarks ==================== -->
+<section id="benchmarks">
+<div class="container">
+<h2>七、预期结果与基准</h2>
+
+<h3>7.1 预期性能对比</h3>
+
+<table>
+  <tr>
+    <th>方法</th>
+    <th>FID ↓</th>
+    <th>R-Precision ↑</th>
+    <th>关节违反率 ↓</th>
+    <th>推理延迟</th>
+  </tr>
+  <tr>
+    <td>Kimodo (G1) + 重定向</td>
+    <td>基准</td>
+    <td>基准</td>
+    <td>~5-10%</td>
+    <td>~0.8s + 重定向</td>
+  </tr>
+  <tr>
+    <td>Kimodo + LoRA (本方法)</td>
+    <td>≤ 基线</td>
+    <td>≥ 基线</td>
+    <td>< 1%</td>
+    <td>~0.8s</td>
+  </tr>
+  <tr>
+    <td>Kimodo + 全量微调</td>
+    <td>≤ 基线</td>
+    <td>≥ 基线</td>
+    <td>< 1%</td>
+    <td>~0.8s</td>
+  </tr>
+  <tr>
+    <td>从头训练运动扩散模型</td>
+    <td>远差于基线</td>
+    <td>远差于基线</td>
+    <td>< 1%</td>
+    <td>~0.8s</td>
+  </tr>
+</table>
+
+<h3>7.2 关键成功标准</h3>
+
+<div class="info-box">
+  <strong>必须达到</strong>：
+  <ul>
+    <li>FID 不超过基线（G1 + 重定向）的 120%</li>
+    <li>R-Precision 不低于基线的 95%</li>
+    <li>关节限位违反率 < 1%</li>
+    <li>可训练参数 < 总参数的 1%</li>
+    <li>推理延迟不增加</li>
+  </ul>
+</div>
+
+<div class="highlight">
+  <strong>理想目标</strong>：
+  <ul>
+    <li>FID 优于基线（消除重定向误差带来的质量损失）</li>
+    <li>R-Precision 与基线持平或更优</li>
+    <li>关节违反率接近 0%</li>
+    <li>在 MuJoCo 中的运动跟踪误差 < 2cm</li>
+    <li>可训练参数 < 0.5%</li>
+  </ul>
+</div>
+
+<h3>7.3 已有基准参考</h3>
+<p>以下数据来自运动生成领域的公开基准，供参考：</p>
+
+<table>
+  <tr>
+    <th>模型</th>
+    <th>数据集</th>
+    <th>FID ↓</th>
+    <th>R-Precision ↑</th>
+    <th>来源</th>
+  </tr>
+  <tr>
+    <td>MDM</td>
+    <td>HumanML3D</td>
+    <td>0.544</td>
+    <td>0.611</td>
+    <td>[2]</td>
+  </tr>
+  <tr>
+    <td>MLD</td>
+    <td>HumanML3D</td>
+    <td>0.473</td>
+    <td>0.621</td>
+    <td>[4]</td>
+  </tr>
+  <tr>
+    <td>MotionDiffuse</td>
+    <td>HumanML3D</td>
+    <td>0.630</td>
+    <td>0.614</td>
+    <td>[3]</td>
+  </tr>
+  <tr>
+    <td>T2M-GPT</td>
+    <td>HumanML3D</td>
+    <td>0.141</td>
+    <td>0.689</td>
+    <td>[16]</td>
+  </tr>
+  <tr>
+    <td>MotionLCM</td>
+    <td>HumanML3D</td>
+    <td>0.161</td>
+    <td>0.698</td>
+    <td>[5]</td>
+  </tr>
+</table>
+
+<p><em>注：上述数据来自 HumanML3D 基准，Kimodo 在其专有基准上的具体数值需参考原论文。ELF3 微调的评估需要建立在 ELF3 专有测试集上。</em></p>
+</div>
+</section>
+
+<!-- ==================== 8. Risks ==================== -->
+<section id="risks">
+<div class="container">
+<h2>八、风险与缓解措施</h2>
+
+<h3>8.1 技术风险</h3>
+
+<div class="risk-box">
+  <h4>风险 1：ELF3 运动数据不足</h4>
+  <p><strong>描述</strong>：ELF3 的运动数据可能难以收集到足够的规模（50+ 小时），导致微调效果不佳。</p>
+  <p><strong>概率</strong>：中高</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>使用 Kimodo 生成 G1 运动并通过 SOMA 重定向器转换为 ELF3 数据（快速扩充）</li>
+    <li>在 MuJoCo/Isaac Sim 中仿真生成 ELF3 运动数据</li>
+    <li>使用数据增强技术（时间缩放、镜像、速度扰动）</li>
+    <li>探索少样本微调策略（增大 LoRA 秩、使用更强的正则化）</li>
+  </ul>
+</div>
+
+<div class="risk-box">
+  <h4>风险 2：骨架差异过大导致微调失败</h4>
+  <p><strong>描述</strong>：ELF3 与 G1 的骨架结构差异过大（如自由度数、关节类型、连杆长度），LoRA 的低秩约束可能不足以捕获这种差异。</p>
+  <p><strong>概率</strong>：中</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>增大 LoRA 秩（r=64 或更高）</li>
+    <li>在输出层添加可训练的适配头（线性层或 MLP）</li>
+    <li>如果 LoRA 不够，考虑使用 Adapter 或全量微调最后几层</li>
+    <li>分析 Kimodo 中间层特征的可迁移性，选择性微调</li>
+  </ul>
+</div>
+
+<div class="risk-box">
+  <h4>风险 3：微调后文本条件控制退化</h4>
+  <p><strong>描述</strong>：微调可能导致模型遗忘原始的文本条件控制能力，无法通过文本描述控制运动。</p>
+  <p><strong>概率</strong>：中低</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>使用较小的学习率和 LoRA 秩减少遗忘</li>
+    <li>在训练数据中混合部分 G1 运动数据（正则化）</li>
+    <li>使用 DreamBooth 风格的先验保留损失</li>
+    <li>监控文本-运动匹配分数，设置早停</li>
+  </ul>
+</div>
+
+<div class="risk-box">
+  <h4>风险 4：生成运动物理不可行</h4>
+  <p><strong>描述</strong>：生成的运动可能在 ELF3 上物理不可行（关节穿透、重心不稳、动力学不可执行）。</p>
+  <p><strong>概率</strong>：中</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>在损失函数中加入关节限位约束和足部接触损失</li>
+    <li>后处理：使用运动学/动力学优化器修正生成的运动</li>
+    <li>在 MuJoCo 中进行物理仿真验证，过滤不可行样本</li>
+    <li>结合 GEAR-SONIC 等运动跟踪策略进行可行性保证</li>
+  </ul>
+</div>
+
+<div class="risk-box">
+  <h4>风险 5：Kimodo 代码/权重不可用</h4>
+  <p><strong>描述</strong>：Kimodo 可能未完全开源，无法直接获取模型代码和权重进行微调。</p>
+  <p><strong>概率</strong>：中</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>联系 NVIDIA Research 团队申请访问权限</li>
+    <li>使用 Kimodo 论文中描述的架构自行实现</li>
+    <li>基于开源的运动扩散模型（如 MDM、MLD）进行类似的微调实验</li>
+    <li>使用 Kimodo 的公开 API（如果提供）生成数据，训练独立的 ELF3 运动生成模型</li>
+  </ul>
+</div>
+
+<h3>8.2 项目风险</h3>
+
+<div class="risk-box">
+  <h4>风险 6：计算资源不足</h4>
+  <p><strong>描述</strong>：LoRA 微调虽然参数量小，但 Kimodo 模型本身可能很大，推理和训练仍需大量 GPU 内存。</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>使用混合精度训练（FP16/BF16）减少内存占用</li>
+    <li>使用梯度检查点（gradient checkpointing）</li>
+    <li>使用 DeepSpeed ZeRO 或 FSDP 进行分布式训练</li>
+    <li>优先使用较小的 Kimodo 变体（如果提供多个规模）</li>
+  </ul>
+</div>
+
+<div class="risk-box">
+  <h4>风险 7：评估指标不充分</h4>
+  <p><strong>描述</strong>：传统的运动生成指标（FID、R-Precision）可能无法充分反映 ELF3 上的实际运动质量。</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>建立 ELF3 专有的评估指标（关节违反率、物理可行性分数）</li>
+    <li>进行人工评估（A/B 测试、MOS 评分）</li>
+    <li>在仿真环境中进行端到端评估（运动跟踪误差、任务完成率）</li>
+  </ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== 9. References ==================== -->
+<section id="references">
+<div class="container">
+<h2>九、参考文献</h2>
+
+<ol class="ref-list">
+  <li>
+    <span class="ref-id">[1]</span> Rempe, D., Petrovich, M., Yuan, Y., Zhang, H., Peng, X. B., et al. (2026).
+    <em>Kimodo: Scaling Controllable Human Motion Generation.</em>
+    arXiv:2603.15546. NVIDIA Research.
+  </li>
+  <li>
+    <span class="ref-id">[2]</span> Tevet, G., Raab, S., Gordon, B., Shafir, Y., Cohen-Or, D., & Bermano, A. H. (2023).
+    <em>Human Motion Diffusion Model (MDM).</em>
+    ICLR 2023. arXiv:2209.14916.
+  </li>
+  <li>
+    <span class="ref-id">[3]</span> Zhang, M., Cai, Z., Pan, L., Hong, F., Guo, X., Yang, L., & Liu, Z. (2024).
+    <em>MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model.</em>
+    IEEE TPAMI 2024. arXiv:2209.14735.
+  </li>
+  <li>
+    <span class="ref-id">[4]</span> Chen, X., Jiang, B., Liu, W., Huang, B., Fu, B., Chen, T., Zhou, P., & Zhou, F. (2022).
+    <em>MLD: Motion Latent Diffusion Models for High-Quality 3D Motion Generation.</em>
+    ECCV 2022.
+  </li>
+  <li>
+    <span class="ref-id">[5]</span> Chen, X., Jiang, B., Liu, W., Huang, B., Zhang, L., Yang, Y., Wang, Z., & Lei, C. (2024).
+    <em>MotionLCM: Real-Time Motion Generation via Latent Consistency Model.</em>
+    arXiv:2401.09926.
+  </li>
+  <li>
+    <span class="ref-id">[6]</span> Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2022).
+    <em>LoRA: Low-Rank Adaptation of Large Language Models.</em>
+    ICLR 2022. arXiv:2106.09685.
+  </li>
+  <li>
+    <span class="ref-id">[7]</span> Zhang, L., Rao, A., & Agrawala, M. (2023).
+    <em>ControlNet: Adding Conditional Control to Text-to-Image Diffusion Models.</em>
+    ICCV 2023. arXiv:2302.05543.
+  </li>
+  <li>
+    <span class="ref-id">[8]</span> Open X-Embodiment Collaboration. (2023).
+    <em>Open X-Embodiment: Robotic Learning Datasets and RT-X Models.</em>
+    CoRL 2023. arXiv:2310.08864.
+  </li>
+  <li>
+    <span class="ref-id">[9]</span> Chi, C., Xu, Z., Feng, S., Cousineau, E., Du, Y., Burchfiel, B., Tedrake, R., & Song, S. (2024).
+    <em>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion.</em>
+    RSS 2023 / T-RO 2024. arXiv:2303.04137.
+  </li>
+  <li>
+    <span class="ref-id">[10]</span> Octo Model Team, Ghosh, D., Walke, H., Pertsch, K., Black, K., et al. (2024).
+    <em>Octo: An Open-Source Generalist Robot Policy.</em>
+    arXiv 2024.
+  </li>
+  <li>
+    <span class="ref-id">[11]</span> Kim, M. J., Pertsch, K., Karamcheti, S., Xiao, T., Balakrishna, A., et al. (2024).
+    <em>OpenVLA: An Open-Source Vision-Language-Action Model.</em>
+    arXiv 2024.
+  </li>
+  <li>
+    <span class="ref-id">[12]</span> Physical Intelligence. (2024).
+    <em>&pi;0: A Vision-Language-Action Flow Model for General Robot Control.</em>
+    Physical Intelligence Technical Report.
+  </li>
+  <li>
+    <span class="ref-id">[13]</span> ExBody Team. (2024).
+    <em>ExBody2: Advanced Expressive Humanoid Whole-Body Control.</em>
+    arXiv 2024.
+  </li>
+  <li>
+    <span class="ref-id">[14]</span> Fu, Z., et al. (2024).
+    <em>HumanPlus: Humanoid Shadowing and Imitation Learning.</em>
+    Stanford University. arXiv 2024.
+  </li>
+  <li>
+    <span class="ref-id">[15]</span> NVIDIA Research. (2024-2025).
+    <em>SOMA: Skeletal Open Motion Atlas.</em>
+    NVIDIA Research.
+  </li>
+  <li>
+    <span class="ref-id">[16]</span> Zhang, J., et al. (2023).
+    <em>T2M-GPT: Generating Human Motion from Textual Descriptions with Discrete Representations.</em>
+    arXiv 2023.
+  </li>
+  <li>
+    <span class="ref-id">[17]</span> Ho, J., Jain, A., & Abbeel, P. (2020).
+    <em>Denoising Diffusion Probabilistic Models (DDPM).</em>
+    NeurIPS 2020. arXiv:2006.11239.
+  </li>
+  <li>
+    <span class="ref-id">[18]</span> Rombach, R., Blattmann, A., Lorenz, D., Esser, P., & Ommer, B. (2022).
+    <em>High-Resolution Image Synthesis with Latent Diffusion Models.</em>
+    CVPR 2022. arXiv:2112.10752.
+  </li>
+  <li>
+    <span class="ref-id">[19]</span> Ho, J., & Salimans, T. (2022).
+    <em>Classifier-Free Diffusion Guidance.</em>
+    NeurIPS 2021 Workshop.
+  </li>
+  <li>
+    <span class="ref-id">[20]</span> Loper, M., Mahmood, N., Romero, J., Pons-Moll, G., & Black, M. J. (2015).
+    <em>SMPL: A Skinned Multi-Person Linear Model.</em>
+    ACM TOG / SIGGRAPH Asia 2015.
+  </li>
+</ol>
+</div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>LoRA 微调 Kimodo 直接生成 ELF3 运动 — 研究报告</p>
+    <p>VLA 项目组 | 2026 年 6 月 | 仅供内部参考</p>
+  </div>
+</footer>
+
+</body>
+</html>

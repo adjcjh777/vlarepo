@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLA Research - 运动扩散模型研究方向探索</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+        .hero {
+            text-align: center;
+            padding: 80px 20px 40px;
+        }
+        .hero h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #94a3b8;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .hero .meta {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 30px;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(96, 165, 250, 0.4);
+            box-shadow: 0 20px 60px rgba(96, 165, 250, 0.15);
+        }
+        .card .number {
+            font-size: 48px;
+            font-weight: 800;
+            opacity: 0.15;
+            position: absolute;
+            top: 16px;
+            right: 24px;
+        }
+        .card { position: relative; overflow: hidden; }
+        .card h2 {
+            font-size: 20px;
+            color: #60a5fa;
+            margin-bottom: 12px;
+        }
+        .card .desc {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .tag.hot { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
+        .tag.green { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+        .tag.yellow { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .section-title {
+            font-size: 28px;
+            color: #f1f5f9;
+            margin: 60px 0 10px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(96, 165, 250, 0.3);
+        }
+        .context-box {
+            background: rgba(30, 41, 59, 0.6);
+            border-left: 4px solid #60a5fa;
+            padding: 24px;
+            border-radius: 8px;
+            margin: 20px 0;
+            line-height: 1.8;
+            color: #cbd5e1;
+        }
+        .context-box strong { color: #60a5fa; }
+        .footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: #475569;
+            font-size: 14px;
+        }
+        .priority-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .priority-table th, .priority-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .priority-table th {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .priority-table td { color: #cbd5e1; }
+        .priority-1 { color: #34d399; font-weight: bold; }
+        .priority-2 { color: #60a5fa; font-weight: bold; }
+        .priority-3 { color: #fbbf24; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>VLA Research</h1>
+        <p>基于 Kimodo 运动扩散模型的机器人运动生成研究方向探索<br>
+        为 2-3x RTX 5090 量身定制的可行性分析</p>
+        <div class="meta">2026-06-03 | 基于 Kimodo (arXiv:2603.15546) | ELF3 / Unitree G1</div>
+    </div>
+
+    <div class="container">
+        <div class="context-box">
+            <strong>项目背景：</strong>当前工作流为 Kimodo 文本/约束 → G1 机器人动作生成 → 重定向到 ELF3（半醒/BXI）。
+            目标是探索可直接发表的研究方向，在 2-3 张 RTX 5090（各 ~32GB VRAM）的资源约束下可行。
+        </div>
+
+        <h2 class="section-title">研究方向总览</h2>
+
+        <table class="priority-table">
+            <tr>
+                <th>优先级</th>
+                <th>方向</th>
+                <th>核心优势</th>
+                <th>资源需求</th>
+            </tr>
+            <tr>
+                <td class="priority-1">P1</td>
+                <td>Sim-to-Real RL 跟踪</td>
+                <td>已有完整管线，最容易出成果</td>
+                <td>1-2 GPU</td>
+            </tr>
+            <tr>
+                <td class="priority-1">P2</td>
+                <td>LoRA 微调直接生成 ELF3</td>
+                <td>解决实际痛点（跳过重定向）</td>
+                <td>2 GPU</td>
+            </tr>
+            <tr>
+                <td class="priority-2">P3</td>
+                <td>约束增强</td>
+                <td>不需训练，纯推理改进</td>
+                <td>1 GPU</td>
+            </tr>
+            <tr>
+                <td class="priority-2">P4</td>
+                <td>实时推理加速</td>
+                <td>工程价值高，应用场景明确</td>
+                <td>2 GPU</td>
+            </tr>
+            <tr>
+                <td class="priority-3">P5</td>
+                <td>多模态条件</td>
+                <td>多模态是趋势，创新空间大</td>
+                <td>2-3 GPU</td>
+            </tr>
+            <tr>
+                <td class="priority-3">P6</td>
+                <td>安全过滤</td>
+                <td>部署刚需，实用性极强</td>
+                <td>1 GPU</td>
+            </tr>
+        </table>
+
+        <div class="grid">
+            <a class="card" href="research/02-sim2real-rl-tracking/report.html">
+                <div class="number">01</div>
+                <h2>Sim-to-Real RL 运动跟踪</h2>
+                <div class="desc">
+                    用 Kimodo 生成的运动作为参考轨迹，在 MuJoCo 中训练 RL 策略跟踪这些运动，
+                    打通 sim-to-real 链路。参考 DiffControl、HITTER、RobotDancing 等最新工作。
+                </div>
+                <div class="tags">
+                    <span class="tag hot">P1 推荐</span>
+                    <span class="tag">PPO / AMP</span>
+                    <span class="tag">MuJoCo</span>
+                    <span class="tag green">已有管线</span>
+                </div>
+            </a>
+
+            <a class="card" href="research/01-lora-finetune-elf3/report.html">
+                <div class="number">02</div>
+                <h2>LoRA 微调直接生成 ELF3</h2>
+                <div class="desc">
+                    用 LoRA 或 adapter 对 Kimodo denoiser 做轻量微调，让它直接生成 ELF3 的动作，
+                    跳过 G1→ELF3 重定向步骤。减少重定向误差，端到端效果更好。
+                </div>
+                <div class="tags">
+                    <span class="tag hot">P2 推荐</span>
+                    <span class="tag">LoRA / PEFT</span>
+                    <span class="tag">跨具身迁移</span>
+                    <span class="tag yellow">需数据</span>
+                </div>
+            </a>
+
+            <a class="card" href="research/03-constraint-enhancement/report.html">
+                <div class="number">03</div>
+                <h2>物理约束增强</h2>
+                <div class="desc">
+                    在 Kimodo 现有约束系统基础上，增加物理约束（碰撞规避、力矩限制、ZMP 稳定性）
+                    或环境交互约束。不需重新训练，推理阶段加入约束投影。
+                </div>
+                <div class="tags">
+                    <span class="tag">P3</span>
+                    <span class="tag">Classifier Guidance</span>
+                    <span class="tag green">免训练</span>
+                    <span class="tag">CBF</span>
+                </div>
+            </a>
+
+            <a class="card" href="research/04-realtime-inference/report.html">
+                <div class="number">04</div>
+                <h2>实时推理加速</h2>
+                <div class="desc">
+                    将 Kimodo 的 DDIM 采样替换为一致性模型（LCM）或蒸馏加速，
+                    实现交互式实时动作生成。最优方案预期 ~15ms / 66 FPS。
+                </div>
+                <div class="tags">
+                    <span class="tag">P4</span>
+                    <span class="tag">LCM 蒸馏</span>
+                    <span class="tag">TensorRT</span>
+                    <span class="tag green">工程价值高</span>
+                </div>
+            </a>
+
+            <a class="card" href="research/05-multimodal-condition/report.html">
+                <div class="number">05</div>
+                <h2>多模态动作条件</h2>
+                <div class="desc">
+                    除了文本，加入视觉（视频参考）或语音作为动作条件。
+                    参考 IRG-MotionLLM、MotionGPT-3、MoLingo (CVPR 2026) 等工作。
+                </div>
+                <div class="tags">
+                    <span class="tag">P5</span>
+                    <span class="tag">VideoMAE</span>
+                    <span class="tag">多模态融合</span>
+                    <span class="tag hot">创新空间大</span>
+                </div>
+            </a>
+
+            <a class="card" href="research/06-safety-filter/report.html">
+                <div class="number">06</div>
+                <h2>运动质量评估与安全过滤</h2>
+                <div class="desc">
+                    训练轻量判别器/评估器，过滤掉物理不可行或不安全的生成动作。
+                    三层架构：规则检查 → 学习评估 → 仿真验证。
+                </div>
+                <div class="tags">
+                    <span class="tag">P6</span>
+                    <span class="tag">CBF</span>
+                    <span class="tag">异常检测</span>
+                    <span class="tag green">部署刚需</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>VLA Research | Generated 2026-06-03 | Based on Kimodo (arXiv:2603.15546)</p>
+    </div>
+</body>
+</html>

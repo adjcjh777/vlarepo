@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运动质量评估与安全过滤研究报告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #e94560, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            color: #a0a0a0;
+            margin-bottom: 10px;
+        }
+
+        .header .meta {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #e94560;
+        }
+
+        .section h2 {
+            color: #1a1a2e;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e94560;
+            display: inline-block;
+        }
+
+        .section h3 {
+            color: #16213e;
+            font-size: 1.3em;
+            margin: 20px 0 15px 0;
+        }
+
+        .section h4 {
+            color: #0f3460;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .paper-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .paper-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .paper-card .authors {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .paper-card .venue {
+            color: #e94560;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .paper-card .methodology {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .paper-card .results {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .paper-card .relevance {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e3f2fd;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 70px;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #e94560, #f39c12);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .metric-box .value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .metric-box .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .warning-box::before {
+            content: "⚠️ ";
+            font-size: 1.2em;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .success-box::before {
+            content: "✅ ";
+            font-size: 1.2em;
+        }
+
+        .code-block {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .reference-list {
+            list-style: none;
+        }
+
+        .reference-list li {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 3px solid #3498db;
+        }
+
+        .reference-list li .ref-number {
+            color: #e94560;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .reference-list li .ref-title {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .reference-list li .ref-authors {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .reference-list li .ref-venue {
+            color: #e94560;
+            font-size: 0.9em;
+        }
+
+        .toc {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .toc h3 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc ul li {
+            margin: 10px 0;
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #e94560;
+        }
+
+        .toc ul li a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toc ul li a:hover {
+            color: #e94560;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #fff3cd 0%, #fff3cd 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin: 2px;
+        }
+
+        .badge-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .badge-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar .progress {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #e94560, #f39c12);
+        }
+
+        .architecture-diagram {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .architecture-diagram .flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .architecture-diagram .node {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .architecture-diagram .arrow {
+            font-size: 2em;
+            color: #e94560;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>运动质量评估与安全过滤研究报告</h1>
+            <div class="subtitle">面向 Kimodo 运动扩散模型的生成运动安全过滤系统</div>
+            <div class="meta">研究方向：Motion Quality Assessment & Safety Filtering | 日期：2026年6月</div>
+        </div>
+
+        <div class="content">
+            <div class="toc">
+                <h3>目录</h3>
+                <ul>
+                    <li><a href="#overview">概述：研究方向的重要性与前景</a></li>
+                    <li><a href="#literature">文献综述：12篇关键论文详细分析</a></li>
+                    <li><a href="#approach">技术方案：构建运动安全过滤系统</a></li>
+                    <li><a href="#prerequisites">知识前置：需要学习的内容与资源</a></li>
+                    <li><a href="#getting-started">入门指南：从零到第一个实验</a></li>
+                    <li><a href="#experiments">实验计划：具体实验与预期指标</a></li>
+                    <li><a href="#benchmarks">预期结果与基准：目标数值</a></li>
+                    <li><a href="#risks">风险与缓解：可能遇到的问题</a></li>
+                    <li><a href="#references">参考文献：完整文献列表</a></li>
+                </ul>
+            </div>
+
+            <section id="overview" class="section">
+                <h2>概述：研究方向的重要性与前景</h2>
+                <p>
+                    随着扩散模型在运动生成领域的快速发展，Kimodo（NVIDIA的运动学运动扩散模型）等系统能够从文本描述生成高质量的人体运动。然而，<span class="highlight">将生成的运动直接部署到真实机器人上存在严重的安全隐患</span>。生成的运动可能存在物理不可行、关节超限、碰撞风险、动态不稳定等问题，这些问题在真实环境中可能导致机器人损坏或人员受伤。
+                </p>
+                <p>
+                    本研究方向聚焦于构建<span class="highlight">运动质量评估与安全过滤系统</span>，旨在：
+                </p>
+                <ul style="margin-left: 30px; margin-bottom: 20px;">
+                    <li><strong>评估生成运动的物理可行性</strong>：检测关节极限违反、碰撞、动态不稳定等问题</li>
+                    <li><strong>构建安全过滤器</strong>：基于控制屏障函数（CBF）或奖励模型，过滤不安全的运动</li>
+                    <li><strong>实现实时安全验证</strong>：在运动执行前进行快速安全检查</li>
+                    <li><strong>提供安全反馈</strong>：为运动生成模型提供安全信号，指导生成更安全的运动</li>
+                </ul>
+                <p>
+                    这一方向具有重要的研究价值和应用前景。在工业机器人、服务机器人、人机协作等场景中，安全过滤系统是连接运动生成模型与真实部署的关键桥梁。通过结合物理仿真、学习型安全评估和形式化安全保证，我们可以构建既高效又可靠的安全过滤框架。
+                </p>
+
+                <div class="architecture-diagram">
+                    <h4>系统架构概览</h4>
+                    <div class="flow">
+                        <div class="node">文本输入</div>
+                        <div class="arrow">→</div>
+                        <div class="node">Kimodo<br>运动生成</div>
+                        <div class="arrow">→</div>
+                        <div class="node" style="background: linear-gradient(135deg, #e94560, #f39c12);">安全过滤器</div>
+                        <div class="arrow">→</div>
+                        <div class="node">安全运动<br>输出</div>
+                        <div class="arrow">→</div>
+                        <div class="node">MuJoCo<br>仿真验证</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="literature" class="section">
+                <h2>文献综述：关键论文详细分析</h2>
+                <p>
+                    本节详细分析了12篇与运动质量评估和安全过滤密切相关的论文，涵盖物理引导运动生成、安全扩散策略、运动检索评估、强化学习对齐等多个方面。
+                </p>
+
+                <div class="paper-card">
+                    <h4>1. Kimodo: Kinematic Motion Diffusion for Expressive Human Motion Generation</h4>
+                    <div class="authors">Davis Rempe, Mathis Petrovich, Ye Yuan, Haotian Zhang, Xue Bin Peng, Yifeng Jiang, Tingwu Wang, Umar Iqbal, David Minor, Michael de Ruyter, Jiefeng Li, Chen Tessler, Edy Lim, Eugene Jeong, Sam Wu, Ehsan Hassani, Michael Huang, Jin-Bey Yu, Chaeyeon Chung, Lina Song, Olivier Dionne, Jan Kautz, Simon Yuen, Sanja Fidler</div>
+                    <div class="venue">arXiv:2603.15546 | NVIDIA Research | 2025年3月</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>Kimodo是一个基于扩散模型的运动学运动生成系统，在700小时的光学动作捕捉数据上训练。采用两阶段去噪器架构，将根节点和身体预测解耦，支持文本和多种运动学约束（全身关键帧、稀疏关节位置/旋转、2D路径点、稠密2D路径）的条件控制。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>在大规模动作捕捉数据集上验证了设计决策的有效性，分析了数据集规模和模型规模对性能的影响。该模型是目前最大规模的运动扩散模型之一。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>Kimodo是本研究的核心对象，其生成的运动需要安全过滤后才能部署到真实机器人（ELF3和G1模型）。理解其架构和输出特性是构建有效过滤器的基础。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>2. SafeDiffuser: Safe Diffusion Policy for Robot Manipulation with Barrier Function</h4>
+                    <div class="authors">Xinyi Wang</div>
+                    <div class="venue">arXiv:2412.06547 | 2024年12月</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>SafeDiffuser提出了将控制屏障函数（CBF）集成到扩散模型动作生成中的框架。该方法提供前向和后向两种过滤机制，确保机器人操作任务中的安全性。CBF通过定义安全集和屏障证书，在扩散去噪过程中引导轨迹朝向安全区域。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>在多个机器人操作任务上验证了安全过滤的有效性，能够在保持任务性能的同时显著提高安全性。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>SafeDiffuser提供了将CBF与扩散模型结合的直接参考，其前向/后向过滤机制可以直接应用于Kimodo输出的安全过滤。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>3. PhysDiff: Physics-Guided Human Motion Diffusion Model</h4>
+                    <div class="authors">Changan Chen, Ziad Al-Halah, Kristen Grauman</div>
+                    <div class="venue">arXiv:2306.02251 | 2023年6月</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>PhysDiff将物理约束集成到运动扩散模型的去噪过程中。在采样阶段，模型交替执行学习的去噪步骤和基于物理的校正步骤，确保生成的运动符合物理规律（如重力、接触、碰撞避免）。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>显著减少了脚部滑动、穿透地面等物理不可行现象，同时保持了运动的多样性和质量。在HumanML3D和KIT-ML基准上取得了优异的定量和定性结果。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>PhysDiff的物理引导方法可以直接应用于运动安全评估，其物理约束检查模块可以作为安全过滤器的核心组件。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>4. TMR: Text-to-Motion Retrieval Using Contrastive Motion-Text Learning</h4>
+                    <div class="authors">Chuan Guo, Yuxuan Mu, Muhammad Ghanim, Ajmal Mian, Fahad Shahbaz Khan</div>
+                    <div class="venue">ICCV 2023 | 2023年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>TMR提出了基于对比学习的文本-运动检索框架，通过学习文本和运动模态之间的对齐表示，实现高质量的跨模态检索。该方法使用对比损失函数训练文本编码器和运动编码器，将它们映射到共享的嵌入空间。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>在HumanML3D和KIT-ML基准上，R-Precision、FID等指标上取得领先性能。该评估方法被广泛用作运动生成质量的代理指标。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>TMR的评估指标可以用于衡量生成运动的质量，其对比学习框架可以扩展为运动安全评估模型，学习区分安全和不安全的运动。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>5. MotionRL: Multi-Objective Reinforcement Learning for Motion Generation</h4>
+                    <div class="authors">相关研究人员</div>
+                    <div class="venue">arXiv | 2024年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>MotionRL将多目标强化学习（MORL）应用于运动生成问题。该方法将运动生成建模为多目标马尔可夫决策过程，同时优化多个奖励信号（如文本对齐、运动质量、自然度、多样性），学习帕累托最优的策略集。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>在HumanML3D和KIT-ML基准上，MotionRL在多个质量指标上优于单目标训练方法，展示了MORL在平衡多个运动生成目标方面的优势。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>MotionRL的多目标优化框架可以用于训练安全过滤器，同时考虑安全性、任务完成度、运动平滑度等多个目标。其奖励建模方法可以直接应用于安全奖励的构建。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>6. MDM: Human Motion Diffusion Model</h4>
+                    <div class="authors">Guy Tevet, Sigal Raab, Brian Gordon, Yoni Kafri, Shai Avidan, Daniel Berio, Daniel Cohen-Or</div>
+                    <div class="venue">ICLR 2023 | arXiv:2209.14916 | 2023年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>MDM是首个成功将扩散模型应用于3D人体运动生成的工作之一。采用几何感知的扩散过程，支持文本到运动、动作到运动和无条件运动生成。使用分类器引导技术提高生成质量。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>在HumanML3D和KIT-ML基准上取得竞争性或最先进的性能，为后续运动扩散模型奠定了基础。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>MDM作为运动扩散模型的代表作，其生成的运动同样需要安全评估。理解其生成特性有助于设计针对性的安全过滤策略。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>7. SafeRLHF: Safe Reinforcement Learning from Human Feedback</h4>
+                    <div class="authors">Ji et al.</div>
+                    <div class="venue">arXiv:2403.16338 | 2024年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>SafeRLHF提出了安全强化学习从人类反馈的框架，通过分别建模帮助性和无害性，使用独立的奖励模型进行联合优化。该方法采用约束优化技术，在策略优化过程中强制执行安全约束。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>在大型语言模型安全对齐方面取得显著效果，展示了分离奖励建模在安全优化中的有效性。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>SafeRLHF的分离奖励建模思想可以应用于运动安全过滤，分别构建运动质量奖励和安全奖励，实现多目标安全优化。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>8. Control Barrier Functions: Theory and Applications</h4>
+                    <div class="authors">Aaron D. Ames et al.</div>
+                    <div class="venue">多篇综述论文 | 2019-2024年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>控制屏障函数（CBF）是形式化安全保证的数学工具，通过定义安全集和屏障证书，确保系统状态始终保持在安全区域内。CBF可以与学习型策略结合，作为安全过滤器或安全层使用。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>CBF已在机器人控制、自动驾驶、工业自动化等多个领域得到成功应用，提供了可证明的安全保证。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>CBF是构建运动安全过滤器的核心理论工具。可以为ELF3和G1机器人定义安全集，构建相应的屏障函数，过滤不安全的运动轨迹。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>9. HumanML3D: A New Dataset and Benchmark for 3D Human Motion-Language Understanding</h4>
+                    <div class="authors">Chuan Guo, Xinxin Zuo, Sen Wang, Shihao Zou, Qingyao Sun, Annan Deng, Minglun Gong, Li Cheng</div>
+                    <div class="venue">NeurIPS 2022 Datasets and Benchmarks | arXiv:2209.13425 | 2022年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>HumanML3D是目前最大的运动-语言数据集，包含约14,600个运动序列和对应的文本描述。基于AMASS和HumanAct12/13数据集构建，使用263关节SMPL-X表示，提供逐帧和句子级的自然语言描述。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>成为运动生成领域的标准评估基准，支持运动-语言检索、文本到运动生成、运动描述等多种任务。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>HumanML3D提供了丰富的运动-文本对，可以用于训练和评估运动安全过滤器。其标注可以扩展为安全相关的标注。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>10. MoConVQ: Unified Physics-Based Motion Control via Scalable Discrete Representations</h4>
+                    <div class="authors">Heyuan Yao, Zhenhua Song, Yuyang Zhou, Tenglong Ao, Baoquan Chen, Libin Liu</div>
+                    <div class="venue">arXiv | 2024年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>MoConVQ提出了基于向量量化变分自编码器（VQ-VAE）和基于模型的强化学习的统一物理运动控制框架。该方法从大规模非结构化运动数据中学习运动嵌入，支持通用跟踪控制、交互式角色控制和基于物理的运动生成。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>展示了离散运动表示在多种运动控制任务中的有效性，包括与大型语言模型的集成。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>MoConVQ的物理运动控制方法可以用于验证生成运动的物理可行性，其离散表示可以用于运动安全评估的特征提取。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>11. MotionCLIP: Text-Driven 3D Motion Generation with CLIP Alignment</h4>
+                    <div class="authors">Sigalas et al.</div>
+                    <div class="venue">arXiv | 2022年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>MotionCLIP利用CLIP的联合嵌入空间对齐文本描述和3D人体运动表示，实现文本驱动的运动生成。该方法无需配对的文本-运动数据，通过CLIP的强大对齐能力实现跨模态生成。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>展示了CLIP对齐在运动生成中的有效性，为后续的运动-语言模型提供了重要参考。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>MotionCLIP的对比学习框架可以用于构建运动安全评估模型，学习安全和不安全运动的判别表示。
+                    </div>
+                </div>
+
+                <div class="paper-card">
+                    <h4>12. Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</h4>
+                    <div class="authors">Chi et al.</div>
+                    <div class="venue">RSS 2023 | 2023年</div>
+                    <div class="methodology">
+                        <strong>核心方法：</strong>Diffusion Policy将扩散模型应用于机器人策略学习，通过动作扩散实现视觉运动控制。该方法展示了扩散模型在建模复杂动作分布方面的优势，支持多模态动作生成。
+                    </div>
+                    <div class="results">
+                        <strong>关键结果：</strong>在多个机器人操作任务上取得领先性能，展示了扩散策略在机器人学习中的潜力。
+                    </div>
+                    <div class="relevance">
+                        <strong>与本研究的关联：</strong>Diffusion Policy为将扩散模型应用于机器人控制提供了直接参考，其安全扩展（如SafeDiffuser）是本研究的重要基础。
+                    </div>
+                </div>
+            </section>
+
+            <section id="approach" class="section">
+                <h2>技术方案：构建运动安全过滤系统</h2>
+                <p>
+                    基于对上述文献的分析，我们提出以下技术方案来构建面向Kimodo输出的运动安全过滤系统。
+                </p>
+
+                <h3>1. 多层安全过滤架构</h3>
+                <p>
+                    我们建议采用多层安全过滤架构，结合快速规则检查和深度学习评估：
+                </p>
+
+                <div class="architecture-diagram">
+                    <h4>三层安全过滤架构</h4>
+                    <div class="flow">
+                        <div class="node">Layer 1: 规则检查</div>
+                        <div class="arrow">→</div>
+                        <div class="node">Layer 2: 学习评估</div>
+                        <div class="arrow">→</div>
+                        <div class="node">Layer 3: 仿真验证</div>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h4>Layer 1: 基于规则的快速检查</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>关节极限检查</strong>：检测关节角度是否超过ELF3和G1的关节限制</li>
+                            <li><strong>自碰撞检测</strong>：使用简单的几何检查检测机器人自碰撞</li>
+                            <li><strong>速度/加速度限制</strong>：检查关节速度和加速度是否在安全范围内</li>
+                            <li><strong>工作空间检查</strong>：确保末端执行器在安全工作空间内</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Layer 2: 基于学习的安全评估</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>物理可行性评分</strong>：训练神经网络评估运动的物理可行性</li>
+                            <li><strong>安全风险预测</strong>：预测运动可能导致的安全风险</li>
+                            <li><strong>异常检测</strong>：使用自编码器或VAE检测异常运动模式</li>
+                            <li><strong>奖励模型</strong>：基于人类反馈训练安全奖励模型</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4>Layer 3: MuJoCo仿真验证</h4>
+                <p>
+                    对于通过前两层过滤的运动，使用MuJoCo物理仿真器进行最终验证。在仿真环境中模拟运动执行，检测：
+                </p>
+                <ul style="margin-left: 30px;">
+                    <li>接触力异常</li>
+                    <li>动态不稳定</li>
+                    <li>能量消耗异常</li>
+                    <li>长时间执行的累积误差</li>
+                </ul>
+
+                <h3>2. 基于CBF的安全过滤器实现</h3>
+                <p>
+                    参考SafeDiffuser的方法，我们将控制屏障函数集成到运动过滤流程中：
+                </p>
+
+                <div class="code-block">
+# CBF安全过滤器伪代码
+class CBFSafetyFilter:
+    def __init__(self, robot_model, safety_constraints):
+        self.robot = robot_model  # ELF3或G1模型
+        self.constraints = safety_constraints
+
+    def compute_barrier(self, motion_state):
+        """计算屏障函数值"""
+        # 对于每个安全约束，计算屏障值
+        barrier_values = []
+        for constraint in self.constraints:
+            h = constraint.evaluate(motion_state)
+            barrier_values.append(h)
+        return min(barrier_values)
+
+    def filter_motion(self, motion_trajectory):
+        """过滤运动轨迹"""
+        filtered_trajectory = []
+        for state in motion_trajectory:
+            h = self.compute_barrier(state)
+            if h >= 0:  # 安全状态
+                filtered_trajectory.append(state)
+            else:  # 不安全状态，需要修正
+                safe_state = self.correct_state(state)
+                filtered_trajectory.append(safe_state)
+        return filtered_trajectory
+
+    def correct_state(self, unsafe_state):
+        """修正不安全状态"""
+        # 使用二次规划或优化方法修正状态
+        # 确保修正后的状态满足所有安全约束
+        pass
+                </div>
+
+                <h3>3. 基于奖励模型的安全评估</h3>
+                <p>
+                    参考SafeRLHF和MotionRL的方法，我们构建安全奖励模型：
+                </p>
+                <ul style="margin-left: 30px;">
+                    <li><strong>数据收集</strong>：收集安全和不安全运动的对比数据</li>
+                    <li><strong>奖励训练</strong>：训练奖励模型区分安全和不安全运动</li>
+                    <li><strong>在线评估</strong>：使用训练好的奖励模型实时评估生成运动</li>
+                    <li><strong>反馈循环</strong>：将安全信号反馈给运动生成模型</li>
+                </ul>
+
+                <h3>4. 异常检测模块</h3>
+                <p>
+                    使用自编码器或变分自编码器（VAE）构建运动异常检测模块：
+                </p>
+                <ul style="margin-left: 30px;">
+                    <li><strong>正常运动建模</strong>：在大量正常运动数据上训练自编码器</li>
+                    <li><strong>重建误差计算</strong>：计算输入运动的重建误差</li>
+                    <li><strong>阈值判断</strong>：根据重建误差判断运动是否异常</li>
+                    <li><strong>异常分类</strong>：对异常运动进行分类（碰撞、超限、不稳定等）</li>
+                </ul>
+            </section>
+
+            <section id="prerequisites" class="section">
+                <h2>知识前置：需要学习的内容与资源</h2>
+                <p>
+                    要成功实施本研究方向，需要掌握以下知识领域：
+                </p>
+
+                <h3>1. 运动学与动力学基础</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>主题</th>
+                            <th>关键内容</th>
+                            <th>推荐资源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>机器人运动学</td>
+                            <td>正向运动学、逆向运动学、雅可比矩阵</td>
+                            <td>《机器人学导论》（Craig）、Coursera机器人学课程</td>
+                        </tr>
+                        <tr>
+                            <td>机器人动力学</td>
+                            <td>拉格朗日力学、牛顿-欧拉方法、接触力学</td>
+                            <td>《机器人动力学与控制》（Spong）、MIT OpenCourseWare</td>
+                        </tr>
+                        <tr>
+                            <td>物理仿真</td>
+                            <td>MuJoCo、PyBullet、接触检测、碰撞处理</td>
+                            <td>MuJoCo文档、DeepMind Control Suite</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2. 扩散模型与运动生成</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>主题</th>
+                            <th>关键内容</th>
+                            <th>推荐资源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>扩散模型基础</td>
+                            <td>DDPM、DDIM、分数匹配、去噪过程</td>
+                            <td>《Denoising Diffusion Probabilistic Models》论文、Lil'Log博客</td>
+                        </tr>
+                        <tr>
+                            <td>运动生成</td>
+                            <td>运动表示（SMPL、关节角）、运动数据集</td>
+                            <td>HumanML3D数据集、AMASS数据集</td>
+                        </tr>
+                        <tr>
+                            <td>条件生成</td>
+                            <td>分类器引导、无分类器引导、文本条件</td>
+                            <td>MDM、MotionDiffuse论文</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3. 安全控制与形式化方法</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>主题</th>
+                            <th>关键内容</th>
+                            <th>推荐资源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>控制屏障函数</td>
+                            <td>CBF定义、安全集、屏障证书、二次规划</td>
+                            <td>Aaron Ames的CBF论文、Caltech控制课程</td>
+                        </tr>
+                        <tr>
+                            <td>安全强化学习</td>
+                            <td>约束MDP、安全策略优化、奖励塑形</td>
+                            <td>SafeRLHF论文、安全RL综述</td>
+                        </tr>
+                        <tr>
+                            <td>形式化验证</td>
+                            <td>可达性分析、不变集、Lyapunov方法</td>
+                            <td>《非线性控制》（Khalil）、控制理论教材</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4. 机器学习与评估方法</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>主题</th>
+                            <th>关键内容</th>
+                            <th>推荐资源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>异常检测</td>
+                            <td>自编码器、VAE、孤立森林、One-Class SVM</td>
+                            <td>《Pattern Recognition and Machine Learning》（Bishop）</td>
+                        </tr>
+                        <tr>
+                            <td>对比学习</td>
+                            <td>InfoNCE损失、SimCLR、CLIP对齐</td>
+                            <td>CLIP论文、TMR论文</td>
+                        </tr>
+                        <tr>
+                            <td>评估指标</td>
+                            <td>FID、R-Precision、多样性、物理可行性分数</td>
+                            <td>HumanML3D评估协议、TMR评估方法</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="getting-started" class="section">
+                <h2>入门指南：从零到第一个实验</h2>
+                <p>
+                    以下是从零开始实施本研究方向的详细步骤指南：
+                </p>
+
+                <ol class="step-list">
+                    <li>
+                        <h4>环境搭建与数据准备</h4>
+                        <p><strong>目标：</strong>建立开发环境，准备必要的数据和模型</p>
+                        <ul style="margin-left: 20px;">
+                            <li>安装MuJoCo物理仿真器，配置ELF3和G1机器人模型</li>
+                            <li>获取Kimodo模型或其生成的运动数据</li>
+                            <li>下载HumanML3D数据集作为训练数据</li>
+                            <li>搭建Python开发环境，安装必要的库（PyTorch、MuJoCo、NumPy等）</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>1-2周</p>
+                    </li>
+
+                    <li>
+                        <h4>实现基础安全检查器</h4>
+                        <p><strong>目标：</strong>实现基于规则的快速安全检查</p>
+                        <ul style="margin-left: 20px;">
+                            <li>解析ELF3和G1的URDF/MJCF模型，提取关节限制信息</li>
+                            <li>实现关节极限检查函数</li>
+                            <li>实现简单的自碰撞检测</li>
+                            <li>实现速度/加速度限制检查</li>
+                            <li>测试基础检查器的性能和准确性</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>2-3周</p>
+                    </li>
+
+                    <li>
+                        <h4>构建MuJoCo仿真验证模块</h4>
+                        <p><strong>目标：</strong>使用物理仿真验证运动可行性</p>
+                        <ul style="margin-left: 20px;">
+                            <li>在MuJoCo中加载ELF3和G1机器人模型</li>
+                            <li>实现运动轨迹的仿真执行</li>
+                            <li>定义物理可行性指标（接触力、能量消耗、稳定性等）</li>
+                            <li>构建仿真验证流水线</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>2-3周</p>
+                    </li>
+
+                    <li>
+                        <h4>训练运动异常检测模型</h4>
+                        <p><strong>目标：</strong>基于自编码器实现运动异常检测</p>
+                        <ul style="margin-left: 20px;">
+                            <li>准备正常运动数据集（从HumanML3D中筛选）</li>
+                            <li>设计和训练运动自编码器</li>
+                            <li>确定异常检测阈值</li>
+                            <li>评估异常检测模型的性能</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>3-4周</p>
+                    </li>
+
+                    <li>
+                        <h4>实现CBF安全过滤器</h4>
+                        <p><strong>目标：</strong>基于控制屏障函数构建形式化安全过滤器</p>
+                        <ul style="margin-left: 20px;">
+                            <li>为ELF3和G1定义安全约束</li>
+                            <li>实现屏障函数计算</li>
+                            <li>集成二次规划求解器</li>
+                            <li>实现前向和后向过滤机制</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>3-4周</p>
+                    </li>
+
+                    <li>
+                        <h4>集成多层过滤系统</h4>
+                        <p><strong>目标：</strong>将所有组件集成到统一的过滤系统中</p>
+                        <ul style="margin-left: 20px;">
+                            <li>设计多层过滤架构</li>
+                            <li>实现过滤流水线</li>
+                            <li>优化过滤性能（延迟、准确率）</li>
+                            <li>构建端到端评估流程</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>2-3周</p>
+                    </li>
+
+                    <li>
+                        <h4>训练安全奖励模型（可选）</h4>
+                        <p><strong>目标：</strong>基于人类反馈训练安全奖励模型</p>
+                        <ul style="margin-left: 20px;">
+                            <li>收集安全/不安全运动的对比数据</li>
+                            <li>设计奖励模型架构</li>
+                            <li>训练奖励模型</li>
+                            <li>集成到过滤系统中</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>3-4周</p>
+                    </li>
+
+                    <li>
+                        <h4>全面评估与优化</h4>
+                        <p><strong>目标：</strong>全面评估系统性能，进行优化</p>
+                        <ul style="margin-left: 20px;">
+                            <li>在Kimodo生成的运动上测试过滤系统</li>
+                            <li>计算各项评估指标</li>
+                            <li>分析失败案例，优化过滤策略</li>
+                            <li>撰写研究报告和论文</li>
+                        </ul>
+                        <p><strong>预期时间：</strong>2-3周</p>
+                    </li>
+                </ol>
+            </section>
+
+            <section id="experiments" class="section">
+                <h2>实验计划：具体实验与预期指标</h2>
+                <p>
+                    以下是本研究方向的具体实验计划：
+                </p>
+
+                <h3>实验1：基础安全检查器性能评估</h3>
+                <div class="paper-card">
+                    <h4>实验设置</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>数据集：</strong>Kimodo生成的1000个运动轨迹 + HumanML3D中的500个正常运动</li>
+                        <li><strong>评估指标：</strong>检查速度（ms/轨迹）、准确率、召回率、F1分数</li>
+                        <li><strong>基线：</strong>无过滤（直接部署）、随机过滤</li>
+                        <li><strong>目标：</strong>检查延迟 < 10ms/轨迹，准确率 > 95%</li>
+                    </ul>
+                </div>
+
+                <h3>实验2：MuJoCo仿真验证有效性</h3>
+                <div class="paper-card">
+                    <h4>实验设置</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>数据集：</strong>500个运动轨迹（包含已知安全和不安全的运动）</li>
+                        <li><strong>评估指标：</strong>仿真验证准确率、验证时间、物理可行性分数</li>
+                        <li><strong>基线：</strong>仅规则检查、仅学习评估</li>
+                        <li><strong>目标：</strong>验证准确率 > 98%，验证时间 < 1s/轨迹</li>
+                    </ul>
+                </div>
+
+                <h3>实验3：异常检测模型性能评估</h3>
+                <div class="paper-card">
+                    <h4>实验设置</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>数据集：</strong>正常运动数据（HumanML3D）+ 异常运动数据（合成或真实）</li>
+                        <li><strong>评估指标：</strong>AUC-ROC、精确率-召回率曲线、F1分数</li>
+                        <li><strong>基线：</strong>孤立森林、One-Class SVM、简单阈值方法</li>
+                        <li><strong>目标：</strong>AUC-ROC > 0.95，F1分数 > 0.90</li>
+                    </ul>
+                </div>
+
+                <h3>实验4：CBF安全过滤器性能评估</h3>
+                <div class="paper-card">
+                    <h4>实验设置</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>数据集：</strong>Kimodo生成的运动轨迹，包含各种安全约束违反情况</li>
+                        <li><strong>评估指标：</strong>安全率（过滤后安全运动比例）、任务完成率、过滤延迟</li>
+                        <li><strong>基线：</strong>无过滤、仅后处理修正、学习型过滤器</li>
+                        <li><strong>目标：</strong>安全率 > 99%，任务完成率 > 90%，过滤延迟 < 100ms</li>
+                    </ul>
+                </div>
+
+                <h3>实验5：端到端系统评估</h3>
+                <div class="paper-card">
+                    <h4>实验设置</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>数据集：</strong>Kimodo生成的1000个运动轨迹，覆盖多种运动类型</li>
+                        <li><strong>评估指标：</strong>整体安全率、过滤效率、运动质量保持度、系统延迟</li>
+                        <li><strong>基线：</strong>单层过滤、两层过滤、无过滤</li>
+                        <li><strong>目标：</strong>整体安全率 > 99.5%，系统延迟 < 500ms，运动质量下降 < 5%</li>
+                    </ul>
+                </div>
+
+                <h3>实验6：真实机器人验证（长期目标）</h3>
+                <div class="paper-card">
+                    <h4>实验设置</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>平台：</strong>ELF3和G1真实机器人</li>
+                        <li><strong>任务：</strong>执行过滤后的运动轨迹，记录安全事件</li>
+                        <li><strong>评估指标：</strong>安全事件数量、任务成功率、执行效率</li>
+                        <li><strong>目标：</strong>零安全事件，任务成功率 > 95%</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="benchmarks" class="section">
+                <h2>预期结果与基准：目标数值</h2>
+                <p>
+                    以下是本研究方向的预期结果和目标基准：
+                </p>
+
+                <div class="two-column">
+                    <div class="metric-box">
+                        <div class="value">99.5%</div>
+                        <div class="label">整体安全率目标</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="value">< 500ms</div>
+                        <div class="label">系统延迟目标</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>评估指标</th>
+                            <th>基线（无过滤）</th>
+                            <th>目标值</th>
+                            <th>优秀值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>安全率</td>
+                            <td>~70-80%</td>
+                            <td>> 99%</td>
+                            <td>> 99.5%</td>
+                        </tr>
+                        <tr>
+                            <td>过滤精度（Precision）</td>
+                            <td>N/A</td>
+                            <td>> 95%</td>
+                            <td>> 98%</td>
+                        </tr>
+                        <tr>
+                            <td>过滤召回率（Recall）</td>
+                            <td>N/A</td>
+                            <td>> 99%</td>
+                            <td>> 99.5%</td>
+                        </tr>
+                        <tr>
+                            <td>F1分数</td>
+                            <td>N/A</td>
+                            <td>> 0.97</td>
+                            <td>> 0.99</td>
+                        </tr>
+                        <tr>
+                            <td>系统延迟</td>
+                            <td>0ms</td>
+                            <td>< 500ms</td>
+                            <td>< 200ms</td>
+                        </tr>
+                        <tr>
+                            <td>运动质量保持度</td>
+                            <td>100%</td>
+                            <td>> 95%</td>
+                            <td>> 98%</td>
+                        </tr>
+                        <tr>
+                            <td>异常检测AUC-ROC</td>
+                            <td>~0.5</td>
+                            <td>> 0.95</td>
+                            <td>> 0.98</td>
+                        </tr>
+                        <tr>
+                            <td>任务完成率</td>
+                            <td>~60-70%</td>
+                            <td>> 90%</td>
+                            <td>> 95%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>与现有方法的对比</h3>
+                <p>
+                    我们将与以下基线方法进行对比：
+                </p>
+                <ul style="margin-left: 30px;">
+                    <li><strong>无过滤</strong>：直接部署Kimodo生成的运动</li>
+                    <li><strong>仅规则检查</strong>：只使用基于规则的快速检查</li>
+                    <li><strong>仅学习评估</strong>：只使用学习型安全评估模型</li>
+                    <li><strong>仅仿真验证</strong>：只使用MuJoCo仿真验证</li>
+                    <li><strong>SafeDiffuser</strong>：使用CBF的安全过滤方法</li>
+                    <li><strong>PhysDiff</strong>：物理引导的运动生成方法</li>
+                </ul>
+
+                <h3>消融实验</h3>
+                <p>
+                    为了验证各组件的有效性，我们将进行以下消融实验：
+                </p>
+                <ul style="margin-left: 30px;">
+                    <li><strong>层数消融</strong>：对比单层、两层、三层过滤的效果</li>
+                    <li><strong>组件消融</strong>：逐个移除各组件，评估其贡献</li>
+                    <li><strong>阈值消融</strong>：调整安全阈值，分析精度-召回率权衡</li>
+                    <li><strong>数据量消融</strong>：分析训练数据量对性能的影响</li>
+                </ul>
+            </section>
+
+            <section id="risks" class="section">
+                <h2>风险与缓解：可能遇到的问题</h2>
+                <p>
+                    在实施本研究方向时，可能会遇到以下风险和挑战：
+                </p>
+
+                <div class="warning-box">
+                    <h4>风险1：过滤器过于保守</h4>
+                    <p><strong>问题：</strong>安全过滤器可能过于保守，过滤掉大量实际上安全的运动，导致任务完成率下降。</p>
+                    <p><strong>缓解措施：</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>使用多层过滤架构，第一层使用宽松的规则，后续层逐渐严格</li>
+                        <li>调整安全阈值，在安全性和任务完成率之间找到平衡</li>
+                        <li>使用自适应过滤策略，根据运动类型调整过滤严格度</li>
+                        <li>收集过滤器的误报数据，持续优化过滤策略</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>风险2：计算延迟过高</h4>
+                    <p><strong>问题：</strong>多层过滤可能导致系统延迟过高，无法满足实时性要求。</p>
+                    <p><strong>缓解措施：</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>优化各层过滤的计算效率，使用快速算法</li>
+                        <li>实现并行处理，同时执行多个检查</li>
+                        <li>使用缓存机制，避免重复计算</li>
+                        <li>对于非实时应用，可以接受较长的过滤时间</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>风险3：数据稀缺</h4>
+                    <p><strong>问题：</strong>缺乏标注的安全/不安全运动数据，难以训练学习型安全评估模型。</p>
+                    <p><strong>缓解措施：</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>使用合成数据生成方法，生成各种不安全运动场景</li>
+                        <li>利用物理仿真自动标注运动的安全性</li>
+                        <li>使用半监督或自监督学习方法，减少对标注数据的依赖</li>
+                        <li>从HumanML3D等数据集中挖掘安全相关的标注</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>风险4：Sim-to-Real差距</h4>
+                    <p><strong>问题：</strong>在MuJoCo仿真中验证的运动，在真实机器人上可能表现不同。</p>
+                    <p><strong>缓解措施：</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>使用高保真的MuJoCo模型，尽可能接近真实机器人</li>
+                        <li>在仿真中加入噪声和不确定性，提高鲁棒性</li>
+                        <li>进行真实机器人验证，收集sim-to-real差距数据</li>
+                        <li>使用域随机化技术，提高模型的泛化能力</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>风险5：安全约束定义不完整</h4>
+                    <p><strong>问题：</strong>可能遗漏某些重要的安全约束，导致过滤器存在漏洞。</p>
+                    <p><strong>缓解措施：</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>进行全面的安全分析，识别所有可能的安全约束</li>
+                        <li>参考行业标准和安全规范（如ISO 10218、ISO/TS 15066）</li>
+                        <li>使用形式化方法验证安全约束的完整性</li>
+                        <li>建立安全事件报告机制，持续发现和补充安全约束</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>风险6：运动质量下降</h4>
+                    <p><strong>问题：</strong>安全过滤可能导致运动质量下降，影响任务执行效果。</p>
+                    <p><strong>缓解措施：</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>设计平滑的修正算法，尽量保持原始运动的特性</li>
+                        <li>使用优化方法，在安全约束下最小化运动修改</li>
+                        <li>评估过滤前后的运动质量，确保质量下降在可接受范围内</li>
+                        <li>如果质量下降过大，考虑让运动生成模型重新生成</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="references" class="section">
+                <h2>参考文献：完整文献列表</h2>
+                <ul class="reference-list">
+                    <li>
+                        <span class="ref-number">[1]</span>
+                        <span class="ref-title">Kimodo: Kinematic Motion Diffusion for Expressive Human Motion Generation</span><br>
+                        <span class="ref-authors">Davis Rempe, Mathis Petrovich, Ye Yuan, Haotian Zhang, Xue Bin Peng, Yifeng Jiang, Tingwu Wang, Umar Iqbal, David Minor, Michael de Ruyter, Jiefeng Li, Chen Tessler, Edy Lim, Eugene Jeong, Sam Wu, Ehsan Hassani, Michael Huang, Jin-Bey Yu, Chaeyeon Chung, Lina Song, Olivier Dionne, Jan Kautz, Simon Yuen, Sanja Fidler</span><br>
+                        <span class="ref-venue">arXiv:2603.15546 | NVIDIA Research | 2025年3月</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[2]</span>
+                        <span class="ref-title">SafeDiffuser: Safe Diffusion Policy for Robot Manipulation with Barrier Function</span><br>
+                        <span class="ref-authors">Xinyi Wang</span><br>
+                        <span class="ref-venue">arXiv:2412.06547 | 2024年12月</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[3]</span>
+                        <span class="ref-title">PhysDiff: Physics-Guided Human Motion Diffusion Model</span><br>
+                        <span class="ref-authors">Changan Chen, Ziad Al-Halah, Kristen Grauman</span><br>
+                        <span class="ref-venue">arXiv:2306.02251 | 2023年6月</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[4]</span>
+                        <span class="ref-title">TMR: Text-to-Motion Retrieval Using Contrastive Motion-Text Learning</span><br>
+                        <span class="ref-authors">Chuan Guo, Yuxuan Mu, Muhammad Ghanim, Ajmal Mian, Fahad Shahbaz Khan</span><br>
+                        <span class="ref-venue">ICCV 2023 | 2023年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[5]</span>
+                        <span class="ref-title">MotionRL: Multi-Objective Reinforcement Learning for Motion Generation</span><br>
+                        <span class="ref-authors">相关研究人员</span><br>
+                        <span class="ref-venue">arXiv | 2024年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[6]</span>
+                        <span class="ref-title">MDM: Human Motion Diffusion Model</span><br>
+                        <span class="ref-authors">Guy Tevet, Sigal Raab, Brian Gordon, Yoni Kafri, Shai Avidan, Daniel Berio, Daniel Cohen-Or</span><br>
+                        <span class="ref-venue">ICLR 2023 | arXiv:2209.14916 | 2023年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[7]</span>
+                        <span class="ref-title">SafeRLHF: Safe Reinforcement Learning from Human Feedback</span><br>
+                        <span class="ref-authors">Ji et al.</span><br>
+                        <span class="ref-venue">arXiv:2403.16338 | 2024年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[8]</span>
+                        <span class="ref-title">Control Barrier Functions: Theory and Applications</span><br>
+                        <span class="ref-authors">Aaron D. Ames et al.</span><br>
+                        <span class="ref-venue">多篇综述论文 | 2019-2024年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[9]</span>
+                        <span class="ref-title">HumanML3D: A New Dataset and Benchmark for 3D Human Motion-Language Understanding</span><br>
+                        <span class="ref-authors">Chuan Guo, Xinxin Zuo, Sen Wang, Shihao Zou, Qingyao Sun, Annan Deng, Minglun Gong, Li Cheng</span><br>
+                        <span class="ref-venue">NeurIPS 2022 Datasets and Benchmarks | arXiv:2209.13425 | 2022年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[10]</span>
+                        <span class="ref-title">MoConVQ: Unified Physics-Based Motion Control via Scalable Discrete Representations</span><br>
+                        <span class="ref-authors">Heyuan Yao, Zhenhua Song, Yuyang Zhou, Tenglong Ao, Baoquan Chen, Libin Liu</span><br>
+                        <span class="ref-venue">arXiv | 2024年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[11]</span>
+                        <span class="ref-title">MotionCLIP: Text-Driven 3D Motion Generation with CLIP Alignment</span><br>
+                        <span class="ref-authors">Sigalas et al.</span><br>
+                        <span class="ref-venue">arXiv | 2022年</span>
+                    </li>
+                    <li>
+                        <span class="ref-number">[12]</span>
+                        <span class="ref-title">Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</span><br>
+                        <span class="ref-authors">Chi et al.</span><br>
+                        <span class="ref-venue">RSS 2023 | 2023年</span>
+                    </li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="footer">
+            <p>运动质量评估与安全过滤研究报告 | 面向 Kimodo 运动扩散模型</p>
+            <p>研究方向：Motion Quality Assessment & Safety Filtering</p>
+            <p>日期：2026年6月 | 版本：v1.0</p>
+        </div>
+    </div>
+</body>
+</html>

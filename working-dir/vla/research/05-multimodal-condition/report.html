@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多模态运动生成条件研究综述 — 视频参考与音频/语音条件</title>
+<style>
+:root {
+  --primary: #1a365d;
+  --accent: #2b6cb0;
+  --bg: #f7fafc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #2d3748;
+  --muted: #718096;
+  --highlight: #ebf8ff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Serif SC', 'Source Han Serif CN', 'SimSun', Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 2rem;
+  color: var(--primary);
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+h2 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin: 2.5rem 0 1rem;
+  border-left: 4px solid var(--accent);
+  padding-left: 0.75rem;
+}
+h3 {
+  font-size: 1.2rem;
+  color: var(--accent);
+  margin: 1.5rem 0 0.75rem;
+}
+p { margin-bottom: 1rem; text-align: justify; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.card h4 {
+  color: var(--primary);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.card .meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+th {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+}
+tr:nth-child(even) { background: var(--highlight); }
+ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+.highlight-box {
+  background: var(--highlight);
+  border-left: 4px solid var(--accent);
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+}
+.warning-box {
+  background: #fffbeb;
+  border-left: 4px solid #d69e2e;
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+}
+.arch-diagram {
+  background: #edf2f7;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  font-family: monospace;
+  white-space: pre;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  overflow-x: auto;
+}
+.step-list {
+  counter-reset: step;
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 2.5rem;
+  margin-bottom: 1rem;
+}
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--accent);
+  color: white;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.8rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.metric-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+.metric-card .value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+.metric-card .label {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.ref-list { font-size: 0.9rem; }
+.ref-list li { margin-bottom: 0.6rem; }
+.toc {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.toc ul { list-style: none; margin-left: 1rem; }
+.toc a { color: var(--accent); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+code {
+  background: #edf2f7;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+</style>
+</head>
+<body>
+
+<h1>多模态运动生成条件研究综述</h1>
+<p style="color: var(--muted); font-size: 0.95rem;">
+  面向 Kimodo 运动扩散模型的视觉参考与音频/语音条件扩展<br>
+  撰写日期：2026年6月 | 研究方向：Multimodal Motion Conditions
+</p>
+
+<div class="toc">
+  <strong>目录</strong>
+  <ul>
+    <li><a href="#sec1">一、研究概述与动机</a></li>
+    <li><a href="#sec2">二、文献综述</a></li>
+    <li><a href="#sec3">三、技术路线：如何为 Kimodo 添加多模态条件</a></li>
+    <li><a href="#sec4">四、知识先修与学习资源</a></li>
+    <li><a href="#sec5">五、从零到一的入门指南</a></li>
+    <li><a href="#sec6">六、实验计划</a></li>
+    <li><a href="#sec7">七、预期结果与基准指标</a></li>
+    <li><a href="#sec8">八、风险与缓解措施</a></li>
+    <li><a href="#sec9">九、参考文献</a></li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec1">一、研究概述与动机</h2>
+
+<h3>1.1 背景</h3>
+<p>
+  Kimodo 是 NVIDIA 提出的大规模可控人体运动生成扩散模型（arXiv:2603.15546），基于 700 小时光学动捕数据训练，
+  采用两阶段去噪架构（根节点与身体分别预测），支持文本提示（通过 LLM2Vec + Llama-3-8B 编码）和运动学约束
+  （全身关键帧、稀疏关节位置/旋转、二维路径点、稠密二维路径）作为条件输入。Kimodo 在运动质量、控制精度和泛化能力方面
+  展现了显著优势，但其条件模态仅限于文本和运动学约束，尚未探索视觉（视频参考）或音频/语音作为额外条件的可能性。
+</p>
+
+<h3>1.2 为什么这个方向有前景</h3>
+<div class="highlight-box">
+  <strong>核心洞察：</strong>当前运动生成领域正在经历从"单模态条件"到"多模态条件"的范式转变。
+  2024-2026年间，CVPR、NeurIPS、ECCV 等顶会密集涌现了大量多模态运动生成工作，表明这是该领域最活跃的前沿方向之一。
+</div>
+<p>
+  <strong>视频参考条件</strong>能够提供文本难以描述的细节信息——运动风格、节奏、空间轨迹、微妙的身体语言，
+  使生成结果更精确地匹配用户意图。<strong>音频/语音条件</strong>则能实现音乐驱动的舞蹈生成、
+  语音驱动的手势合成等自然交互场景。将这些模态整合到 Kimodo 的扩散框架中，
+  可以大幅扩展其应用范围，从机器人操控扩展到虚拟角色动画、人机交互、游戏内容生成等领域。
+</p>
+
+<h3>1.3 与 Kimodo 现有架构的兼容性</h3>
+<p>
+  Kimodo 的扩散去噪器已经支持多种条件输入（文本嵌入 + 运学约束），其架构天然适合通过交叉注意力机制注入额外的模态特征。
+  这为添加视频和音频条件提供了良好的工程基础——无需重新设计整个模型，只需在条件注入环节进行扩展。
+</p>
+
+<!-- ============================================================ -->
+<h2 id="sec2">二、文献综述</h2>
+
+<h3>2.1 文本到运动生成的基础模型</h3>
+
+<div class="card">
+  <h4>MDM: Human Motion Diffusion Model</h4>
+  <div class="meta">Guy Tevet, Sigal Raab, Gordon Berman 等 | ICLR 2023</div>
+  <p>
+    MDM 是首个将扩散模型应用于文本条件运动生成的工作，采用 Transformer 架构作为去噪网络，
+    在 HumanML3D 数据集上训练。它建立了文本-运动生成的标准评估框架，包括 FID、R-Precision、多样性等指标。
+    MDM 通过 CLIP 文本编码器提取文本特征，经交叉注意力注入去噪过程。该工作为后续所有运动扩散模型奠定了基础。
+  </p>
+  <p><strong>与 Kimodo 的关系：</strong>Kimodo 可视为 MDM 范式的规模化升级——更大的数据集（700小时 vs. HumanML3D的约30小时）、
+  更精细的运动表示、更丰富的约束条件。</p>
+</div>
+
+<div class="card">
+  <h4>MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model</h4>
+  <div class="meta">Mingyuan Zhang, Zhongang Cai, Liang Pan 等 | TPAMI 2024</div>
+  <p>
+    MotionDiffuse 是扩散模型用于运动生成的另一先驱工作，强调通过跨模态机制提升可控性。
+    它使用 U-Net 架构处理运动序列，并通过交叉注意力融合文本特征。该工作证明了扩散模型在运动序列建模中的
+    有效性，特别是在保持时间连贯性和物理合理性方面。
+  </p>
+</div>
+
+<div class="card">
+  <h4>MoLingo: Motion-Language Alignment for Text-to-Human Motion Generation</h4>
+  <div class="meta">Y He, G Tiwari, X Zhang, P Bora 等 | CVPR 2026</div>
+  <p>
+    MoLingo 从运动-语言对齐的角度切入，提出了一种语义对齐的运动编码器（semantic-aligned motion encoder），
+    旨在构建一个语义一致的潜在空间，使扩散模型生成的运动能精确匹配文本描述。该工作回答了两个核心问题：
+    如何构建语义对齐的潜在空间，以及如何确保生成运动紧密遵循文本描述。
+    对 Kimodo 的启示：在添加多模态条件时，语义对齐机制是确保条件有效性的关键。
+  </p>
+</div>
+
+<h3>2.2 多模态运动生成的统一框架</h3>
+
+<div class="card">
+  <h4>OmniMotion-X: Versatile Multimodal Whole-Body Motion Generation</h4>
+  <div class="meta">G Xu, Y Bian, A Zeng, Z Chen, M Shi 等 | CVPR 2026</div>
+  <p>
+    OmniMotion-X 是当前最全面的多模态运动生成框架，支持文本到运动、音乐到舞蹈、语音到手势以及时空控制等多种任务。
+    它采用自回归扩散 Transformer（autoregressive diffusion transformer），以统一的序列到序列方式处理所有任务。
+    关键创新包括：
+  </p>
+  <ul>
+    <li><strong>参考运动条件：</strong>提出将参考运动作为新型条件信号，显著增强生成内容的一致性、风格和时间动态</li>
+    <li><strong>渐进式训练策略：</strong>从弱到强的混合条件训练策略，解决多模态冲突问题</li>
+    <li><strong>OmniMoCap-X 数据集：</strong>目前最大的统一多模态运动数据集，整合 28 个公开动捕来源，标准化为 SMPL-X 格式</li>
+  </ul>
+  <p><strong>与 Kimodo 的关系：</strong>OmniMotion-X 的多模态融合策略和数据集构建方法可直接借鉴到 Kimodo 的多模态扩展中。</p>
+</div>
+
+<div class="card">
+  <h4>Large Motion Model (LMM): A Motion-Centric, Multi-Modal Framework</h4>
+  <div class="meta">Mingyuan Zhang, Daisheng Jin, Chenyang Gu 等 | ECCV 2024 | 引用: 94</div>
+  <p>
+    LMM 提出了以运动为中心的多模态框架，将文本到运动、音乐到舞蹈等主流运动生成任务统一到一个通用模型中。
+    核心设计理念是"统一运动模型可以利用广泛的运动数据来实现广泛的能力"。
+    它设计了 articulated attention 机制用于跨模态运动生成，证明了统一框架在数据利用效率和泛化能力方面的优势。
+  </p>
+</div>
+
+<div class="card">
+  <h4>MotionVerse: A Unified Multimodal Framework for Motion Comprehension, Generation and Editing</h4>
+  <div class="meta">R Hou, M Luo, H Pan, H Chang, S Shan | arXiv:2509.23635, 2025 | 引用: 6</div>
+  <p>
+    MotionVerse 设计了一个统一的多模态框架，集成运动理解、生成和编辑功能。
+    它使用时空注意力机制建模运动-文本模式，并通过条件扩散模型直接生成编辑后的运动。
+    该工作与 UniPose（CVPR 2025，27次引用）来自同一研究组，代表了统一多模态运动框架的前沿探索。
+  </p>
+</div>
+
+<div class="card">
+  <h4>MotionGPT-3 (MoTe): Human Motion as a Second Modality</h4>
+  <div class="meta">B Zhu, B Jiang, S Wang, S Tang, T Chen, L Luo 等 | arXiv, 2025 | 引用: 27</div>
+  <p>
+    MotionGPT-3 将人体运动视为"第二模态"，将其与自然语言统一建模。
+    核心思想是将文本到运动生成重新表述为翻译任务，将运动序列视为一种"运动语言"，
+    而非特殊的专业模态。该模型实现了有效的跨模态交互，支持零样本文本到运动生成。
+    它使用 GPT 风格的自回归生成方式，将运动标记化后与文本标记统一处理。
+  </p>
+  <p><strong>对 Kimodo 的启示：</strong>MotionGPT-3 的标记化策略和跨模态交互机制为在 Kimodo 中引入视频/音频模态提供了参考。</p>
+</div>
+
+<h3>2.3 视频条件运动生成</h3>
+
+<div class="card">
+  <h4>MotionDuet: Dual-Conditioned 3D Human Motion Generation with Video-Regularized Text Learning</h4>
+  <div class="meta">YY Zhang, T Sun, P Fang, DB Wang 等 | CVPR 2026</div>
+  <p>
+    MotionDuet 采用视频与文本的双条件范式，借鉴戏剧导演的理念设计多模态运动生成框架。
+    关键方法包括：
+  </p>
+  <ul>
+    <li>使用微调的 VideoMAE 编码器提取视频的时空特征</li>
+    <li>通过视频正则化文本学习，使文本条件从视频信息中获益</li>
+    <li>在扩散范式中实现三步流程：视频表示提取、文本正则化、条件去噪</li>
+  </ul>
+  <p><strong>直接相关性：</strong>这是最直接相关的论文之一——它展示了如何在扩散模型中同时使用视频和文本条件，
+  并证明了 VideoMAE 作为视频特征提取器的有效性。Kimodo 可以直接借鉴其双条件融合策略。</p>
+</div>
+
+<div class="card">
+  <h4>Towards Motion from Video Diffusion Models</h4>
+  <div class="meta">P Janson, T Popa, E Belilovsky | ECCV 2024</div>
+  <p>
+    该工作探索使用视频扩散模型指导运动生成，通过 Score Distillation Sampling (SDS)
+    优化 SMPL-X 身体表示。虽然主要关注从视频扩散模型中提取运动，但其方法论对理解视频特征如何编码运动信息具有重要参考价值。
+  </p>
+</div>
+
+<div class="card">
+  <h4>Motion-X++: A Large-Scale Multimodal 3D Whole-Body Human Motion Dataset</h4>
+  <div class="meta">Y Zhang, J Lin, A Zeng 等 | arXiv, 2025 | 引用: 41</div>
+  <p>
+    Motion-X++ 提供了 120.5K 个运动片段，包含 19.5M 个 SMPL-X 参数，并配有自动运动和文本标注流水线。
+    该数据集基于 AMASS 构建，支持全身运动（包括面部表情），是训练多模态运动模型的重要数据资源。
+  </p>
+</div>
+
+<h3>2.4 音频/语音条件运动生成</h3>
+
+<div class="card">
+  <h4>MOSPA: Human Motion Generation Driven by Spatial Audio</h4>
+  <div class="meta">S Xu, Z Dou, M Shi, L Pan, L Ho 等 | NeurIPS 2026 | 引用: 13</div>
+  <p>
+    MOSPA 提出了一个全新的任务：从空间音频驱动生成人体运动。它不仅处理音频内容（如音乐节奏），
+    还利用音频的空间信息（方向、距离）来指导运动方向和幅度。
+    该工作采用简单而有效的框架，基于扩散模型实现空间音频到运动的映射。
+    <strong>对 Kimodo 的启示：</strong>如果 Kimodo 需要在机器人场景中处理声音方向信息，MOSPA 的空间音频编码方法值得借鉴。
+  </p>
+</div>
+
+<div class="card">
+  <h4>X-Dancer: Expressive Music to Human Dance Video Generation</h4>
+  <div class="meta">Z Chen, H Xu, G Song, Y Xie, C Zhang 等 | ICCV 2025 | 引用: 18</div>
+  <p>
+    X-Dancer 使用扩散模型合成高分辨率、逼真的人类舞蹈视频，以生成的运动和音乐输入为条件。
+    该工作展示了音乐条件如何与运动生成深度整合，产生节奏对齐且表现力丰富的舞蹈动作。
+  </p>
+</div>
+
+<div class="card">
+  <h4>DanceLDM: Latent-based Diffusion Model for Dance Generation and Editing</h4>
+  <div class="meta">MC Su, WL Huang, TY Pan | Multimedia Systems, 2026</div>
+  <p>
+    DanceLDM 将音乐节拍信息整合到生成过程中，通过潜在扩散模型实现音乐节奏与舞蹈动作的对齐。
+    它同时以音乐和文本提示为条件，展示了多模态条件在舞蹈生成中的协同效果。
+  </p>
+</div>
+
+<div class="card">
+  <h4>HuMoGen-X: Genre-Aware 3D Motion Generation via Music-Conditioned Diffusion</h4>
+  <div class="meta">D Lee | 首尔大学, 2025</div>
+  <p>
+    HuMoGen-X 在音乐条件的基础上引入了舞蹈类型感知，使用同步的运动-音频对进行训练。
+    该工作通过 Beat Alignment Score 评估音乐-运动对齐质量，为音频条件运动生成提供了标准化的评估方法。
+  </p>
+</div>
+
+<h3>2.5 交错式运动理解与生成</h3>
+
+<div class="card">
+  <h4>IRG-MotionLLM: Interleaving Motion Generation, Assessment and Refinement</h4>
+  <div class="meta">Yuan-Ming Li, Qize Yang, Nan Lei 等 | arXiv:2512.10730, 2025 | 25页, 16图</div>
+  <p>
+    IRG-MotionLLM 是首个将运动生成、评估和细化无缝交错的模型，通过迭代的文本-运动对话实现双向知识流动。
+    核心贡献包括：
+  </p>
+  <ul>
+    <li><strong>IRMoGen 范式：</strong>将运动生成与评估、细化紧密耦合</li>
+    <li><strong>三阶段训练方案：</strong>逐步初始化和增强原生 IRMoGen 能力</li>
+    <li><strong>自动数据引擎：</strong>从现有文本-运动数据集合成交错推理标注</li>
+  </ul>
+  <p>
+    关键发现：评估和细化任务显著改善了文本-运动对齐；交错生成、评估、细化步骤带来一致的性能提升。
+    <strong>对 Kimodo 的启示：</strong>在多模态条件下，引入评估-细化循环可以提升条件-运动的对齐质量。
+  </p>
+</div>
+
+<h3>2.6 视觉-语言-动作（VLA）模型</h3>
+
+<div class="card">
+  <h4>VLA 模型综述（2024-2025）</h4>
+  <div class="meta">多篇综述论文，合计引用超过 200 次</div>
+  <p>
+    VLA 模型代表了从视觉感知和语言理解到低层动作/运动生成的完整流水线。关键趋势包括：
+  </p>
+  <ul>
+    <li><strong>跨模态接地：</strong>通过交叉注意力将视觉和文本数据融合，将指令接地到机器人动作</li>
+    <li><strong>多形态泛化：</strong>MotionGlot（IEEE ICRA 2025）等模型将语言、机器人和运动生成统一</li>
+    <li><strong>可扩展预训练：</strong>利用人类活动视频进行 VLA 预训练，将人类手部视为灵巧机器人末端执行器</li>
+    <li><strong>四足机器人适配：</strong>Quar-VLA（ECCV 2024，88次引用）将 VLA 适配到四足平台</li>
+  </ul>
+  <p><strong>与 Kimodo 的关系：</strong>Kimodo 可以被视为 VLA 流水线中的运动生成组件，添加视觉条件将使其更接近完整的 VLA 系统。</p>
+</div>
+
+<h3>2.7 跨模态融合技术</h3>
+
+<div class="card">
+  <h4>跨模态注意力机制在扩散模型中的应用</h4>
+  <div class="meta">多篇论文综合 | 2024-2026</div>
+  <p>
+    交叉注意力是扩散模型中注入多模态条件的主要机制。关键发现包括：
+  </p>
+  <ul>
+    <li><strong>多分辨率融合：</strong>在不同分辨率层级使用交叉注意力，逐步精炼跨模态对齐</li>
+    <li><strong>Articulated Attention（LMM）：</strong>专门为运动生成设计的跨模态注意力变体</li>
+    <li><strong>多视角注意力（Multi-perspective Attention）：</strong>统一扩散和下一标记预测，实现跨模态文本-运动理解</li>
+    <li><strong>渐进式训练：</strong>从弱条件到强条件的渐进训练策略解决多模态冲突</li>
+  </ul>
+</div>
+
+<h3>2.8 相关论文总览</h3>
+<table>
+  <tr>
+    <th>论文</th>
+    <th>年份/会议</th>
+    <th>条件模态</th>
+    <th>核心贡献</th>
+    <th>引用</th>
+  </tr>
+  <tr>
+    <td>Kimodo (NVIDIA)</td>
+    <td>2026 arXiv</td>
+    <td>文本 + 运动学约束</td>
+    <td>700h 动捕数据，两阶段去噪，规模化分析</td>
+    <td>新</td>
+  </tr>
+  <tr>
+    <td>OmniMotion-X</td>
+    <td>CVPR 2026</td>
+    <td>文本+音乐+语音+时空控制</td>
+    <td>统一多模态框架，自回归扩散 Transformer</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>LMM</td>
+    <td>ECCV 2024</td>
+    <td>文本 + 音乐</td>
+    <td>以运动为中心的统一多模态框架</td>
+    <td>94</td>
+  </tr>
+  <tr>
+    <td>MotionGPT-3 (MoTe)</td>
+    <td>2025 arXiv</td>
+    <td>文本</td>
+    <td>运动作为第二模态，自回归生成</td>
+    <td>27</td>
+  </tr>
+  <tr>
+    <td>IRG-MotionLLM</td>
+    <td>2025 arXiv</td>
+    <td>文本</td>
+    <td>交错生成-评估-细化范式</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>MoLingo</td>
+    <td>CVPR 2026</td>
+    <td>文本</td>
+    <td>语义对齐运动编码器</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>MotionDuet</td>
+    <td>CVPR 2026</td>
+    <td>视频 + 文本</td>
+    <td>VideoMAE 视频特征 + 文本正则化</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>MOSPA</td>
+    <td>NeurIPS 2026</td>
+    <td>空间音频</td>
+    <td>空间音频驱动运动生成</td>
+    <td>13</td>
+  </tr>
+  <tr>
+    <td>X-Dancer</td>
+    <td>ICCV 2025</td>
+    <td>音乐</td>
+    <td>音乐驱动高分辨率舞蹈视频生成</td>
+    <td>18</td>
+  </tr>
+  <tr>
+    <td>DanceLDM</td>
+    <td>MMSys 2026</td>
+    <td>音乐 + 文本</td>
+    <td>音乐节拍对齐的潜在扩散舞蹈生成</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>Motion-X++</td>
+    <td>2025 arXiv</td>
+    <td>文本</td>
+    <td>120.5K 片段，19.5M SMPL-X 参数</td>
+    <td>41</td>
+  </tr>
+  <tr>
+    <td>MotionVerse</td>
+    <td>2025 arXiv</td>
+    <td>多模态</td>
+    <td>统一理解/生成/编辑框架</td>
+    <td>6</td>
+  </tr>
+  <tr>
+    <td>MDM</td>
+    <td>ICLR 2023</td>
+    <td>文本</td>
+    <td>首个运动扩散模型</td>
+    <td>高</td>
+  </tr>
+  <tr>
+    <td>MotionDiffuse</td>
+    <td>TPAMI 2024</td>
+    <td>文本</td>
+    <td>扩散模型运动生成先驱</td>
+    <td>高</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="sec3">三、技术路线：如何为 Kimodo 添加多模态条件</h2>
+
+<h3>3.1 整体架构设计</h3>
+<p>
+  基于文献调研，我们提出以下多模态条件注入架构，兼容 Kimodo 现有的两阶段去噪器设计：
+</p>
+
+<div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────────────┐
+│                      Kimodo 多模态扩展架构                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
+│  │ 文本提示  │  │ 视频参考  │  │ 音频/语音 │  │ 运动学约束        │   │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────────┬─────────┘   │
+│       │              │              │                  │             │
+│  ┌────▼─────┐  ┌────▼─────┐  ┌────▼─────┐  ┌────────▼─────────┐   │
+│  │LLM2Vec + │  │VideoMAE  │  │HuBERT/   │  │ Kimodo 约束编码器 │   │
+│  │Llama-3   │  │v2 Encoder│  │BEATs     │  │                  │   │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────────┬─────────┘   │
+│       │              │              │                  │             │
+│       └──────────┬───┴──────┬───────┘                  │             │
+│                  │          │                          │             │
+│           ┌──────▼──────────▼──────┐                   │             │
+│           │   多模态融合模块         │                   │             │
+│           │  (Cross-Attention +     │                   │             │
+│           │   Modality Gate)        │                   │             │
+│           └──────────┬──────────────┘                   │             │
+│                      │                                  │             │
+│           ┌──────────▼──────────────────────────────────▼──────┐    │
+│           │           Kimodo 两阶段去噪器                       │    │
+│           │  ┌─────────────┐    ┌─────────────┐                │    │
+│           │  │ 根节点去噪器  │───▶│ 身体去噪器   │                │    │
+│           │  └─────────────┘    └─────────────┘                │    │
+│           └─────────────────────────┬──────────────────────────┘    │
+│                                     │                               │
+│           ┌─────────────────────────▼──────────────────────────┐    │
+│           │              生成的运动序列                          │    │
+│           └────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────┘
+</div>
+
+<h3>3.2 视频条件注入方案</h3>
+
+<h4>方案 A：VideoMAE 特征提取 + 交叉注意力融合（推荐）</h4>
+<p>借鉴 MotionDuet（CVPR 2026）的方法：</p>
+<ol>
+  <li><strong>视频编码：</strong>使用预训练的 VideoMAE v2 编码器处理输入视频，提取时空特征向量序列</li>
+  <li><strong>特征投影：</strong>通过线性层将 VideoMAE 特征投影到与 Kimodo 去噪器隐藏维度匹配的空间</li>
+  <li><strong>交叉注意力注入：</strong>在 Kimodo 去噪器的每个 Transformer 层中添加视频交叉注意力头，
+  使运动查询能关注视频中的相关时空信息</li>
+  <li><strong>正则化策略：</strong>训练时随机丢弃视频条件（drop rate 约 10-20%），确保模型不过度依赖视频</li>
+</ol>
+
+<h4>方案 B：视频运动先验 + 残差注入</h4>
+<p>更轻量的方案，适合快速验证：</p>
+<ol>
+  <li><strong>运动先验提取：</strong>使用现成的视频人体姿态估计模型（如 MotionBERT、ViTPose）从视频中提取 2D/3D 关键帧</li>
+  <li><strong>运动编码：</strong>将提取的关键帧编码为运动学约束，复用 Kimodo 现有的约束编码路径</li>
+  <li><strong>残差修正：</strong>在 Kimodo 生成结果基础上，通过残差网络微调运动细节</li>
+</ol>
+
+<h3>3.3 音频/语音条件注入方案</h3>
+
+<h4>方案 A：分层音频编码 + 节拍对齐（推荐用于音乐条件）</h4>
+<p>借鉴 MOSPA、DanceLDM 等工作的方法：</p>
+<ol>
+  <li><strong>音频编码：</strong>
+    <ul>
+      <li>全局特征：使用预训练的 CAVP（Contrastive Audio-Visual Pretraining）或 CLAP 模型提取全局音频嵌入</li>
+      <li>局部特征：使用 HuBERT 或 wav2vec 2.0 提取帧级音频特征</li>
+      <li>节拍信息：使用 librosa 或 madmom 提取节拍和重拍位置</li>
+    </ul>
+  </li>
+  <li><strong>多尺度融合：</strong>
+    <ul>
+      <li>全局嵌入通过 AdaLN（Adaptive Layer Normalization）注入，调制整体运动风格</li>
+      <li>帧级特征通过交叉注意力注入，控制运动的时间动态</li>
+      <li>节拍信息通过位置编码或额外的节拍对齐损失注入</li>
+    </ul>
+  </li>
+</ol>
+
+<h4>方案 B：语音驱动手势生成</h4>
+<p>用于人机交互场景：</p>
+<ol>
+  <li><strong>语音编码：</strong>使用 HuBERT 提取语音特征，关注韵律、语调、停顿等信息</li>
+  <li><strong>说话人嵌入：</strong>提取说话人身份特征，支持不同风格的手势生成</li>
+  <li><strong>手势-语音同步：</strong>通过时序对齐损失确保手势节奏与语音韵律同步</li>
+</ol>
+
+<h3>3.4 多模态融合策略</h3>
+
+<div class="highlight-box">
+  <strong>关键设计决策：</strong>如何处理多个条件模态之间的潜在冲突？
+</div>
+
+<p><strong>策略 1：独立交叉注意力头（推荐起步方案）</strong></p>
+<p>
+  为每种模态使用独立的交叉注意力头，最后通过加权求和或门控机制融合。
+  优点：简单、可控、易于消融实验。参考 MotionDuet 的做法。
+</p>
+
+<p><strong>策略 2：统一多模态注意力</strong></p>
+<p>
+  将所有模态的特征拼接后通过统一的交叉注意力处理。
+  优点：能捕获模态间的交互。参考 OmniMotion-X 的做法。
+</p>
+
+<p><strong>策略 3：模态门控机制</strong></p>
+<p>
+  引入可学习的门控网络，根据输入动态调整各模态的权重。
+  优点：灵活处理模态缺失或冲突。参考 LMM 的 articulated attention。
+</p>
+
+<h3>3.5 训练策略</h3>
+<p>基于 OmniMotion-X 的渐进式训练经验，建议分三阶段训练：</p>
+<ol>
+  <li><strong>阶段一：单模态预训练</strong> — 分别用视频条件和音频条件微调 Kimodo，验证各模态的独立有效性</li>
+  <li><strong>阶段二：弱条件联合训练</strong> — 同时使用多种模态，但对每种模态使用较高的 drop rate（约 50%）</li>
+  <li><strong>阶段三：强条件微调</strong> — 降低 drop rate（约 10-20%），在高质量数据上微调</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="sec4">四、知识先修与学习资源</h2>
+
+<h3>4.1 多模态融合基础</h3>
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>预计时间</th>
+  </tr>
+  <tr>
+    <td>交叉注意力机制</td>
+    <td>Vaswani et al., "Attention Is All You Need" (NeurIPS 2017); Hua et al., "Attention in Diffusion Model: A Survey" (2025)</td>
+    <td>1 周</td>
+  </tr>
+  <tr>
+    <td>CLIP 与对比学习</td>
+    <td>Radford et al., "Learning Transferable Visual Models" (ICML 2021)</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>多模态 Transformer</td>
+    <td>Wang et al., "Multi-modal Generative AI" (IEEE 2025)</td>
+    <td>1 周</td>
+  </tr>
+  <tr>
+    <td>门控融合机制</td>
+    <td>Reading papers on FiLM, AdaLN, and gating in diffusion models</td>
+    <td>3 天</td>
+  </tr>
+</table>
+
+<h3>4.2 视频编码与特征提取</h3>
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>预计时间</th>
+  </tr>
+  <tr>
+    <td>VideoMAE</td>
+    <td>Tong et al., "VideoMAE: Masked Autoencoders are Data-Efficient Learners" (NeurIPS 2022)</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>视频 Transformer</td>
+    <td>Arnab et al., "ViViT: A Video Vision Transformer" (ICCV 2021)</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>视频运动生成综述</td>
+    <td>Xue et al., "Human Motion Video Generation: A Survey" (IEEE TPAMI 2025, 56次引用)</td>
+    <td>1 周</td>
+  </tr>
+  <tr>
+    <td>SMPL/SMPL-X 身体模型</td>
+    <td>Pavlakos et al., "Expressive Body Capture" (CVPR 2019)</td>
+    <td>2 天</td>
+  </tr>
+</table>
+
+<h3>4.3 音频处理与编码</h3>
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>预计时间</th>
+  </tr>
+  <tr>
+    <td>HuBERT</td>
+    <td>Hsu et al., "HuBERT: Self-Supervised Speech Representation Learning" (IEEE 2021)</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>wav2vec 2.0</td>
+    <td>Baevski et al., "wav2vec 2.0: A Framework for Self-Supervised Learning" (NeurIPS 2020)</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>音频-语言模型</td>
+    <td>Su et al., "Audio-language Models for Audio-centric Tasks: A Survey" (2025, 35次引用)</td>
+    <td>1 周</td>
+  </tr>
+  <tr>
+    <td>节拍检测与音乐分析</td>
+    <td>librosa 官方文档; Ellis, "Beat Tracking by Dynamic Programming" (2007)</td>
+    <td>2 天</td>
+  </tr>
+</table>
+
+<h3>4.4 扩散模型进阶</h3>
+<table>
+  <tr>
+    <th>主题</th>
+    <th>推荐资源</th>
+    <th>预计时间</th>
+  </tr>
+  <tr>
+    <td>运动扩散模型</td>
+    <td>MDM (ICLR 2023); MotionDiffuse (TPAMI 2024)</td>
+    <td>1 周</td>
+  </tr>
+  <tr>
+    <td>条件注入技术</td>
+    <td>Ho & Salimans, "Classifier-Free Diffusion Guidance" (2022)</td>
+    <td>3 天</td>
+  </tr>
+  <tr>
+    <td>潜在扩散模型</td>
+    <td>Rombach et al., "High-Resolution Image Synthesis with LDMs" (CVPR 2022)</td>
+    <td>3 天</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="sec5">五、从零到一的入门指南</h2>
+
+<ol class="step-list">
+  <li>
+    <strong>环境搭建与数据准备（第 1-2 周）</strong>
+    <ul>
+      <li>克隆 Kimodo 代码仓库，完成环境配置</li>
+      <li>下载并预处理动捕数据集（AMASS、HumanML3D、Motion-X++）</li>
+      <li>安装 VideoMAE、HuBERT 等预训练模型</li>
+      <li>复现 Kimodo 基线结果，确保训练/推理流程正确</li>
+    </ul>
+  </li>
+  <li>
+    <strong>视频条件模块开发（第 3-5 周）</strong>
+    <ul>
+      <li>集成 VideoMAE v2 编码器，实现视频特征提取</li>
+      <li>在 Kimodo 去噪器中添加视频交叉注意力头</li>
+      <li>使用 MotionDuet 的方法进行视频-文本对齐训练</li>
+      <li>在 HumanML3D 子集上验证视频条件的有效性</li>
+    </ul>
+  </li>
+  <li>
+    <strong>音频条件模块开发（第 6-8 周）</strong>
+    <ul>
+      <li>集成 HuBERT/wav2vec 2.0 音频编码器</li>
+      <li>实现节拍检测和节拍对齐损失</li>
+      <li>在 AIST++ 舞蹈数据集上训练音频条件模型</li>
+      <li>评估 Beat Alignment Score</li>
+    </ul>
+  </li>
+  <li>
+    <strong>多模态联合训练（第 9-11 周）</strong>
+    <ul>
+      <li>实现模态门控机制</li>
+      <li>采用渐进式训练策略（从弱到强）</li>
+      <li>在多模态数据集上联合训练</li>
+      <li>消融实验：验证各模态的贡献</li>
+    </ul>
+  </li>
+  <li>
+    <strong>评估与优化（第 12-14 周）</strong>
+    <ul>
+      <li>在标准基准上进行全面评估</li>
+      <li>用户研究评估生成质量</li>
+      <li>优化推理速度</li>
+      <li>撰写论文</li>
+    </ul>
+  </li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="sec6">六、实验计划</h2>
+
+<h3>6.1 实验一：视频条件有效性验证</h3>
+<div class="card">
+  <h4>实验设置</h4>
+  <ul>
+    <li><strong>数据集：</strong>HumanML3D + 对应的 AMASS 视频渲染</li>
+    <li><strong>基线：</strong>Kimodo（仅文本条件）、Kimodo + 视频条件</li>
+    <li><strong>评估指标：</strong>FID（运动质量）、R-Precision（条件对齐）、Diversity（多样性）、Beat Alignment（节拍对齐）</li>
+    <li><strong>消融：</strong>VideoMAE 特征维度、交叉注意力层数、drop rate</li>
+  </ul>
+</div>
+
+<h3>6.2 实验二：音频条件有效性验证</h3>
+<div class="card">
+  <h4>实验设置</h4>
+  <ul>
+    <li><strong>数据集：</strong>AIST++（音乐-舞蹈对）</li>
+    <li><strong>基线：</strong>Kimodo（仅文本）、Kimodo + 音频条件、MOSPA（如可复现）</li>
+    <li><strong>评估指标：</strong>Beat Alignment Score、FID、运动多样性、风格一致性</li>
+    <li><strong>音频编码器对比：</strong>HuBERT vs. wav2vec 2.0 vs. BEATs</li>
+  </ul>
+</div>
+
+<h3>6.3 实验三：多模态联合条件</h3>
+<div class="card">
+  <h4>实验设置</h4>
+  <ul>
+    <li><strong>数据集：</strong>OmniMoCap-X（多模态统一数据集）</li>
+    <li><strong>条件组合：</strong>文本+视频、文本+音频、文本+视频+音频</li>
+    <li><strong>融合策略对比：</strong>独立交叉注意力 vs. 统一注意力 vs. 门控机制</li>
+    <li><strong>评估：</strong>全指标评估 + 用户研究</li>
+  </ul>
+</div>
+
+<h3>6.4 实验四：机器人场景适配</h3>
+<div class="card">
+  <h4>实验设置</h4>
+  <ul>
+    <li><strong>场景：</strong>从人类视频学习机器人操控动作</li>
+    <li><strong>数据集：</strong>自采集机器人操作视频 + 人类示范视频</li>
+    <li><strong>评估：</strong>动作可行性、物理合理性、任务成功率</li>
+    <li><strong>基线对比：</strong>Kimodo（仅文本）、Kimodo + 视频参考、VLA 模型</li>
+  </ul>
+</div>
+
+<h3>6.5 实验五：交错评估-细化（借鉴 IRG-MotionLLM）</h3>
+<div class="card">
+  <h4>实验设置</h4>
+  <ul>
+    <li><strong>方法：</strong>在多模态条件生成后，引入评估-细化循环</li>
+    <li><strong>评估：</strong>对比有/无细化步骤的 FID 和条件对齐度</li>
+    <li><strong>迭代次数：</strong>1、2、3 次细化，观察收敛曲线</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec7">七、预期结果与基准指标</h2>
+
+<h3>7.1 文本到运动生成基准（HumanML3D）</h3>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="value">0.30~</div>
+    <div class="label">FID (越低越好)<br>Kimodo 基线约 0.30</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">0.75+</div>
+    <div class="label">R-Precision (越高越好)<br>当前 SOTA 约 0.78</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">9.5+</div>
+    <div class="label">Diversity (适中为佳)<br>HumanML3D 真实值 9.5</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">0.85+</div>
+    <div class="label">Multi-Modal Distance<br>越低越好</div>
+  </div>
+</div>
+
+<h3>7.2 视频条件运动生成基准</h3>
+<table>
+  <tr>
+    <th>指标</th>
+    <th>MotionDuet (CVPR 2026)</th>
+    <th>Kimodo+Video 目标</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>FID</td>
+    <td>待查</td>
+    <td>优于或持平 MotionDuet</td>
+    <td>运动质量</td>
+  </tr>
+  <tr>
+    <td>Video-Motion Consistency</td>
+    <td>待查</td>
+    <td>显著优于无视频条件</td>
+    <td>视频-运动一致性</td>
+  </tr>
+  <tr>
+    <td>R-Precision</td>
+    <td>待查</td>
+    <td>不劣于仅文本条件</td>
+    <td>文本对齐不退化</td>
+  </tr>
+</table>
+
+<h3>7.3 音频条件运动生成基准（AIST++）</h3>
+<table>
+  <tr>
+    <th>指标</th>
+    <th>MOSPA (NeurIPS 2026)</th>
+    <th>Kimodo+Audio 目标</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>Beat Alignment Score</td>
+    <td>高（具体值待查）</td>
+    <td>>0.70</td>
+    <td>运动节拍与音乐对齐</td>
+  </tr>
+  <tr>
+    <td>FID</td>
+    <td>待查</td>
+    <td>优于或持平 SOTA</td>
+    <td>运动质量</td>
+  </tr>
+  <tr>
+    <td>Diversity</td>
+    <td>待查</td>
+    <td>接近真实值</td>
+    <td>生成多样性</td>
+  </tr>
+  <tr>
+    <td>Style Consistency</td>
+    <td>待查</td>
+    <td>>0.80</td>
+    <td>风格一致性</td>
+  </tr>
+</table>
+
+<h3>7.4 多模态联合条件预期改进</h3>
+<div class="highlight-box">
+  <strong>预期：</strong>根据 OmniMotion-X 和 LMM 的经验，多模态联合条件相比单模态条件，FID 通常可改善 5-15%，
+  条件对齐度（R-Precision 或类似指标）可改善 3-10%。视频条件对空间轨迹精度的提升尤为显著，
+  音频条件对时间动态和节拍对齐的提升最为明显。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec8">八、风险与缓解措施</h2>
+
+<h3>8.1 技术风险</h3>
+
+<div class="warning-box">
+  <strong>风险 1：多模态条件冲突</strong><br>
+  <em>问题：</em>文本说"快速奔跑"，但视频参考显示"缓慢行走"，模型如何处理？<br>
+  <em>缓解：</em>
+  <ul>
+    <li>实现模态门控机制，允许用户指定各模态的优先级</li>
+    <li>采用 OmniMotion-X 的渐进式训练策略，从弱到强逐步引入模态</li>
+    <li>引入模态一致性检测，在推理时识别并处理冲突</li>
+  </ul>
+</div>
+
+<div class="warning-box">
+  <strong>风险 2：计算资源需求过大</strong><br>
+  <em>问题：</em>VideoMAE + HuBERT + Kimodo 的联合模型可能超出单 GPU 显存<br>
+  <em>缓解：</em>
+  <ul>
+    <li>使用特征缓存：预计算并存储视频/音频特征，训练时只加载特征向量</li>
+    <li>采用混合精度训练（FP16/BF16）</li>
+    <li>分阶段冻结：先冻结编码器只训练融合层，再逐步解冻</li>
+    <li>使用梯度检查点和模型并行</li>
+  </ul>
+</div>
+
+<div class="warning-box">
+  <strong>风险 3：数据集对齐问题</strong><br>
+  <em>问题：</em>现有运动数据集大多只有文本标注，缺少对应的视频或音频<br>
+  <em>缓解：</em>
+  <ul>
+    <li>利用 OmniMoCap-X 数据集（已整合 28 个来源，支持多模态）</li>
+    <li>从 AMASS 数据渲染合成视频</li>
+    <li>使用 Motion-X++ 的自动标注流水线扩展数据</li>
+    <li>对 AIST++ 等音乐-舞蹈数据集进行音频-运动对齐训练</li>
+  </ul>
+</div>
+
+<div class="warning-box">
+  <strong>风险 4：视频特征与运动空间的语义鸿沟</strong><br>
+  <em>问题：</em>VideoMAE 学到的是通用视频特征，可能不包含足够的运动语义信息<br>
+  <em>缓解：</em>
+  <ul>
+    <li>在运动数据上微调 VideoMAE（MotionDuet 的做法）</li>
+    <li>添加视频-运动对比学习损失，拉近特征空间</li>
+    <li>使用 MotionBERT 等专门的运动特征提取器作为补充</li>
+  </ul>
+</div>
+
+<h3>8.2 评估风险</h3>
+
+<div class="warning-box">
+  <strong>风险 5：评估指标不全面</strong><br>
+  <em>问题：</em>现有指标（FID、R-Precision 等）可能无法充分评估多模态条件的效果<br>
+  <em>缓解：</em>
+  <ul>
+    <li>设计专门的多模态对齐指标（如 Video-Motion Consistency Score）</li>
+    <li>引入用户研究评估主观质量</li>
+    <li>参考 IRG-MotionLLM 的交错评估方法</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec9">九、参考文献</h2>
+
+<ol class="ref-list">
+  <li>Rempe, D., Petrovich, M., Yuan, Y., et al. (2026). <strong>Kimodo: Scaling Controllable Human Motion Generation.</strong> <em>arXiv:2603.15546.</em></li>
+
+  <li>Tevet, G., Raab, S., Gordon, B., et al. (2023). <strong>Human Motion Diffusion Model.</strong> <em>ICLR 2023.</em></li>
+
+  <li>Zhang, M., Cai, Z., Pan, L., et al. (2024). <strong>MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model.</strong> <em>IEEE TPAMI, 2024.</em></li>
+
+  <li>Xu, G., Bian, Y., Zeng, A., et al. (2026). <strong>OmniMotion-X: Versatile Multimodal Whole-Body Motion Generation.</strong> <em>CVPR 2026.</em> Code: https://github.com/GuoweiXu368/OmniMocap-X</li>
+
+  <li>Zhang, M., Jin, D., Gu, C., et al. (2024). <strong>Large Motion Model for Unified Multi-Modal Motion Generation.</strong> <em>ECCV 2024.</em></li>
+
+  <li>Zhu, B., Jiang, B., Wang, S., et al. (2025). <strong>MotionGPT-3: Human Motion as a Second Modality.</strong> <em>arXiv, 2025.</em></li>
+
+  <li>Li, Y.-M., Yang, Q., Lei, N., et al. (2025). <strong>IRG-MotionLLM: Interleaving Motion Generation, Assessment and Refinement for Text-to-Motion Generation.</strong> <em>arXiv:2512.10730.</em> Code: https://github.com/HumanMLLM/IRG-MotionLLM</li>
+
+  <li>He, Y., Tiwari, G., Zhang, X., et al. (2026). <strong>MoLingo: Motion-Language Alignment for Text-to-Human Motion Generation.</strong> <em>CVPR 2026.</em></li>
+
+  <li>Zhang, Y.Y., Sun, T., Fang, P., et al. (2026). <strong>MotionDuet: Dual-Conditioned 3D Human Motion Generation with Video-Regularized Text Learning.</strong> <em>CVPR 2026.</em></li>
+
+  <li>Xu, S., Dou, Z., Shi, M., et al. (2026). <strong>MOSPA: Human Motion Generation Driven by Spatial Audio.</strong> <em>NeurIPS 2026.</em></li>
+
+  <li>Chen, Z., Xu, H., Song, G., et al. (2025). <strong>X-Dancer: Expressive Music to Human Dance Video Generation.</strong> <em>ICCV 2025.</em></li>
+
+  <li>Su, M.C., Huang, W.L., Pan, T.Y. (2026). <strong>DanceLDM: Latent-based Diffusion Model for Dance Generation and Editing Conditioned on Music and Text Prompt.</strong> <em>Multimedia Systems, Springer, 2026.</em></li>
+
+  <li>Lee, D. (2025). <strong>HuMoGen-X: User-Guided Editing, Genre-Aware 3D Motion Generation via Music-Conditioned Diffusion.</strong> <em>Seoul National University.</em></li>
+
+  <li>Hou, R., Luo, M., Pan, H., et al. (2025). <strong>MotionVerse: A Unified Multimodal Framework for Motion Comprehension, Generation and Editing.</strong> <em>arXiv:2509.23635.</em></li>
+
+  <li>Zhang, Y., Lin, J., Zeng, A., et al. (2025). <strong>Motion-X++: A Large-Scale Multimodal 3D Whole-Body Human Motion Dataset.</strong> <em>arXiv, 2025.</em></li>
+
+  <li>Janson, P., Popa, T., Belilovsky, E. (2024). <strong>Towards Motion from Video Diffusion Models.</strong> <em>ECCV 2024.</em></li>
+
+  <li>Tong, Z., Song, Y., Wang, J., et al. (2022). <strong>VideoMAE: Masked Autoencoders are Data-Efficient Learners for Self-Supervised Video Pre-Training.</strong> <em>NeurIPS 2022.</em></li>
+
+  <li>Hsu, W.-N., Bolte, B., Tsai, Y.-H.H., et al. (2021). <strong>HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units.</strong> <em>IEEE/ACM TASLP.</em></li>
+
+  <li>Baevski, A., Zhou, Y., Mohamed, A., et al. (2020). <strong>wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations.</strong> <em>NeurIPS 2020.</em></li>
+
+  <li>Radford, A., Kim, J.W., Hallacy, C., et al. (2021). <strong>Learning Transferable Visual Models From Natural Language Supervision.</strong> <em>ICML 2021.</em></li>
+
+  <li>Rombach, R., Blattmann, A., Lorenz, D., et al. (2022). <strong>High-Resolution Image Synthesis with Latent Diffusion Models.</strong> <em>CVPR 2022.</em></li>
+
+  <li>Pavlakos, G., Choutas, V., Ghorbani, N., et al. (2019). <strong>Expressive Body Capture: 3D Hands, Face, and Body from a Single Image.</strong> <em>CVPR 2019.</em></li>
+
+  <li>Xue, H., Luo, X., Hu, Z., et al. (2025). <strong>Human Motion Video Generation: A Survey.</strong> <em>IEEE TPAMI, 2025.</em></li>
+
+  <li>Sapkota, R., Cao, Y., Roumeliotis, K.I., et al. (2025). <strong>Vision-Language-Action Models: Concepts, Progress, Applications and Challenges.</strong> <em>arXiv, 2025.</em></li>
+
+  <li>Din, M.U., Akram, W., Saoud, L.S., et al. (2025). <strong>A Systematic Review of Vision-Language-Action Models in Robotic Manipulation.</strong> <em>arXiv, 2025.</em></li>
+
+  <li>Harithas, S., Sridhar, S. (2025). <strong>MotionGlot: A Multi-Embodied Motion Generation Model.</strong> <em>IEEE ICRA 2025.</em></li>
+
+  <li>Hua, L., Liu, F., Su, J., et al. (2025). <strong>Attention in Diffusion Model: A Survey.</strong> <em>arXiv, 2025.</em></li>
+
+  <li>Wang, Y., Liu, X., Pang, W., et al. (2025). <strong>Survey of Video Diffusion Models.</strong> <em>arXiv, 2025.</em></li>
+
+  <li>Sun, C., Liu, G., Fleming, C., Yan, Y. (2025). <strong>Enhancing Dance-to-Music Generation via Negative Conditioning Latent Diffusion Model.</strong> <em>CVPR 2025.</em></li>
+
+  <li>Wang, Q., Yang, X., Dong, Y., et al. (2025). <strong>DanceChat: Large Language Model-Guided Music-to-Dance Generation.</strong> <em>arXiv, 2025.</em></li>
+</ol>
+
+<div style="margin-top: 3rem; padding-top: 1rem; border-top: 2px solid var(--border); color: var(--muted); font-size: 0.85rem; text-align: center;">
+  本报告由文献调研自动生成 | 2026年6月 | VLA Research Group
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sim-to-Real RL Tracking 研究报告</title>
+<style>
+  :root {
+    --primary: #1a365d;
+    --primary-light: #2c5282;
+    --accent: #ed8936;
+    --accent-light: #fbd38d;
+    --bg: #f7fafc;
+    --card-bg: #ffffff;
+    --text: #2d3748;
+    --text-light: #718096;
+    --border: #e2e8f0;
+    --success: #38a169;
+    --warning: #d69e2e;
+    --danger: #e53e3e;
+    --info: #3182ce;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Serif SC', 'Source Han Serif CN', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 60px 0 50px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 2.2em;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+  header .subtitle {
+    font-size: 1.15em;
+    opacity: 0.9;
+    margin-bottom: 8px;
+  }
+  header .meta {
+    font-size: 0.9em;
+    opacity: 0.7;
+  }
+
+  /* Navigation */
+  nav.toc {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 32px;
+    margin: 32px auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  nav.toc h2 {
+    font-size: 1.1em;
+    color: var(--primary);
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+    display: inline-block;
+    padding-bottom: 4px;
+  }
+  nav.toc ol {
+    columns: 2;
+    column-gap: 40px;
+    padding-left: 20px;
+  }
+  nav.toc li {
+    margin-bottom: 6px;
+    font-size: 0.95em;
+  }
+  nav.toc a {
+    color: var(--primary-light);
+    text-decoration: none;
+  }
+  nav.toc a:hover { text-decoration: underline; }
+
+  /* Sections */
+  section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 36px 40px;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  section h2 {
+    font-size: 1.6em;
+    color: var(--primary);
+    border-left: 4px solid var(--accent);
+    padding-left: 14px;
+    margin-bottom: 20px;
+  }
+  section h3 {
+    font-size: 1.2em;
+    color: var(--primary-light);
+    margin: 24px 0 12px;
+  }
+  section h4 {
+    font-size: 1.05em;
+    color: var(--text);
+    margin: 18px 0 8px;
+    font-weight: 600;
+  }
+  p { margin-bottom: 12px; text-align: justify; }
+
+  /* Paper cards */
+  .paper-card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    transition: box-shadow 0.2s;
+  }
+  .paper-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .paper-card .paper-title {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .paper-card .paper-authors {
+    font-size: 0.88em;
+    color: var(--text-light);
+    margin-bottom: 6px;
+  }
+  .paper-card .paper-venue {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--primary);
+    font-size: 0.78em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .paper-card .paper-link {
+    display: inline-block;
+    color: var(--info);
+    font-size: 0.85em;
+    margin-left: 8px;
+    text-decoration: none;
+  }
+  .paper-card .paper-link:hover { text-decoration: underline; }
+  .paper-card .paper-summary {
+    font-size: 0.93em;
+    color: var(--text);
+    margin-top: 8px;
+  }
+  .paper-card .paper-relevance {
+    font-size: 0.88em;
+    color: var(--success);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.93em;
+  }
+  th {
+    background: var(--primary);
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:nth-child(even) { background: #f7fafc; }
+
+  /* Lists */
+  ul, ol {
+    padding-left: 24px;
+    margin-bottom: 12px;
+  }
+  li { margin-bottom: 6px; }
+
+  /* Code/tech blocks */
+  code {
+    background: #edf2f7;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.9em;
+  }
+  pre {
+    background: #1a202c;
+    color: #e2e8f0;
+    padding: 16px 20px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-size: 0.88em;
+    line-height: 1.6;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Diagram boxes */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    text-align: center;
+  }
+  .pipeline .step {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 0.88em;
+    font-weight: 600;
+    min-width: 120px;
+  }
+  .pipeline .arrow {
+    font-size: 1.4em;
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  /* Highlight boxes */
+  .highlight-box {
+    border-left: 4px solid var(--accent);
+    background: #fffaf0;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .highlight-box.blue {
+    border-left-color: var(--info);
+    background: #ebf8ff;
+  }
+  .highlight-box.green {
+    border-left-color: var(--success);
+    background: #f0fff4;
+  }
+  .highlight-box.red {
+    border-left-color: var(--danger);
+    background: #fff5f5;
+  }
+
+  /* Risk table */
+  .risk-matrix td:first-child { font-weight: 600; }
+  .risk-high { color: var(--danger); font-weight: 700; }
+  .risk-medium { color: var(--warning); font-weight: 700; }
+  .risk-low { color: var(--success); font-weight: 700; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--text-light);
+    font-size: 0.85em;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav.toc ol { columns: 1; }
+    section { padding: 24px 20px; }
+    .pipeline { flex-direction: column; }
+    .pipeline .arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>Sim-to-Real RL Tracking 研究报告</h1>
+    <div class="subtitle">基于 Kimodo 生成运动轨迹的强化学习策略训练与仿真到真实迁移</div>
+    <div class="meta">Sim-to-Real RL Tracking: Using Kimodo-Generated Motions as Reference Trajectories for Training RL Policies</div>
+    <div class="meta" style="margin-top: 12px;">报告日期: 2026 年 6 月 | 分支: feature/sound-control-mvp</div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- Table of Contents -->
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#overview">研究方向概述</a></li>
+    <li><a href="#literature">文献综述</a></li>
+    <li><a href="#approach">技术路线</a></li>
+    <li><a href="#prerequisites">知识前置要求</a></li>
+    <li><a href="#getting-started">入门指南</a></li>
+    <li><a href="#experiments">实验计划</a></li>
+    <li><a href="#benchmarks">预期结果与基准</a></li>
+    <li><a href="#risks">风险与缓解</a></li>
+    <li><a href="#references">参考文献</a></li>
+  </ol>
+</nav>
+
+<!-- Section 1: Overview -->
+<section id="overview">
+  <h2>一、研究方向概述</h2>
+
+  <h3>1.1 核心问题</h3>
+  <p>
+    人形机器人运动控制领域面临一个根本性挑战：如何将文本描述的高层运动意图转化为物理可行、可部署的全身运动策略。尽管近年来扩散模型（如 Kimodo）在运动生成方面取得了突破性进展，能够从文本生成高质量的人体运动轨迹，但这些生成的运动本质上是<strong>运动学层面</strong>的——它们不考虑物理约束、动力学可行性以及机器人本体的具体限制。
+  </p>
+  <p>
+    <strong>Sim-to-Real RL Tracking</strong> 方向旨在弥合这一鸿沟：将 Kimodo 生成的运动轨迹作为参考信号，在物理仿真环境（MuJoCo/Isaac Sim）中训练强化学习策略，使策略学会在物理约束下跟踪这些参考运动，最终实现零样本（zero-shot）迁移到真实机器人硬件。
+  </p>
+
+  <h3>1.2 为什么这个方向有前景</h3>
+  <div class="highlight-box green">
+    <strong>三大驱动力：</strong>
+    <ul>
+      <li><strong>高质量运动生成器已就绪：</strong>Kimodo 在 700 小时光学动捕数据上训练，支持文本、关键帧、关节位置/旋转、2D 路径等多种控制信号，为 RL 训练提供了丰富的参考运动源。</li>
+      <li><strong>RL 训练效率大幅提升：</strong>最新研究表明（如 FastSAC/FastTD3），在单张 RTX 4090 上仅需 15 分钟即可训练出可部署的人形运动策略，使得快速迭代实验成为可能。</li>
+      <li><strong>Sim-to-Real 迁移技术成熟：</strong>域随机化、教师-学生蒸馏、可微仿真系统辨识等技术已形成成熟的工程方法论，多项工作在 Unitree G1 上实现了零样本迁移。</li>
+    </ul>
+  </div>
+
+  <h3>1.3 研究定位</h3>
+  <p>
+    本研究的核心创新点在于：利用 Kimodo 作为<strong>运动学参考生成器</strong>，结合最新的人形机器人 RL 跟踪技术，构建一个从<strong>文本描述</strong>到<strong>物理可行运动</strong>的完整管线。具体而言：
+  </p>
+  <div class="pipeline">
+    <div class="step">文本输入</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">Kimodo<br>运动生成</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">G1&rarr;ELF3<br>运动重定向</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">MuJoCo<br>RL 策略训练</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">域随机化<br>Sim-to-Real</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">真实机器人<br>零样本部署</div>
+  </div>
+
+  <h3>1.4 计算资源评估</h3>
+  <p>
+    用户拥有 2-3 块 RTX 5090 GPU。根据最新研究，单块消费级 GPU 即可训练人形运动策略。RTX 5090 的 32GB 显存和高算力使得大规模并行仿真训练完全可行，预计单个策略训练可在 10-30 分钟内完成，非常适合快速迭代实验。
+  </p>
+</section>
+
+<!-- Section 2: Literature Review -->
+<section id="literature">
+  <h2>二、文献综述</h2>
+
+  <h3>2.1 核心参考：Kimodo 运动扩散模型</h3>
+
+  <div class="paper-card">
+    <div class="paper-title">Kimodo: Scaling Controllable Human Motion Generation</div>
+    <div class="paper-authors">Davis Rempe, Mathis Petrovich, Ye Yuan, Haotian Zhang, Xue Bin Peng, et al.</div>
+    <div class="paper-venue">arXiv 2026.03</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2603.15546">arXiv:2603.15546</a>
+    <div class="paper-summary">
+      Kimodo 是 NVIDIA 推出的运动学运扩散模型，在 700 小时光学动捕数据上训练。它使用精心设计的运动表示和两阶段去噪架构（分离根节点和身体预测），支持文本和多种运动学约束（全身关键帧、稀疏关节位置/旋转、2D 路径点、稠密 2D 路径）控制。论文研究了数据集和模型规模的扩展效应。
+    </div>
+    <div class="paper-relevance">
+      与本研究的关系: 作为运动学参考轨迹的生成器，是整个管线的起点。Kimodo 生成的运动将作为 RL 跟踪策略的参考信号。
+    </div>
+  </div>
+
+  <h3>2.2 运动跟踪与模仿学习</h3>
+
+  <div class="paper-card">
+    <div class="paper-title">Learning Whole-Body Humanoid Locomotion via Motion Generation and Motion Tracking</div>
+    <div class="paper-authors">Zewei Zhang, Kehan Wen, Michael Xu, Junzhe He, Chenhao Li, Takahiro Miki, Clemens Schwarke, Chong Zhang, Xue Bin Peng, Marco Hutter</div>
+    <div class="paper-venue">arXiv 2026.04</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2604.17335">arXiv:2604.17335</a>
+    <div class="paper-summary">
+      <strong>与本研究方向最直接相关的工作。</strong>该框架结合了两个核心组件：(1) 地形感知运动生成——使用扩散模型预测地形感知的参考运动；(2) 全身运动跟踪——使用 RL 训练全身参考跟踪器。为处理不完美的生成参考，跟踪器在闭环设置中进一步微调。系统在 Unitree G1 上部署，成功跨越箱子、栏杆、楼梯和混合地形。
+    </div>
+    <div class="paper-relevance">
+      直接对标本研究的管线设计。其"运动生成 + RL 跟踪 + 闭环微调"的三阶段框架是本研究的核心参考。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">RobotDancing: Residual-Action Reinforcement Learning Enables Robust Long-Horizon Humanoid Motion Tracking</div>
+    <div class="paper-authors">Zhenguo Sun, Yibo Peng, Yuan Meng, Xukun Li, Bo-Sheng Huang, Zhenshan Bing, Xinlong Wang, Alois Knoll</div>
+    <div class="paper-venue">arXiv 2025.09</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2509.20717">arXiv:2509.20717</a>
+    <div class="paper-summary">
+      提出残差动作 RL 框架，预测残差关节目标来显式修正动力学差异，而非发送绝对关节命令。使用统一的观测、奖励和超参数配置的单阶段 RL 设置。在 Unitree G1 上评估，可跟踪多分钟的高动态行为（跳跃、旋转、侧翻），零样本迁移到硬件。
+    </div>
+    <div class="paper-relevance">
+      残差动作空间设计对本研究极具参考价值。相比直接输出关节角度，残差方式能更好地处理模型-实际不匹配。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">Constrained Whole-Body Tracking for Humanoid Robots (ConstrainedMimic)</div>
+    <div class="paper-authors">Daniel Morton, Pranit Mohnot, Marco Pavone</div>
+    <div class="paper-venue">arXiv 2026.06</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2606.00374">arXiv:2606.00374</a>
+    <div class="paper-summary">
+      将操作空间控制和控制屏障函数（CBF）集成到 RL 跟踪策略中，在运行时强制执行安全约束（碰撞避免、关节限位、质心稳定性）。约束在运行时指定而非烘焙到训练中。在 CPU/GPU/TPU 上以 300-500 Hz 运行。
+    </div>
+    <div class="paper-relevance">
+      为本研究提供了安全约束保障的思路，确保 RL 策略在跟踪 Kimodo 运动时满足物理安全约束。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">TWIST: Teleoperated Whole-Body Imitation System</div>
+    <div class="paper-authors">Yanjie Ze, Zixuan Chen, Jo&atilde;o Pedro Ara&uacute;jo, Zi-ang Cao, Xue Bin Peng, Jiajun Wu, C. Karen Liu</div>
+    <div class="paper-venue">arXiv 2025.05</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2505.02833">arXiv:2505.02833</a>
+    <div class="paper-summary">
+      通过运动重定向将人类动捕数据转化为机器人参考运动，然后使用 RL+BC（强化学习 + 行为克隆）训练全身控制器。证明了特权未来运动帧和真实世界动捕数据可提高跟踪精度。单一神经网络控制器即可实现全身操纵、足式操纵、运动和表达性动作。
+    </div>
+    <div class="paper-relevance">
+      RL+BC 混合训练方法和未来帧信息的使用对本研究有重要参考价值。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">Retargeting Matters: General Motion Retargeting for Humanoid Motion Tracking</div>
+    <div class="paper-authors">Joao Pedro Araujo, Yanjie Ze, Pei Xu, Jiajun Wu, C. Karen Liu</div>
+    <div class="paper-venue">arXiv 2025.10</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2510.02252">arXiv:2510.02252</a>
+    <div class="paper-summary">
+      系统性评估重定向质量如何影响策略性能。提出 GMR（General Motion Retargeting）方法，在 LAFAN1 数据集上证明重定向引入的伪影（脚滑、自穿插）会显著降低策略鲁棒性，尤其是对动态或长序列。GMR 一致优于现有开源方法。
+    </div>
+    <div class="paper-relevance">
+      <strong>关键洞察：重定向质量直接决定 RL 策略的性能上限。</strong>对本研究中 G1&rarr;ELF3 的重定向环节有重要指导意义。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">SoftMimic: Learning Compliant Whole-body Control from Examples</div>
+    <div class="paper-authors">Gabriel B. Margolis, Michelle Wang, Nolan Fey, Pulkit Agrawal</div>
+    <div class="paper-venue">arXiv 2025.10</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2510.17792">arXiv:2510.17792</a>
+    <div class="paper-summary">
+      指出 RL 模仿方法倾向于激励刚性控制，导致不安全行为。使用逆运动学构建可行柔顺运动的增强数据集，训练策略匹配柔顺响应而非刚性跟踪参考。在真实世界中实现了安全有效的环境交互。
+    </div>
+    <div class="paper-relevance">
+      柔顺控制思想对 ELF3 机器人的真实部署尤为重要，可避免刚性跟踪导致的硬件损伤。
+    </div>
+  </div>
+
+  <h3>2.3 对抗运动先验与奖励设计</h3>
+
+  <div class="paper-card">
+    <div class="paper-title">AMP: Adversarial Motion Priors for Stylized Physics-Based Character Control</div>
+    <div class="paper-authors">Xue Bin Peng, Ze Ma, Pieter Abbeel, Sergey Levine, Angjoo Kanazawa</div>
+    <div class="paper-venue">ACM SIGGRAPH 2021</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2104.02180">arXiv:2104.02180</a>
+    <div class="paper-summary">
+      开创性地提出对抗运动先验方法。使用风格判别器区分"自然"和"不自然"运动，将判别器输出作为 RL 奖励信号。无需配对的状态-动作动捕数据，仅需无结构的运动片段即可训练。不同技能的组合从运动先验中自动涌现。
+    </div>
+    <div class="paper-relevance">
+      AMP 是运动跟踪 RL 的基础方法论。其对抗式奖励设计避免了手工设计模仿目标的繁琐，对本研究的奖励函数设计有奠基性影响。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">SMP: Reusable Score-Matching Motion Priors for Physics-Based Character Control</div>
+    <div class="paper-authors">Yuxuan Mu, Ziyu Zhang, Yi Shi, Dun Yang, Minami Matsumoto, et al.</div>
+    <div class="paper-venue">ACM Transactions on Graphics (SIGGRAPH 2026)</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a>
+    <div class="paper-summary">
+      使用预训练的运动扩散模型结合分数蒸馏采样（SDS）构建可复用、任务无关的运动先验。与 AMP 不同，SMP 先验可在运动数据集上预训练，独立于任何控制策略或任务，然后冻结作为通用奖励函数训练新策略。支持风格组合和迁移。
+    </div>
+    <div class="paper-relevance">
+      <strong>与 Kimodo 的结合潜力巨大。</strong>可将 Kimodo 作为预训练的运动扩散模型，通过 SDS 构建可复用的运动先验，避免为每个新任务重新训练对抗判别器。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">RL from Physical Feedback: Aligning Large Motion Models with Humanoid Control</div>
+    <div class="paper-authors">Junpeng Yue, Zepeng Wang, Yuxuan Wang, et al.</div>
+    <div class="paper-venue">arXiv 2025.06</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2506.12769">arXiv:2506.12769</a>
+    <div class="paper-summary">
+      提出 RLPF 框架，使用运动跟踪策略在物理仿真器中评估运动生成器输出的物理可行性，产生奖励信号来微调运动生成器。包含对齐验证模块确保生成运动保持文本语义一致性。在真实人形机器人上成功部署。
+    </div>
+    <div class="paper-relevance">
+      提供了将物理反馈注入运动生成器的闭环框架，可用于改进 Kimodo 的输出使其更加物理可行。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">Advanced Skills through Multiple Adversarial Motion Priors in Reinforcement Learning</div>
+    <div class="paper-authors">Eric Vollenweider, Marko Bjelonic, Victor Klemm, Nikita Rudin, Joonho Lee, Marco Hutter</div>
+    <div class="paper-venue">arXiv 2022.03</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2203.14912">arXiv:2203.14912</a>
+    <div class="paper-summary">
+      扩展 AMP 到多个对抗运动先验的组合，实现更复杂技能的学习。使用多个判别器分别处理不同运动模式，支持更丰富运动技能的涌现。
+    </div>
+    <div class="paper-relevance">
+      多判别器架构可处理 Kimodo 生成的多样化运动模式（行走、跑步、转身等）。
+    </div>
+  </div>
+
+  <h3>2.4 Sim-to-Real 迁移</h3>
+
+  <div class="paper-card">
+    <div class="paper-title">Learning Sim-to-Real Humanoid Locomotion in 15 Minutes</div>
+    <div class="paper-authors">Younggyo Seo, Carmelo Sferrazza, Juyue Chen, Guanya Shi, Rocky Duan, Pieter Abbeel</div>
+    <div class="paper-venue">arXiv 2025.12</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2512.01996">arXiv:2512.01996</a>
+    <div class="paper-summary">
+      <strong>训练效率的里程碑。</strong>提出基于 off-policy RL（FastSAC 和 FastTD3）的简洁实用方案，在单张 RTX 4090 上 15 分钟内训练出人形运动策略。通过精心调优的设计选择和极简奖励函数稳定大规模并行环境下的 off-policy RL。在 Unitree G1 和 Booster T1 上验证，包含强域随机化。
+    </div>
+    <div class="paper-relevance">
+      直接影响本研究的实验效率。15 分钟的训练时间意味着可以在 2-3 块 RTX 5090 上进行大量消融实验。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">HALO: Closing Sim-to-Real Gap for Heavy-loaded Humanoid Agile Motion Skills via Differentiable Simulation</div>
+    <div class="paper-authors">Xingyi Wang, Chenyun Zhang, Weiji Xie, Chao Yu, Wei Song, Chenjia Bai, Shiqiang Zhu</div>
+    <div class="paper-venue">arXiv 2026.03</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2603.15084">arXiv:2603.15084</a>
+    <div class="paper-summary">
+      使用可微仿真器 MuJoCo XLA 进行两阶段梯度系统辨识。第一阶段从真实数据校准标称机器人模型，第二阶段识别未知载荷的质量分布。实现了重载条件下 RL 策略的零样本迁移。
+    </div>
+    <div class="paper-relevance">
+      可微仿真系统辨识方法可用于精确校准 ELF3 的 MuJoCo 模型参数，缩小 sim-to-real gap。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">HuB: Learning Extreme Humanoid Balance</div>
+    <div class="paper-authors">Tong Zhang, Boyuan Zheng, Ruiqian Nai, Yingdong Hu, Yen-Jen Wang, et al.</div>
+    <div class="paper-venue">CoRL 2025 (Oral)</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2505.07294">arXiv:2505.07294</a>
+    <div class="paper-summary">
+      结合参考运动精炼、平衡感知策略学习和 sim-to-real 鲁棒性训练三个组件。在 Unitree G1 上实现极端准静态平衡任务（如高踢腿 1.5 米以上），在强力足球击打等强扰动下保持稳定。
+    </div>
+    <div class="paper-relevance">
+      三组件框架（运动精炼 + 平衡学习 + sim-to-real 鲁棒性）与本研究的管线高度互补。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">BFM-Zero: A Promptable Behavioral Foundation Model for Humanoid Control Using Unsupervised Reinforcement Learning</div>
+    <div class="paper-authors">Yitang Li, Zhengyi Luo, Tonghe Zhang, et al.</div>
+    <div class="paper-venue">arXiv 2025.11</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2511.04131">arXiv:2511.04131</a>
+    <div class="paper-summary">
+      构建共享潜在表示将运动、目标和奖励嵌入到公共空间，使单一策略处理多个下游任务而无需重新训练。基于无监督 RL 和 Forward-Backward 模型。在 Unitree G1 上实现零样本运动跟踪、目标到达和少样本适应。
+    </div>
+    <div class="paper-relevance">
+      基础模型思路代表了人形控制的长期方向，可作为本研究管线的未来扩展。
+    </div>
+  </div>
+
+  <h3>2.5 扩散策略与生成式 RL</h3>
+
+  <div class="paper-card">
+    <div class="paper-title">Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</div>
+    <div class="paper-authors">Cheng Chi, Zhenjia Xu, Siyuan Feng, et al.</div>
+    <div class="paper-venue">RSS 2023 / IJRR 2024</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2303.04137">arXiv:2303.04137</a>
+    <div class="paper-summary">
+      将机器人的视觉运动策略表示为条件去噪扩散过程。在 12 个任务上平均提升 46.9%。核心优势：处理多模态动作分布、适合高维动作空间、训练稳定性好。
+    </div>
+    <div class="paper-relevance">
+      扩散策略的表示能力可作为 RL 策略的替代方案，尤其适合处理人形机器人控制中的多模态性。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">GenPO: Generative Diffusion Models Meet On-Policy Reinforcement Learning</div>
+    <div class="paper-authors">Shutong Ding, Ke Hu, Shan Zhong, et al.</div>
+    <div class="paper-venue">NeurIPS 2025</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2505.18763">arXiv:2505.18763</a>
+    <div class="paper-summary">
+      <strong>首次成功将扩散策略整合到 on-policy RL（PPO）中。</strong>使用精确扩散反转构建可逆动作映射，通过双虚拟动作机制实现可逆性。在 IsaacLab 的 8 个基准上评估，包括 Unitree H1 人形和四足机器人。
+    </div>
+    <div class="paper-relevance">
+      解决了扩散策略与 PPO 结合的技术难题，为使用扩散策略作为人形控制策略提供了理论和实践基础。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">DreamPolicy: A Unified World-model Policy for Scalable Humanoid Locomotion</div>
+    <div class="paper-authors">Yahao Fan, Tianxiang Gui, Kaiyang Ji, et al.</div>
+    <div class="paper-venue">arXiv 2025.05</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2505.18780">arXiv:2505.18780</a>
+    <div class="paper-summary">
+      结合离线数据和基于扩散的世界模型，单一策略可处理已知和未知地形。地形感知世界模型生成物理合理的未来轨迹作为策略的动态目标。在未见地形上超越最强基线 27%，组合地形上超越 38%。
+    </div>
+    <div class="paper-relevance">
+      世界模型方法可增强策略对未见运动模式的泛化能力。
+    </div>
+  </div>
+
+  <h3>2.6 全身控制与人形机器人</h3>
+
+  <div class="paper-card">
+    <div class="paper-title">Whole-body Humanoid Robot Locomotion with Human Reference</div>
+    <div class="paper-authors">Qiang Zhang, Peter Cui, David Yan, Jingkai Sun, et al.</div>
+    <div class="paper-venue">arXiv 2024.02</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2402.18294">arXiv:2402.18294</a>
+    <div class="paper-summary">
+      为全尺寸人形机器人"Adam"开发基于对抗运动先验的模仿学习框架。声称是首次将人类运动数据用于全尺寸人形机器人的模仿学习，在复杂运动场景中实现了类人性能。
+    </div>
+    <div class="paper-relevance">
+      全尺寸人形机器人的 AMP 应用实践，验证了对抗运动先验在真实硬件上的可行性。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">HDMI: Learning Interactive Humanoid Whole-Body Control from Human Videos</div>
+    <div class="paper-authors">Haoyang Weng, Yitang Li, Nikhil Sobanbabu, et al.</div>
+    <div class="paper-venue">arXiv 2025.09</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2509.16757">arXiv:2509.16757</a>
+    <div class="paper-summary">
+      从单目 RGB 视频直接学习全身人-物交互技能。管线包含：从视频提取和重定向人/物体轨迹、使用统一物体表示和残差动作空间训练 RL 策略、零样本部署。在 Unitree G1 上实现 67 次连续过门和 6 种真实世界 loco-manipulation 任务。
+    </div>
+    <div class="paper-relevance">
+      残差动作空间和视频到运动管线的设计对本研究有重要借鉴意义。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">Opt2Skill: Imitating Dynamically-feasible Whole-Body Trajectories for Versatile Humanoid Loco-Manipulation</div>
+    <div class="paper-authors">Fukang Liu, Zhaoyuan Gu, Yilin Cai, et al.</div>
+    <div class="paper-venue">arXiv 2024.09</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2409.20514">arXiv:2409.20514</a>
+    <div class="paper-summary">
+      结合微分动态规划（DDP）生成动力学可行轨迹，然后训练 RL 策略跟踪这些最优轨迹。用于人形机器人的 loco-manipulation 任务。
+    </div>
+    <div class="paper-relevance">
+      DDP 生成的动力学可行轨迹可作为 Kimodo 运动学轨迹的动力学修正参考。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">Generalizing from References using a Multi-Task Reference and Goal-Driven RL Framework</div>
+    <div class="paper-authors">Jiashun Wang, M. Eva Mungai, He Li, Jean Pierre Sleiman, Jessica Hodgins, Farbod Farshidian</div>
+    <div class="paper-venue">arXiv 2026.02</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2602.20375">arXiv:2602.20375</a>
+    <div class="paper-summary">
+      将参考运动视为行为塑造的先验而非部署时的约束，协同优化模仿和目标条件任务。避免了策略对参考运动的过拟合。
+    </div>
+    <div class="paper-relevance">
+      "先验而非约束"的思想可指导本研究设计更灵活的奖励函数。
+    </div>
+  </div>
+
+  <div class="paper-card">
+    <div class="paper-title">CLOT: Closed-Loop Global Motion Tracking for Whole-Body Humanoid Teleoperation</div>
+    <div class="paper-authors">Tengjie Zhu, Guanyu Cai, et al.</div>
+    <div class="paper-venue">arXiv 2026.02</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2602.15060">arXiv:2602.15060</a>
+    <div class="paper-summary">
+      闭环全局运动跟踪框架用于人形机器人遥操作。解决开环跟踪中误差累积的问题。
+    </div>
+    <div class="paper-relevance">
+      闭环跟踪机制可应用于 Kimodo 生成运动的实时跟踪修正。
+    </div>
+  </div>
+
+  <h3>2.7 运动重定向</h3>
+
+  <div class="paper-card">
+    <div class="paper-title">Generalizing from References using a Multi-Task Reference and Goal-Driven RL Framework</div>
+    <div class="paper-authors">Chenxi Han, Yuheng Min, Zihao Huang, et al.</div>
+    <div class="paper-venue">arXiv 2026.02</div>
+    <a class="paper-link" href="https://arxiv.org/abs/2602.12656">arXiv:2602.12656</a>
+    <div class="paper-summary">
+      参数化运动生成器用于类人运动控制。通过参数化表示实现运动的灵活调整和重定向。
+    </div>
+    <div class="paper-relevance">
+      参数化运动表示可简化 G1&rarr;ELF3 的重定向过程。
+    </div>
+  </div>
+
+  <h3>2.8 文献关系图谱</h3>
+  <div class="highlight-box blue">
+    <strong>技术演进脉络：</strong>
+    <p style="margin-top:8px;">
+      <strong>AMP (2021)</strong> 开创对抗运动先验 &rarr; <strong>多AMP (2022)</strong> 扩展到多技能 &rarr;
+      <strong>Diffusion Policy (2023)</strong> 引入扩散策略表示 &rarr;
+      <strong>全身人形参考 (2024)</strong> 首次全尺寸人形 AMP &rarr;
+      <strong>SMP (2025)</strong> 可复用分数匹配先验 &rarr;
+      <strong>FastSAC (2025)</strong> 15分钟训练 &rarr;
+      <strong>GenPO (2025)</strong> 扩散+PPO &rarr;
+      <strong>RLPF (2025)</strong> 物理反馈闭环 &rarr;
+      <strong>Kimodo (2026)</strong> 大规模运扩散 &rarr;
+      <strong>运动生成+跟踪 (2026)</strong> 扩散生成+RL跟踪 &rarr;
+      <strong>本研究方向</strong>
+    </p>
+  </div>
+</section>
+
+<!-- Section 3: Technical Approach -->
+<section id="approach">
+  <h2>三、技术路线</h2>
+
+  <h3>3.1 整体架构</h3>
+  <p>
+    基于文献调研，我们提出以下技术路线，将 Kimodo 生成的运动轨迹作为参考信号训练 RL 策略：
+  </p>
+
+  <div class="pipeline">
+    <div class="step">文本/约束<br>输入</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">Kimodo<br>运动生成</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">G1运动<br>重定向到ELF3</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">MuJoCo<br>RL训练</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">域随机化<br>+系统辨识</div>
+    <div class="arrow">&rarr;</div>
+    <div class="step">ELF3<br>真实部署</div>
+  </div>
+
+  <h3>3.2 阶段一：运动参考数据准备</h3>
+
+  <h4>3.2.1 Kimodo 运动生成</h4>
+  <ul>
+    <li>使用 Kimodo 的文本到运动生成能力，生成多样化的参考运动轨迹</li>
+    <li>利用 Kimodo 的约束控制能力（关键帧、路径点）精细控制运动</li>
+    <li>生成的运动为 SMPL 格式，包含关节位置和旋转</li>
+    <li>批量生成覆盖不同运动模式（行走、跑步、转向、蹲起等）的运动库</li>
+  </ul>
+
+  <h4>3.2.2 运动重定向 (G1 &rarr; ELF3)</h4>
+  <ul>
+    <li><strong>关键挑战：</strong>Kimodo 默认生成 SMPL 人体运动，需先重定向到 Unitree G1，再从 G1 重定向到 ELF3</li>
+    <li>参考 GMR (General Motion Retargeting) 方法，减少重定向伪影</li>
+    <li>特别注意脚部接触约束——避免脚滑和穿插</li>
+    <li>验证重定向后运动的物理合理性</li>
+  </ul>
+
+  <h3>3.3 阶段二：RL 策略训练</h3>
+
+  <h4>3.3.1 动作空间设计</h4>
+  <div class="highlight-box">
+    <strong>推荐：残差动作空间 (Residual Action Space)</strong>
+    <p>参考 RobotDancing 和 HDMI 的设计，RL 策略输出残差关节目标而非绝对关节角度：</p>
+    <pre><code>a_t = a_kinematic + delta_a_rl
+# a_kinematic: 来自 Kimodo 运动的运动学目标
+# delta_a_rl: RL 策略学习的残差修正</code></pre>
+    <p>这种设计的优势：(1) 运动学目标提供了良好的初始化；(2) RL 只需学习修正动力学差异；(3) 更容易收敛且更鲁棒。</p>
+  </div>
+
+  <h4>3.3.2 观测空间设计</h4>
+  <p>参考 ConstrainedMimic 和 TWIST 的设计，观测应包含：</p>
+  <ul>
+    <li><strong>本体感知：</strong>关节角度、关节角速度、IMU（躯干方向和角速度）、足底力传感器</li>
+    <li><strong>参考运动：</strong>当前帧和未来 N 帧的参考关节目标（未来帧信息显著提升跟踪精度）</li>
+    <li><strong>命令信号：</strong>目标速度、转向角等高层命令</li>
+    <li><strong>历史信息：</strong>过去 K 帧的观测历史（提升鲁棒性）</li>
+  </ul>
+
+  <h4>3.3.3 奖励函数设计</h4>
+  <p>采用多目标分层奖励，参考 HuB 和 TWIST 的设计：</p>
+  <table>
+    <tr>
+      <th>奖励项</th>
+      <th>权重范围</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>关节位置跟踪</td>
+      <td>1.0 - 2.0</td>
+      <td>参考运动关节角度的 L2 距离</td>
+    </tr>
+    <tr>
+      <td>关节速度跟踪</td>
+      <td>0.1 - 0.5</td>
+      <td>参考运动关节角速度匹配</td>
+    </tr>
+    <tr>
+      <td>根节点位置跟踪</td>
+      <td>1.0 - 2.0</td>
+      <td>根节点高度和水平位置</td>
+    </tr>
+    <tr>
+      <td>根节点方向跟踪</td>
+      <td>0.5 - 1.0</td>
+      <td>躯干朝向四元数匹配</td>
+    </tr>
+    <tr>
+      <td>脚部接触奖励</td>
+      <td>0.5 - 1.5</td>
+      <td>摆动/支撑相的脚部接触状态</td>
+    </tr>
+    <tr>
+      <td>生存奖励</td>
+      <td>1.0</td>
+      <td>每步存活的基础奖励</td>
+    </tr>
+    <tr>
+      <td>动作平滑性</td>
+      <td>-0.01 ~ -0.1</td>
+      <td>惩罚关节抖动和不连续</td>
+    </tr>
+    <tr>
+      <td>能量消耗</td>
+      <td>-0.001 ~ -0.01</td>
+      <td>惩罚过大关节力矩</td>
+    </tr>
+    <tr>
+      <td>姿态正则化</td>
+      <td>-0.1 ~ -0.5</td>
+      <td>惩罚不自然的关节配置</td>
+    </tr>
+  </table>
+
+  <h4>3.3.4 RL 算法选择</h4>
+  <div class="highlight-box blue">
+    <strong>推荐方案（按优先级）：</strong>
+    <ol>
+      <li><strong>PPO (Proximal Policy Optimization)</strong>：最成熟稳定的 on-policy 算法，与 Isaac Sim/Gym 的大规模并行环境配合良好。GenPO 证明了扩散策略可与 PPO 结合。</li>
+      <li><strong>FastSAC / FastTD3</strong>：如果训练效率是瓶颈，参考"15分钟训练"方案使用 off-policy 方法，可在消费级 GPU 上极速训练。</li>
+      <li><strong>AMP + PPO</strong>：如果需要更自然的运动风格，可引入对抗运动先验作为额外奖励信号。</li>
+    </ol>
+  </div>
+
+  <h3>3.4 阶段三：Sim-to-Real 迁移</h3>
+
+  <h4>3.4.1 域随机化</h4>
+  <p>参考 FastSAC 和 HALO 的域随机化策略：</p>
+  <table>
+    <tr>
+      <th>随机化类别</th>
+      <th>参数范围</th>
+      <th>目的</th>
+    </tr>
+    <tr>
+      <td>物理参数</td>
+      <td>摩擦系数 &plusmn;30%、质量 &plusmn;20%、阻尼 &plusmn;30%</td>
+      <td>补偿建模误差</td>
+    </tr>
+    <tr>
+      <td>关节参数</td>
+      <td>关节偏移 &plusmn;5&deg;、力矩限制 &plusmn;10%</td>
+      <td>补偿装配误差</td>
+    </tr>
+    <tr>
+      <td>传感器噪声</td>
+      <td>IMU 高斯噪声、关节编码器噪声</td>
+      <td>模拟真实传感器</td>
+    </tr>
+    <tr>
+      <td>外部扰动</td>
+      <td>随机推力 10-50N、地形坡度 &plusmn;5&deg;</td>
+      <td>提升鲁棒性</td>
+    </tr>
+    <tr>
+      <td>延迟</td>
+      <td>控制延迟 10-40ms</td>
+      <td>模拟通信延迟</td>
+    </tr>
+  </table>
+
+  <h4>3.4.2 系统辨识</h4>
+  <p>参考 HALO 的可微仿真系统辨识方法：</p>
+  <ul>
+    <li>使用 MuJoCo XLA 的可微仿真能力，通过梯度优化校准 ELF3 模型参数</li>
+    <li>两阶段方法：先校准标称模型，再识别载荷变化</li>
+    <li>重点关注关节摩擦、阻尼、电机响应特性</li>
+  </ul>
+
+  <h4>3.4.3 Teacher-Student 蒸馏</h4>
+  <ul>
+    <li>Teacher 策略在仿真中使用特权信息（完整状态、地形信息等）训练</li>
+    <li>Student 策略仅使用可部署的观测（本体感知 + 参考运动）进行蒸馏</li>
+    <li>使用 DAgger 或在线蒸馏方法</li>
+  </ul>
+
+  <h3>3.5 阶段四：ELF3 部署</h3>
+  <ul>
+    <li>在 MuJoCo 中验证策略后，进行 sim-to-sim 迁移测试（MuJoCo &rarr; 其他仿真器验证鲁棒性）</li>
+    <li>在 ELF3 真实硬件上进行低速安全测试</li>
+    <li>逐步增加运动复杂度和速度</li>
+    <li>部署时使用柔顺控制模式（参考 SoftMimic）保护硬件</li>
+  </ul>
+</section>
+
+<!-- Section 4: Prerequisites -->
+<section id="prerequisites">
+  <h2>四、知识前置要求</h2>
+
+  <h3>4.1 强化学习基础</h3>
+  <table>
+    <tr>
+      <th>主题</th>
+      <th>推荐资源</th>
+      <th>优先级</th>
+    </tr>
+    <tr>
+      <td>RL 基本概念（MDP、策略、值函数）</td>
+      <td>Sutton & Barto《Reinforcement Learning: An Introduction》第 1-6 章</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>PPO 算法</td>
+      <td>Schulman et al. "Proximal Policy Optimization Algorithms" (arXiv:1707.06347)</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>SAC / TD3 算法</td>
+      <td>Haarnoja et al. SAC (arXiv:1801.01290)；Fujimoto et al. TD3 (arXiv:1802.09477)</td>
+      <td class="risk-medium">建议</td>
+    </tr>
+    <tr>
+      <td>模仿学习与 AMP</td>
+      <td>Peng et al. AMP (arXiv:2104.02180)；Hussein et al. "Imitation Learning: A Survey"</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>扩散模型基础</td>
+      <td>Ho et al. DDPM (arXiv:2006.11239)；Song et al. Score-Based SDE</td>
+      <td class="risk-medium">建议</td>
+    </tr>
+  </table>
+
+  <h3>4.2 仿真与机器人学</h3>
+  <table>
+    <tr>
+      <th>主题</th>
+      <th>推荐资源</th>
+      <th>优先级</th>
+    </tr>
+    <tr>
+      <td>MuJoCo 仿真</td>
+      <td>MuJoCo 官方文档 (mujoco.org)；Todorov et al. MuJoCo 论文</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>Isaac Sim / Isaac Lab</td>
+      <td>NVIDIA Isaac Lab 文档 (isaac-sim.github.io/IsaacLab)</td>
+      <td class="risk-medium">建议</td>
+    </tr>
+    <tr>
+      <td>人形机器人运动学</td>
+      <td>Craig《Introduction to Robotics》运动学章节；Featherstone《Rigid Body Dynamics》</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>域随机化</td>
+      <td>Tobin et al. "Domain Randomization for Transferring Neural Networks" (2017)</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>Sim-to-Real 迁移</td>
+      <td>Zhao et al. "Sim-to-Real: Learning Agile Locomotion For Quadruped Robots" (2020)</td>
+      <td class="risk-high">必修</td>
+    </tr>
+  </table>
+
+  <h3>4.3 工程技能</h3>
+  <table>
+    <tr>
+      <th>技能</th>
+      <th>工具/框架</th>
+      <th>优先级</th>
+    </tr>
+    <tr>
+      <td>PyTorch 深度学习</td>
+      <td>PyTorch 官方教程</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>RL 训练框架</td>
+      <td>RSL-RL (ETH Zurich)、Isaac Lab 内置 RL、Stable-Baselines3</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>MuJoCo Python API</td>
+      <td>mujoco Python 包</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>运动学与坐标变换</td>
+      <td>NumPy / SciPy 空间变换</td>
+      <td class="risk-high">必修</td>
+    </tr>
+    <tr>
+      <td>WandB 实验追踪</td>
+      <td>Weights & Biases 文档</td>
+      <td class="risk-medium">建议</td>
+    </tr>
+  </table>
+
+  <h3>4.4 学习路径建议</h3>
+  <div class="highlight-box green">
+    <strong>推荐学习顺序（4-6 周）：</strong>
+    <ol>
+      <li><strong>第 1-2 周：</strong>RL 基础 + PPO 算法 + PyTorch 实践。运行 Gym 环境中的简单控制任务。</li>
+      <li><strong>第 2-3 周：</strong>MuJoCo 基础 + 人形机器人环境搭建。理解关节、接触、力矩等概念。</li>
+      <li><strong>第 3-4 周：</strong>阅读 AMP 和运动跟踪论文。实现简单的运动跟踪策略（如行走跟踪）。</li>
+      <li><strong>第 4-5 周：</strong>域随机化 + sim-to-real 方法。在仿真中测试鲁棒性。</li>
+      <li><strong>第 5-6 周：</strong>整合 Kimodo 输出，搭建完整管线。第一个端到端实验。</li>
+    </ol>
+  </div>
+</section>
+
+<!-- Section 5: Getting Started -->
+<section id="getting-started">
+  <h2>五、入门指南</h2>
+
+  <h3>5.1 环境搭建</h3>
+
+  <h4>步骤 1：基础环境</h4>
+  <pre><code># 创建 conda 环境
+conda create -n sim2real python=3.10
+conda activate sim2real
+
+# 安装 PyTorch (CUDA 12.x)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+
+# 安装 MuJoCo
+pip install mujoco
+
+# 安装 RL 框架 (选择其一)
+pip install rsl-rl          # ETH Zurich 的 RL 库，常用于人形控制
+pip install stable-baselines3  # 通用 RL 库
+
+# 安装 Isaac Lab (可选，如需 GPU 并行仿真)
+# 参考 https://isaac-sim.github.io/IsaacLab/</code></pre>
+
+  <h4>步骤 2：ELF3 MuJoCo 环境</h4>
+  <pre><code># 假设 ELF3 的 MuJoCo 模型已存在
+# 检查模型文件
+ls /path/to/elf3/mujoco/model/
+
+# 基本环境测试
+python -c "
+import mujoco
+import mujoco.viewer
+model = mujoco.MjModel.from_xml_path('/path/to/elf3/scene.xml')
+data = mujoco.MjData(model)
+mujoco.mj_step(model, data)
+print('ELF3 model loaded successfully')
+print(f'Joints: {model.njnt}, Actuators: {model.nu}')
+"</code></pre>
+
+  <h4>步骤 3：Kimodo 运动数据</h4>
+  <pre><code># Kimodo 生成运动后，转换为 RL 训练可用格式
+# 参考运动数据结构:
+# {
+#   "joint_positions": (T, N_joints),  # 关节角度序列
+#   "joint_velocities": (T, N_joints), # 关节角速度序列
+#   "root_position": (T, 3),           # 根节点位置
+#   "root_rotation": (T, 4),           # 根节点四元数
+#   "contact_states": (T, N_feet),     # 脚部接触状态
+#   "fps": 30
+# }</code></pre>
+
+  <h3>5.2 最小可行实验</h3>
+  <p>以下是一个最小的运动跟踪 RL 训练框架伪代码：</p>
+
+  <pre><code>import torch
+import numpy as np
+
+class MotionTrackingEnv:
+    """基于 MuJoCo 的运动跟踪环境"""
+    def __init__(self, model_path, reference_motion, sim_dt=0.002, control_dt=0.02):
+        self.model = mujoco.MjModel.from_xml_path(model_path)
+        self.data = mujoco.MjData(self.model)
+        self.reference = reference_motion  # Kimodo 生成的运动
+        self.sim_dt = sim_dt
+        self.control_dt = control_dt
+        self.frame_skip = int(control_dt / sim_dt)
+
+    def get_obs(self):
+        """构建观测向量"""
+        # 本体感知
+        joint_pos = self.data.qpos[7:]  # 去掉根节点 7 自由度
+        joint_vel = self.data.qvel[6:]
+        torso_quat = self.data.qpos[3:7]
+        imu_gyro = self.data.sensor('gyro').data
+
+        # 参考运动 (当前帧 + 未来 N 帧)
+        ref_current = self.reference[self.current_frame]
+        ref_future = self.reference[self.current_frame:self.current_frame+5]
+
+        return np.concatenate([
+            joint_pos, joint_vel, torso_quat, imu_gyro,
+            ref_current.flatten(), ref_future.flatten()
+        ])
+
+    def compute_reward(self):
+        """计算多目标奖励"""
+        # 关节位置跟踪
+        pos_error = np.sum((self.data.qpos[7:] - self.reference[self.current_frame]) ** 2)
+        r_tracking = np.exp(-5.0 * pos_error)
+
+        # 存活奖励
+        r_alive = 1.0
+
+        # 摔倒惩罚
+        torso_height = self.data.qpos[2]
+        r_fall = -100.0 if torso_height < 0.5 else 0.0
+
+        return r_tracking + r_alive + r_fall
+
+    def step(self, action):
+        """执行一步"""
+        # 残差动作: 运动学目标 + RL 残差
+        ref_target = self.reference[self.current_frame]
+        target = ref_target + action  # 残差
+
+        # 设置关节目标 (位置控制)
+        self.data.ctrl[:] = target
+
+        # 仿真步进
+        for _ in range(self.frame_skip):
+            mujoco.mj_step(self.model, self.data)
+
+        self.current_frame += 1
+        obs = self.get_obs()
+        reward = self.compute_reward()
+        done = self.current_frame >= len(self.reference) - 1
+        return obs, reward, done, {}
+
+# PPO 训练 (使用 rsl-rl 或 stable-baselines3)
+from rsl_rl.runners import OnPolicyRunner
+runner = OnPolicyRunner(env, cfg, device="cuda:0")
+runner.learn(num_learning_iterations=1000)</code></pre>
+
+  <h3>5.3 第一个实验检查清单</h3>
+  <table>
+    <tr>
+      <th>步骤</th>
+      <th>验证标准</th>
+      <th>预期时间</th>
+    </tr>
+    <tr>
+      <td>1. ELF3 MuJoCo 环境加载</td>
+      <td>模型正确加载，关节数量正确，无穿透</td>
+      <td>1-2 天</td>
+    </tr>
+    <tr>
+      <td>2. Kimodo 运动重定向</td>
+      <td>重定向后运动无明显伪影，脚部接触正确</td>
+      <td>2-3 天</td>
+    </tr>
+    <tr>
+      <td>3. 简单站立平衡策略</td>
+      <td>策略学会在 MuJoCo 中保持站立 10 秒</td>
+      <td>1-2 天</td>
+    </tr>
+    <tr>
+      <td>4. 行走跟踪策略</td>
+      <td>跟踪 Kimodo 行走运动，关节位置误差 &lt; 15&deg;</td>
+      <td>3-5 天</td>
+    </tr>
+    <tr>
+      <td>5. 域随机化验证</td>
+      <td>在参数扰动下策略仍能正常跟踪</td>
+      <td>2-3 天</td>
+    </tr>
+  </table>
+</section>
+
+<!-- Section 6: Experiment Plan -->
+<section id="experiments">
+  <h2>六、实验计划</h2>
+
+  <h3>6.1 实验总体设计</h3>
+  <p>
+    实验分为四个阶段，从简到繁逐步推进。每个阶段都有明确的评估指标和成功标准。
+  </p>
+
+  <h3>6.2 实验一：基础运动跟踪</h3>
+  <table>
+    <tr>
+      <th>项目</th>
+      <th>内容</th>
+    </tr>
+    <tr>
+      <td>目标</td>
+      <td>验证 RL 策略能否在 MuJoCo 中跟踪 Kimodo 生成的简单运动</td>
+    </tr>
+    <tr>
+      <td>运动类型</td>
+      <td>行走（直线行走、转弯）、站立、蹲起</td>
+    </tr>
+    <tr>
+      <td>RL 算法</td>
+      <td>PPO（RSL-RL 实现）</td>
+    </tr>
+    <tr>
+      <td>动作空间</td>
+      <td>残差动作（相对运动学目标的偏移）</td>
+    </tr>
+    <tr>
+      <td>评估指标</td>
+      <td>关节位置跟踪误差 (deg)、根节点位置误差 (cm)、成功率 (%)</td>
+    </tr>
+    <tr>
+      <td>预期结果</td>
+      <td>行走跟踪误差 &lt; 10&deg;，站立 &gt; 30 秒，蹲起跟踪误差 &lt; 15&deg;</td>
+    </tr>
+    <tr>
+      <td>计算需求</td>
+      <td>单 GPU，约 30 分钟训练</td>
+    </tr>
+  </table>
+
+  <h3>6.3 实验二：动态运动跟踪</h3>
+  <table>
+    <tr>
+      <th>项目</th>
+      <th>内容</th>
+    </tr>
+    <tr>
+      <td>目标</td>
+      <td>跟踪高动态、长时域运动序列</td>
+    </tr>
+    <tr>
+      <td>运动类型</td>
+      <td>跑步、跳跃、快速转向、复杂舞蹈序列（LAFAN1 数据集风格）</td>
+    </tr>
+    <tr>
+      <td>RL 算法</td>
+      <td>PPO + 对抗运动先验 (AMP) 奖励</td>
+    </tr>
+    <tr>
+      <td>关键技术</td>
+      <td>残差动作空间、未来帧信息、课程学习（从慢到快）</td>
+    </tr>
+    <tr>
+      <td>评估指标</td>
+      <td>关节跟踪误差、脚滑面积、运动自然度（FID/KID）、连续跟踪时长</td>
+    </tr>
+    <tr>
+      <td>预期结果</td>
+      <td>跑步跟踪误差 &lt; 15&deg;，连续跟踪 &gt; 60 秒无摔倒</td>
+    </tr>
+    <tr>
+      <td>计算需求</td>
+      <td>1-2 GPU，约 1-2 小时训练</td>
+    </tr>
+  </table>
+
+  <h3>6.4 实验三：Sim-to-Real 迁移验证</h3>
+  <table>
+    <tr>
+      <th>项目</th>
+      <th>内容</th>
+    </tr>
+    <tr>
+      <td>目标</td>
+      <td>验证策略在域随机化后对物理参数变化的鲁棒性</td>
+    </tr>
+    <tr>
+      <td>域随机化</td>
+      <td>摩擦、质量、阻尼、关节偏移、传感器噪声、外力扰动</td>
+    </tr>
+    <tr>
+      <td>系统辨识</td>
+      <td>使用 MuJoCo 可微仿真校准 ELF3 模型参数</td>
+    </tr>
+    <tr>
+      <td>评估指标</td>
+      <td>参数扰动下的跟踪误差退化率、Sim-to-Sim 迁移成功率</td>
+    </tr>
+    <tr>
+      <td>预期结果</td>
+      <td>在 &plusmn;20% 参数扰动下跟踪误差增加 &lt; 30%</td>
+    </tr>
+    <tr>
+      <td>计算需求</td>
+      <td>1-2 GPU，约 2-3 小时训练</td>
+    </tr>
+  </table>
+
+  <h3>6.5 实验四：端到端管线集成</h3>
+  <table>
+    <tr>
+      <th>项目</th>
+      <th>内容</th>
+    </tr>
+    <tr>
+      <td>目标</td>
+      <td>验证从文本输入到 ELF3 仿真跟踪的完整管线</td>
+    </tr>
+    <tr>
+      <td>管线</td>
+      <td>文本 &rarr; Kimodo &rarr; 重定向 &rarr; RL 策略 &rarr; ELF3 仿真跟踪</td>
+    </tr>
+    <tr>
+      <td>评估指标</td>
+      <td>端到端跟踪误差、运动自然度、命令跟随准确率</td>
+    </tr>
+    <tr>
+      <td>预期结果</td>
+      <td>文本描述的行走/转身/蹲起指令成功执行率 &gt; 80%</td>
+    </tr>
+    <tr>
+      <td>计算需求</td>
+      <td>2-3 GPU（Kimodo 推理 + RL 训练），约半天</td>
+    </tr>
+  </table>
+
+  <h3>6.6 消融实验矩阵</h3>
+  <table>
+    <tr>
+      <th>消融变量</th>
+      <th>对比方案</th>
+      <th>评估指标</th>
+    </tr>
+    <tr>
+      <td>动作空间</td>
+      <td>绝对角度 vs 残差动作 vs 速度控制</td>
+      <td>跟踪误差、收敛速度</td>
+    </tr>
+    <tr>
+      <td>奖励函数</td>
+      <td>纯跟踪 vs 跟踪+AMP vs 跟踪+自然度</td>
+      <td>跟踪精度、运动自然度</td>
+    </tr>
+    <tr>
+      <td>RL 算法</td>
+      <td>PPO vs SAC vs TD3</td>
+      <td>训练效率、最终性能</td>
+    </tr>
+    <tr>
+      <td>参考运动源</td>
+      <td>Kimodo vs 运动捕捉 vs 混合</td>
+      <td>运动多样性、跟踪难度</td>
+    </tr>
+    <tr>
+      <td>未来帧信息</td>
+      <td>无未来帧 vs 5帧 vs 10帧 vs 20帧</td>
+      <td>跟踪精度、预测能力</td>
+    </tr>
+    <tr>
+      <td>域随机化强度</td>
+      <td>无 vs 轻度 vs 中度 vs 重度</td>
+      <td>Sim-to-Real 迁移性能</td>
+    </tr>
+  </table>
+</section>
+
+<!-- Section 7: Benchmarks -->
+<section id="benchmarks">
+  <h2>七、预期结果与基准</h2>
+
+  <h3>7.1 定量基准</h3>
+  <p>基于文献中的报告结果，设定以下基准目标：</p>
+
+  <table>
+    <tr>
+      <th>指标</th>
+      <th>文献最佳</th>
+      <th>本研究目标</th>
+      <th>可接受下限</th>
+    </tr>
+    <tr>
+      <td>行走关节跟踪误差</td>
+      <td>~5&deg; (RobotDancing)</td>
+      <td>&lt; 8&deg;</td>
+      <td>&lt; 12&deg;</td>
+    </tr>
+    <tr>
+      <td>跑步关节跟踪误差</td>
+      <td>~10&deg; (RobotDancing)</td>
+      <td>&lt; 15&deg;</td>
+      <td>&lt; 20&deg;</td>
+    </tr>
+    <tr>
+      <td>连续跟踪时长（行走）</td>
+      <td>&gt; 5 分钟</td>
+      <td>&gt; 2 分钟</td>
+      <td>&gt; 30 秒</td>
+    </tr>
+    <tr>
+      <td>连续跟踪时长（动态）</td>
+      <td>&gt; 2 分钟</td>
+      <td>&gt; 60 秒</td>
+      <td>&gt; 15 秒</td>
+    </tr>
+    <tr>
+      <td>脚滑面积</td>
+      <td>极低</td>
+      <td>&lt; 5% 步态周期</td>
+      <td>&lt; 15%</td>
+    </tr>
+    <tr>
+      <td>训练时间（单运动）</td>
+      <td>15 分钟 (FastSAC)</td>
+      <td>&lt; 30 分钟</td>
+      <td>&lt; 2 小时</td>
+    </tr>
+    <tr>
+      <td>域随机化下性能退化</td>
+      <td>&lt; 10%</td>
+      <td>&lt; 20%</td>
+      <td>&lt; 40%</td>
+    </tr>
+    <tr>
+      <td>端到端命令执行率</td>
+      <td>--</td>
+      <td>&gt; 80%</td>
+      <td>&gt; 60%</td>
+    </tr>
+  </table>
+
+  <h3>7.2 定性评估标准</h3>
+  <ul>
+    <li><strong>运动自然度：</strong>通过视频回放人工评估，运动应看起来自然流畅，无明显抖动或不自然姿态</li>
+    <li><strong>跟踪保真度：</strong>策略执行的运动应与 Kimodo 参考运动在视觉上高度一致</li>
+    <li><strong>鲁棒性：</strong>策略应对轻微推扰和地面变化具有恢复能力</li>
+    <li><strong>安全性：</strong>关节力矩应在安全范围内，无突然的大力矩冲击</li>
+  </ul>
+
+  <h3>7.3 与现有工作的对比</h3>
+  <div class="highlight-box">
+    <strong>对比基线选择：</strong>
+    <ul>
+      <li><strong>运动学回放：</strong>直接执行 Kimodo 重定向后的运动学目标（不使用 RL），预期在 MuJoCo 中因动力学不可行而失败</li>
+      <li><strong>AMP-only：</strong>使用 AMP 对抗先验但不使用 Kimodo 参考运动，预期运动自然但跟踪精度低</li>
+      <li><strong>纯跟踪 RL：</strong>使用简单 L2 跟踪奖励但不使用残差动作空间，预期收敛慢且抖动大</li>
+      <li><strong>Oracle：</strong>使用仿真中的完美状态信息，作为性能上界参考</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Section 8: Risks -->
+<section id="risks">
+  <h2>八、风险与缓解</h2>
+
+  <table class="risk-matrix">
+    <tr>
+      <th>风险</th>
+      <th>可能性</th>
+      <th>影响</th>
+      <th>缓解措施</th>
+    </tr>
+    <tr>
+      <td><strong>重定向质量不足</strong><br>G1&rarr;ELF3 重定向产生严重伪影</td>
+      <td class="risk-medium">中</td>
+      <td class="risk-high">高</td>
+      <td>
+        1. 参考 GMR 方法优化重定向管线<br>
+        2. 引入接触感知的重定向约束<br>
+        3. 人工审核重定向结果，过滤低质量运动
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Sim-to-Real Gap</strong><br>仿真策略在真实硬件上表现差</td>
+      <td class="risk-high">高</td>
+      <td class="risk-high">高</td>
+      <td>
+        1. 使用 MuJoCo 可微仿真进行精确系统辨识<br>
+        2. 大范围域随机化覆盖参数不确定性<br>
+        3. Teacher-Student 蒸馏处理观测差异<br>
+        4. 分阶段部署：先低速、简单运动，逐步提升
+      </td>
+    </tr>
+    <tr>
+      <td><strong>训练不稳定</strong><br>RL 训练不收敛或奖励黑客</td>
+      <td class="risk-medium">中</td>
+      <td class="risk-medium">中</td>
+      <td>
+        1. 使用成熟的 PPO 实现（RSL-RL）<br>
+        2. 仔细调优奖励权重，使用奖励缩放<br>
+        3. 课程学习：从简单到复杂运动<br>
+        4. 监控 WandB 中的奖励分解和关节状态
+      </td>
+    </tr>
+    <tr>
+      <td><strong>ELF3 模型不准确</strong><br>MuJoCo 模型与真实机器人差异大</td>
+      <td class="risk-medium">中</td>
+      <td class="risk-high">高</td>
+      <td>
+        1. 收集 ELF3 的 CAD 模型和电机规格<br>
+        2. 使用实物测量校准关键参数（质量、惯量）<br>
+        3. HALO 风格的可微系统辨识<br>
+        4. 从简单任务开始验证模型准确性
+      </td>
+    </tr>
+    <tr>
+      <td><strong>计算资源不足</strong><br>大规模并行仿真训练受限</td>
+      <td class="risk-low">低</td>
+      <td class="risk-medium">中</td>
+      <td>
+        1. RTX 5090 32GB 显存足以支持 4096+ 并行环境<br>
+        2. FastSAC 方案在单 GPU 上仅需 15 分钟<br>
+        3. 使用 Isaac Lab 的 GPU 仿真加速
+      </td>
+    </tr>
+    <tr>
+      <td><strong>运动多样性不足</strong><br>Kimodo 生成的运动覆盖不全</td>
+      <td class="risk-low">低</td>
+      <td class="risk-medium">中</td>
+      <td>
+        1. 利用 Kimodo 的文本控制能力批量生成多样化运动<br>
+        2. 结合真实动捕数据补充<br>
+        3. 使用 AMP 风格奖励允许策略在参考运动基础上泛化
+      </td>
+    </tr>
+    <tr>
+      <td><strong>ELF3 关节限制</strong><br>ELF3 的关节活动范围/力矩限制</td>
+      <td class="risk-medium">中</td>
+      <td class="risk-medium">中</td>
+      <td>
+        1. 在重定向阶段严格遵守 ELF3 关节限位<br>
+        2. RL 训练中加入关节限位惩罚<br>
+        3. 使用 ConstrainedMimic 的 CBF 方法进行运行时约束
+      </td>
+    </tr>
+    <tr>
+      <td><strong>硬件安全</strong><br>真实部署中损坏机器人</td>
+      <td class="risk-medium">中</td>
+      <td class="risk-high">高</td>
+      <td>
+        1. 参考 SoftMimic 的柔顺控制方法<br>
+        2. 设置关节力矩安全限制<br>
+        3. 在吊架/保护装置下先进行测试<br>
+        4. 紧急停止机制
+      </td>
+    </tr>
+  </table>
+
+  <h3>8.1 里程碑与回退计划</h3>
+  <div class="highlight-box red">
+    <strong>关键决策点：</strong>
+    <ul>
+      <li><strong>里程碑 1（第 2 周）：</strong>如果 ELF3 MuJoCo 环境中行走跟踪误差 &gt; 25&deg;，需要重新审查重定向质量和奖励函数设计。</li>
+      <li><strong>里程碑 2（第 4 周）：</strong>如果 sim-to-sim 迁移成功率 &lt; 50%，需要加强域随机化或改进系统辨识。</li>
+      <li><strong>里程碑 3（第 6 周）：</strong>如果端到端管线命令执行率 &lt; 50%，考虑简化目标——先聚焦单个运动模式的高质量跟踪。</li>
+      <li><strong>回退选项：</strong>如果 ELF3 真实部署风险过高，可先在 Unitree G1 上验证管线，再迁移到 ELF3。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Section 9: References -->
+<section id="references">
+  <h2>九、参考文献</h2>
+
+  <ol class="references-list">
+    <li id="ref-kimodo">
+      Rempe, D., Petrovich, M., Yuan, Y., Zhang, H., Peng, X. B., et al. (2026).
+      <strong>Kimodo: Scaling Controllable Human Motion Generation.</strong>
+      <em>arXiv:2603.15546</em>.
+      <a href="https://arxiv.org/abs/2603.15546">https://arxiv.org/abs/2603.15546</a>
+    </li>
+    <li id="ref-amp">
+      Peng, X. B., Ma, Z., Abbeel, P., Levine, S., & Kanazawa, A. (2021).
+      <strong>AMP: Adversarial Motion Priors for Stylized Physics-Based Character Control.</strong>
+      <em>ACM SIGGRAPH 2021</em>.
+      <a href="https://arxiv.org/abs/2104.02180">https://arxiv.org/abs/2104.02180</a>
+    </li>
+    <li id="ref-diffusion-policy">
+      Chi, C., Xu, Z., Feng, S., Cousineau, E., Du, Y., et al. (2023).
+      <strong>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion.</strong>
+      <em>RSS 2023 / IJRR 2024</em>.
+      <a href="https://arxiv.org/abs/2303.04137">https://arxiv.org/abs/2303.04137</a>
+    </li>
+    <li id="ref-wholebody-locomotion">
+      Zhang, Z., Wen, K., Xu, M., He, J., Li, C., Miki, T., Schwarke, C., Zhang, C., Peng, X. B., & Hutter, M. (2026).
+      <strong>Learning Whole-Body Humanoid Locomotion via Motion Generation and Motion Tracking.</strong>
+      <em>arXiv:2604.17335</em>.
+      <a href="https://arxiv.org/abs/2604.17335">https://arxiv.org/abs/2604.17335</a>
+    </li>
+    <li id="ref-15min">
+      Seo, Y., Sferrazza, C., Chen, J., Shi, G., Duan, R., & Abbeel, P. (2025).
+      <strong>Learning Sim-to-Real Humanoid Locomotion in 15 Minutes.</strong>
+      <em>arXiv:2512.01996</em>.
+      <a href="https://arxiv.org/abs/2512.01996">https://arxiv.org/abs/2512.01996</a>
+    </li>
+    <li id="ref-robotdancing">
+      Sun, Z., Peng, Y., Meng, Y., Li, X., Huang, B.-S., Bing, Z., Wang, X., & Knoll, A. (2025).
+      <strong>RobotDancing: Residual-Action Reinforcement Learning Enables Robust Long-Horizon Humanoid Motion Tracking.</strong>
+      <em>arXiv:2509.20717</em>.
+      <a href="https://arxiv.org/abs/2509.20717">https://arxiv.org/abs/2509.20717</a>
+    </li>
+    <li id="ref-constrained-mimic">
+      Morton, D., Mohnot, P., & Pavone, M. (2026).
+      <strong>Constrained Whole-Body Tracking for Humanoid Robots.</strong>
+      <em>arXiv:2606.00374</em>.
+      <a href="https://arxiv.org/abs/2606.00374">https://arxiv.org/abs/2606.00374</a>
+    </li>
+    <li id="ref-twist">
+      Ze, Y., Chen, Z., Ara&uacute;jo, J. P., Cao, Z., Peng, X. B., Wu, J., & Liu, C. K. (2025).
+      <strong>TWIST: Teleoperated Whole-Body Imitation System.</strong>
+      <em>arXiv:2505.02833</em>.
+      <a href="https://arxiv.org/abs/2505.02833">https://arxiv.org/abs/2505.02833</a>
+    </li>
+    <li id="ref-retargeting">
+      Araujo, J. P., Ze, Y., Xu, P., Wu, J., & Liu, C. K. (2025).
+      <strong>Retargeting Matters: General Motion Retargeting for Humanoid Motion Tracking.</strong>
+      <em>arXiv:2510.02252</em>.
+      <a href="https://arxiv.org/abs/2510.02252">https://arxiv.org/abs/2510.02252</a>
+    </li>
+    <li id="ref-softmimic">
+      Margolis, G. B., Wang, M., Fey, N., & Agrawal, P. (2025).
+      <strong>SoftMimic: Learning Compliant Whole-body Control from Examples.</strong>
+      <em>arXiv:2510.17792</em>.
+      <a href="https://arxiv.org/abs/2510.17792">https://arxiv.org/abs/2510.17792</a>
+    </li>
+    <li id="ref-smp">
+      Mu, Y., Zhang, Z., Shi, Y., Yang, D., Matsumoto, M., et al. (2025).
+      <strong>SMP: Reusable Score-Matching Motion Priors for Physics-Based Character Control.</strong>
+      <em>ACM Transactions on Graphics (SIGGRAPH 2026)</em>.
+      <a href="https://arxiv.org/abs/2512.03028">https://arxiv.org/abs/2512.03028</a>
+    </li>
+    <li id="ref-rlpf">
+      Yue, J., Wang, Z., Wang, Y., Zeng, W., Wang, J., et al. (2025).
+      <strong>RL from Physical Feedback: Aligning Large Motion Models with Humanoid Control.</strong>
+      <em>arXiv:2506.12769</em>.
+      <a href="https://arxiv.org/abs/2506.12769">https://arxiv.org/abs/2506.12769</a>
+    </li>
+    <li id="ref-hub">
+      Zhang, T., Zheng, B., Nai, R., Hu, Y., Wang, Y.-J., et al. (2025).
+      <strong>HuB: Learning Extreme Humanoid Balance.</strong>
+      <em>CoRL 2025 (Oral)</em>.
+      <a href="https://arxiv.org/abs/2505.07294">https://arxiv.org/abs/2505.07294</a>
+    </li>
+    <li id="ref-halo">
+      Wang, X., Zhang, C., Xie, W., Yu, C., Song, W., Bai, C., & Zhu, S. (2026).
+      <strong>HALO: Closing Sim-to-Real Gap for Heavy-loaded Humanoid Agile Motion Skills via Differentiable Simulation.</strong>
+      <em>arXiv:2603.15084</em>.
+      <a href="https://arxiv.org/abs/2603.15084">https://arxiv.org/abs/2603.15084</a>
+    </li>
+    <li id="ref-bfm-zero">
+      Li, Y., Luo, Z., Zhang, T., Dai, C., et al. (2025).
+      <strong>BFM-Zero: A Promptable Behavioral Foundation Model for Humanoid Control Using Unsupervised Reinforcement Learning.</strong>
+      <em>arXiv:2511.04131</em>.
+      <a href="https://arxiv.org/abs/2511.04131">https://arxiv.org/abs/2511.04131</a>
+    </li>
+    <li id="ref-genpo">
+      Ding, S., Hu, K., Zhong, S., Luo, H., Zhang, W., Wang, J., Wang, J., & Shi, Y. (2025).
+      <strong>GenPO: Generative Diffusion Models Meet On-Policy Reinforcement Learning.</strong>
+      <em>NeurIPS 2025</em>.
+      <a href="https://arxiv.org/abs/2505.18763">https://arxiv.org/abs/2505.18763</a>
+    </li>
+    <li id="ref-dreampolicy">
+      Fan, Y., Gui, T., Ji, K., Ding, S., Zhang, C., et al. (2025).
+      <strong>DreamPolicy: A Unified World-model Policy for Scalable Humanoid Locomotion.</strong>
+      <em>arXiv:2505.18780</em>.
+      <a href="https://arxiv.org/abs/2505.18780">https://arxiv.org/abs/2505.18780</a>
+    </li>
+    <li id="ref-adam-locomotion">
+      Zhang, Q., Cui, P., Yan, D., Sun, J., Duan, Y., et al. (2024).
+      <strong>Whole-body Humanoid Robot Locomotion with Human Reference.</strong>
+      <em>arXiv:2402.18294</em>.
+      <a href="https://arxiv.org/abs/2402.18294">https://arxiv.org/abs/2402.18294</a>
+    </li>
+    <li id="ref-hdmi">
+      Weng, H., Li, Y., Sobanbabu, N., Wang, Z., Luo, Z., He, T., Ramanan, D., & Shi, G. (2025).
+      <strong>HDMI: Learning Interactive Humanoid Whole-Body Control from Human Videos.</strong>
+      <em>arXiv:2509.16757</em>.
+      <a href="https://arxiv.org/abs/2509.16757">https://arxiv.org/abs/2509.16757</a>
+    </li>
+    <li id="ref-opt2skill">
+      Liu, F., Gu, Z., Cai, Y., Zhou, Z., Jung, H., et al. (2024).
+      <strong>Opt2Skill: Imitating Dynamically-feasible Whole-Body Trajectories for Versatile Humanoid Loco-Manipulation.</strong>
+      <em>arXiv:2409.20514</em>.
+      <a href="https://arxiv.org/abs/2409.20514">https://arxiv.org/abs/2409.20514</a>
+    </li>
+    <li id="ref-multi-amp">
+      Vollenweider, E., Bjelonic, M., Klemm, V., Rudin, N., Lee, J., & Hutter, M. (2022).
+      <strong>Advanced Skills through Multiple Adversarial Motion Priors in Reinforcement Learning.</strong>
+      <em>arXiv:2203.14912</em>.
+      <a href="https://arxiv.org/abs/2203.14912">https://arxiv.org/abs/2203.14912</a>
+    </li>
+    <li id="ref-generalizing-refs">
+      Wang, J., Mungai, M. E., Li, H., Sleiman, J. P., Hodgins, J., & Farshidian, F. (2026).
+      <strong>Generalizing from References using a Multi-Task Reference and Goal-Driven RL Framework.</strong>
+      <em>arXiv:2602.20375</em>.
+      <a href="https://arxiv.org/abs/2602.20375">https://arxiv.org/abs/2602.20375</a>
+    </li>
+    <li id="ref-clot">
+      Zhu, T., Cai, G., Yang, Z., Ren, G., et al. (2026).
+      <strong>CLOT: Closed-Loop Global Motion Tracking for Whole-Body Humanoid Teleoperation.</strong>
+      <em>arXiv:2602.15060</em>.
+      <a href="https://arxiv.org/abs/2602.15060">https://arxiv.org/abs/2602.15060</a>
+    </li>
+    <li id="ref-domain-rand">
+      Tobin, J., Fong, R., Ray, A., Schneider, J., Zaremba, W., & Abbeel, P. (2017).
+      <strong>Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World.</strong>
+      <em>IROS 2017</em>.
+    </li>
+    <li id="ref-ppo">
+      Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017).
+      <strong>Proximal Policy Optimization Algorithms.</strong>
+      <em>arXiv:1707.06347</em>.
+    </li>
+  </ol>
+</section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p>Sim-to-Real RL Tracking 研究报告 | 基于 Kimodo 运动扩散模型的人形机器人强化学习控制</p>
+    <p>生成日期: 2026 年 6 月 | 研究分支: feature/sound-control-mvp</p>
+    <p>共引用 25 篇论文，覆盖 2021-2026 年最新研究成果</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -3,865 +3,1877 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>约束增强研究报告 — 为 Kimodo 添加物理约束与环境交互约束</title>
+<title>运动扩散模型约束增强技术研究报告</title>
 <style>
-:root {
-  --primary: #1a365d;
-  --accent: #2b6cb0;
-  --bg: #f7fafc;
-  --card-bg: #ffffff;
-  --text: #2d3748;
-  --text-light: #718096;
-  --border: #e2e8f0;
-  --highlight: #ebf8ff;
-  --warn-bg: #fffaf0;
-  --warn-border: #ed8936;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.85;
-  padding: 2rem 1rem;
-}
-.container { max-width: 960px; margin: 0 auto; }
-header {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: #fff;
-  padding: 3rem 2rem;
-  border-radius: 12px;
-  margin-bottom: 2.5rem;
-}
-header h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
-header .subtitle { font-size: 1rem; opacity: 0.9; }
-header .meta { font-size: 0.85rem; opacity: 0.75; margin-top: 1rem; }
-h2 {
-  font-size: 1.35rem;
-  color: var(--primary);
-  border-bottom: 3px solid var(--accent);
-  padding-bottom: 0.4rem;
-  margin: 2.5rem 0 1.2rem;
-}
-h3 { font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.6rem; }
-h4 { font-size: 1rem; color: var(--primary); margin: 1.2rem 0 0.4rem; }
-p, li { margin-bottom: 0.6rem; }
-ul, ol { padding-left: 1.5rem; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0 1.5rem;
-  font-size: 0.9rem;
-}
-th, td {
-  border: 1px solid var(--border);
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-}
-th { background: var(--primary); color: #fff; font-weight: 600; }
-tr:nth-child(even) { background: var(--highlight); }
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.25rem 1.5rem;
-  margin: 1rem 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-.card h4 { margin-top: 0; }
-.warn {
-  background: var(--warn-bg);
-  border-left: 4px solid var(--warn-border);
-  padding: 1rem 1.25rem;
-  margin: 1rem 0;
-  border-radius: 0 8px 8px 0;
-}
-.highlight-box {
-  background: var(--highlight);
-  border-left: 4px solid var(--accent);
-  padding: 1rem 1.25rem;
-  margin: 1rem 0;
-  border-radius: 0 8px 8px 0;
-}
-code {
-  background: #edf2f7;
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.88em;
-  font-family: "Fira Code", "Consolas", monospace;
-}
-pre {
-  background: #1a202c;
-  color: #e2e8f0;
-  padding: 1rem 1.25rem;
-  border-radius: 8px;
-  overflow-x: auto;
-  margin: 1rem 0;
-  font-size: 0.85rem;
-  line-height: 1.6;
-}
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-.author { font-style: italic; color: var(--text-light); }
-.venue { font-weight: 600; color: var(--accent); }
-.ref-list { list-style: decimal; }
-.ref-list li { margin-bottom: 0.8rem; font-size: 0.9rem; }
-.toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
-.toc h3 { margin-top: 0; }
-.toc ol { padding-left: 1.2rem; }
-.toc li { margin-bottom: 0.3rem; font-size: 0.95rem; }
-.section-num { color: var(--accent); margin-right: 0.3rem; }
-.step-num {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  width: 1.6rem;
-  height: 1.6rem;
-  text-align: center;
-  border-radius: 50%;
-  font-size: 0.8rem;
-  line-height: 1.6rem;
-  margin-right: 0.5rem;
-}
-footer {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid var(--border);
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--text-light);
-}
+  :root {
+    --primary: #1a365d;
+    --primary-light: #2a4a7f;
+    --accent: #3182ce;
+    --accent-light: #63b3ed;
+    --bg: #f7fafc;
+    --bg-card: #ffffff;
+    --text: #2d3748;
+    --text-light: #718096;
+    --border: #e2e8f0;
+    --success: #38a169;
+    --warning: #d69e2e;
+    --danger: #e53e3e;
+    --code-bg: #edf2f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.9;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  header .subtitle {
+    font-size: 1.05rem;
+    opacity: 0.85;
+    font-weight: 400;
+    position: relative;
+  }
+
+  header .meta {
+    margin-top: 1.2rem;
+    font-size: 0.88rem;
+    opacity: 0.7;
+    position: relative;
+  }
+
+  /* Navigation */
+  nav {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+  }
+
+  nav li a {
+    display: block;
+    padding: 0.75rem 1.1rem;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+
+  nav li a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(49, 130, 206, 0.04);
+  }
+
+  /* Main content */
+  main {
+    padding: 2.5rem 0 4rem;
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    color: var(--primary);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    color: var(--primary-light);
+    margin: 1.8rem 0 0.8rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 1.05rem;
+    color: var(--accent);
+    margin: 1.2rem 0 0.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    text-align: justify;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .card-venue {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .card-year {
+    display: inline-block;
+    background: var(--code-bg);
+    color: var(--text-light);
+    font-size: 0.75rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 3px;
+    margin-left: 0.3rem;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .card-authors {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  thead {
+    background: var(--primary);
+    color: white;
+  }
+
+  th {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.88rem;
+  }
+
+  td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tbody tr:hover {
+    background: rgba(49, 130, 206, 0.03);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 0.8rem 0 1rem 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.4rem;
+  }
+
+  /* Code */
+  code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.88em;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: var(--danger);
+  }
+
+  pre {
+    background: var(--primary);
+    color: #e2e8f0;
+    padding: 1.2rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* Highlight boxes */
+  .box {
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin: 1.2rem 0;
+    border-left: 4px solid;
+  }
+
+  .box-info {
+    background: #ebf8ff;
+    border-color: var(--accent);
+  }
+
+  .box-success {
+    background: #f0fff4;
+    border-color: var(--success);
+  }
+
+  .box-warning {
+    background: #fffff0;
+    border-color: var(--warning);
+  }
+
+  .box-danger {
+    background: #fff5f5;
+    border-color: var(--danger);
+  }
+
+  .box-title {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  /* Metrics grid */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .metric-label {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.3rem;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent-light);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.55rem;
+    top: 0.5rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--accent-light);
+  }
+
+  .timeline-date {
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 600;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .timeline-title {
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0.2rem 0;
+  }
+
+  .timeline-desc {
+    font-size: 0.92rem;
+    color: var(--text-light);
+  }
+
+  /* Flowchart */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .flow-step {
+    background: var(--primary);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 500;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .flow-arrow {
+    color: var(--accent);
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  /* Reference list */
+  .ref-list {
+    counter-reset: ref-counter;
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .ref-list li {
+    counter-increment: ref-counter;
+    padding-left: 2.5rem;
+    position: relative;
+    margin-bottom: 0.8rem;
+    font-size: 0.92rem;
+  }
+
+  .ref-list li::before {
+    content: '[' counter(ref-counter) ']';
+    position: absolute;
+    left: 0;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Footer */
+  footer {
+    background: var(--primary);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 2rem 0;
+    font-size: 0.85rem;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  footer strong {
+    color: white;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container { padding: 0 1rem; }
+    header h1 { font-size: 1.6rem; }
+    nav ul { flex-direction: column; align-items: center; }
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+
+  /* Print styles */
+  @media print {
+    nav { display: none; }
+    header { background: #333; }
+    .card { break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
-<div class="container">
 
 <header>
-  <h1>约束增强研究报告</h1>
-  <div class="subtitle">为 Kimodo 运动扩散模型添加物理约束与环境交互约束</div>
-  <div class="meta">
-    研究方向：Constraint Enhancement — Adding Physics-Based and Environment-Interaction Constraints to Kimodo<br>
-    基座模型：Kimodo (NVIDIA, arXiv:2603.15546)<br>
-    报告日期：2026 年 6 月
+  <div class="container">
+    <h1>运动扩散模型的约束增强技术研究</h1>
+    <p class="subtitle">Constraint Enhancement for Motion Diffusion Models: A Comprehensive Survey and Technical Roadmap</p>
+    <p class="meta">基于 Kimodo (NVIDIA, arXiv:2603.15546) 的物理约束扩展方案 &nbsp;|&nbsp; 2026 年 6 月</p>
   </div>
 </header>
 
-<!-- 目录 -->
-<div class="toc">
-  <h3>目 录</h3>
+<nav>
+  <div class="container">
+    <ul>
+      <li><a href="#sec-overview">概述</a></li>
+      <li><a href="#sec-survey">文献综述</a></li>
+      <li><a href="#sec-technical">技术方案</a></li>
+      <li><a href="#sec-prerequisites">知识前置</a></li>
+      <li><a href="#sec-guide">入门指南</a></li>
+      <li><a href="#sec-experiments">实验计划</a></li>
+      <li><a href="#sec-results">预期结果</a></li>
+      <li><a href="#sec-risks">风险与缓解</a></li>
+      <li><a href="#sec-refs">参考文献</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- Section 1: 概述 -->
+<!-- ============================================================ -->
+<section id="sec-overview">
+<h2>一、概述</h2>
+
+<h3>1.1 研究背景</h3>
+<p>
+人体运动生成是计算机视觉、计算机图形学和机器人学的核心问题之一。近年来，基于扩散模型的运动生成方法（如 MDM [1]、MotionDiffuse [2]、MLD [3]）在文本驱动运动生成、动作条件生成等任务上取得了突破性进展。这些方法通过在大规模运动捕捉数据集上训练去噪扩散概率模型，能够生成高质量、多样化的自然人体运动序列。
+</p>
+<p>
+然而，现有运动扩散模型在推理阶段普遍缺乏对物理约束的显式建模。生成的运动可能存在以下问题：（1）脚部穿透地面或滑步现象；（2）违反力学平衡条件，导致物理不可行；（3）无法处理环境碰撞约束；（4）缺乏关节力矩和接触力的约束。这些问题严重限制了运动生成结果在物理仿真、机器人控制等下游任务中的可用性。
+</p>
+<p>
+NVIDIA 提出的 Kimodo（Kinematic Motion Diffusion, arXiv:2603.15546）[4] 是目前最大规模的运动学扩散模型之一，基于 700 小时光学动作捕捉数据训练，支持文本提示、全身姿态关键帧、末端执行器位置/旋转、2D 路径点和 2D 路径等丰富的运动学控制输入。Kimodo 采用两阶段去噪架构，将根节点和身体预测解耦以最小化运动伪影。然而，Kimodo 目前仅支持运动学层面的约束，尚未集成物理约束。
+</p>
+
+<h3>1.2 研究动机</h3>
+<p>
+本研究旨在为 Kimodo 等运动扩散模型系统性地引入物理约束增强能力，具体包括：
+</p>
+<ul>
+  <li><strong>碰撞避免约束</strong>：确保生成的运动不与环境物体发生穿透，支持人-物交互场景中的安全运动合成。</li>
+  <li><strong>动力学可行性约束</strong>：通过零力矩点（ZMP）、质心（CoM）稳定性判据、关节力矩限制等约束，保证运动的动力学可行性。</li>
+  <li><strong>环境交互约束</strong>：支持可交互物体的接触力/力矩平衡约束，实现物理可信的人-场景交互运动合成。</li>
+  <li><strong>安全约束</strong>：基于控制障碍函数（CBF）的安全扩散机制，确保运动满足安全规格约束。</li>
+</ul>
+
+<div class="box box-info">
+  <div class="box-title">研究定位</div>
+  <p>本研究不是从头训练新的运动扩散模型，而是在 Kimodo 已有的高质量运动学扩散框架之上，通过推理时约束注入（inference-time constraint injection）的方式增强物理约束满足能力。这一方向具有以下优势：无需重新训练基础模型、可灵活组合多种约束、计算开销可控。</p>
+</div>
+
+<h3>1.3 核心挑战</h3>
+<div class="metrics">
+  <div class="metric-card">
+    <div class="metric-value">???</div>
+    <div class="metric-label">约束满足 vs. 运动质量权衡</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">1-2ms</div>
+    <div class="metric-label">每步去噪的延迟预算</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">5+</div>
+    <div class="metric-label">需同时满足的异构约束数</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">2-3x</div>
+    <div class="metric-label">可用 RTX 5090 GPU 数量</div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Section 2: 文献综述 -->
+<!-- ============================================================ -->
+<section id="sec-survey">
+<h2>二、文献综述</h2>
+
+<h3>2.1 运动扩散模型基础</h3>
+
+<div class="card">
+  <div class="card-title">[1] Human Motion Diffusion Model (MDM)</div>
+  <span class="card-venue">ICLR 2023</span>
+  <span class="card-year">2022</span>
+  <p class="card-authors">Guy Tevet, Sigal Raab, Brian Gordon, Yonatan Shafir, Daniel Cohen-Or, Amit H. Bermano</p>
+  <p>MDM 是首个专门为人体运动设计的扩散模型。与传统扩散模型预测噪声不同，MDM 在每个扩散步直接预测样本（sample prediction），从而能够在去噪过程中应用几何损失（如脚部接触损失）。该模型采用 Transformer 架构，支持多种条件模式（文本、动作类别），在文本到运动和动作到运动基准上达到最先进水平。MDM 奠定了运动扩散模型的基本范式，后续工作大多在此基础上扩展。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[2] MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model</div>
+  <span class="card-venue">ACM TOG (SIGGRAPH 2023)</span>
+  <span class="card-year">2022</span>
+  <p class="card-authors">Mingyuan Zhang, Zhongang Cai, Liang Pan, Fangzhou Hong, Xinying Guo, Lei Yang, Ziwei Liu</p>
+  <p>MotionDiffuse 是另一项运动扩散模型的奠基性工作，采用基于 Transformer 的去噪网络架构，实现了文本驱动的人体运动生成。该方法展示了扩散模型在运动多样性和文本对齐方面的显著优势。与 MDM 相比，MotionDiffuse 在运动细节控制和长序列生成方面有不同的设计权衡。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[3] MLD: Human Motion Latent Diffusion Model</div>
+  <span class="card-venue">CVPR 2023</span>
+  <span class="card-year">2022</span>
+  <p class="card-authors">Xin Chen, Biao Jiang, Wen Liu, Zilong Huang, Bin Fu, Tao Chen, Jingyi Yu, Gang Yu</p>
+  <p>MLD 提出了在潜空间中进行运动扩散的方案。该方法先通过 VAE 将运动编码到低维潜空间，然后在潜空间中执行扩散过程。这种设计显著降低了计算成本，同时保持了生成质量。MLD 的潜空间扩散框架为后续的约束注入提供了更紧凑的操作空间。</p>
+</div>
+
+<h3>2.2 Kimodo：大规模运动学扩散模型</h3>
+
+<div class="card">
+  <div class="card-title">[4] Kimodo: Scaling Controllable Human Motion Generation</div>
+  <span class="card-venue">arXiv</span>
+  <span class="card-year">2026</span>
+  <p class="card-authors">Davis Rempe, Mathis Petrovich, Ye Yuan, Haotian Zhang, Xue Bin Peng, et al. (NVIDIA)</p>
+  <p>Kimodo 是 NVIDIA 提出的大规模可控人体运动生成模型，基于 700 小时光学动作捕捉数据训练。该模型的核心创新包括：（1）两阶段去噪架构，将根节点预测与身体姿态预测解耦，有效减少运动伪影；（2）精心设计的运动表示，支持文本提示、全身关键帧、稀疏关节位置/旋转、2D 路径点和 2D 路径等丰富的控制输入；（3）大规模数据集和模型缩放研究。Kimodo 目前仅提供运动学层面的约束控制，这正是本研究需要扩展的方向。Kimodo 的约束条件化采用分类器无关引导（classifier-free guidance）机制，在去噪过程中通过条件 dropout 实现灵活的多约束组合。</p>
+</div>
+
+<h3>2.3 物理约束运动生成</h3>
+
+<div class="card">
+  <div class="card-title">[5] PhysDiff: Physics-Guided Human Motion Diffusion Model</div>
+  <span class="card-venue">ICCV 2023 (Oral)</span>
+  <span class="card-year">2022</span>
+  <p class="card-authors">Ye Yuan, Jiaming Song, Umar Iqbal, Arash Vahdat, Jan Kautz</p>
+  <p>PhysDiff 是将物理约束引入运动扩散过程的先驱性工作。该方法的核心创新在于：（1）提出物理引导扩散框架，在去噪循环中直接集成物理约束；（2）设计物理投影模块，在每个扩散步使用物理仿真器进行运动模仿（motion imitation），将去噪后的运动投影到物理可行空间；（3）投影后的运动随后引导后续去噪步骤。实验表明 PhysDiff 在物理可行性指标上实现了 &gt;78% 的提升。PhysDiff 的"投影-引导"范式是本研究技术方案的重要参考。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[6] Morph: A Motion-free Physics Optimization Framework for Human Motion Generation</div>
+  <span class="card-venue">ICCV 2025</span>
+  <span class="card-year">2025</span>
+  <p class="card-authors">Zhihao Li, Miaomiao Luo, Rong Hou, Xin Zhao, Hong Liu, et al.</p>
+  <p>Morph 提出了一种无需运动模仿的物理优化框架，同时适用于人体运动生成和类人机器人控制。该方法的核心创新在于直接通过物理优化（而非仿真器中的运动模仿）来增强运动的物理可行性。Morph 通过稳定性增强模块提升物理优化的收敛性，并在文本到运动和音乐到舞蹈任务上验证了有效性。其"无运动模仿"的物理优化路线为约束增强提供了更轻量化的选择。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[7] CLoSD: Closing the Loop Between Simulation and Diffusion for Multi-Task Character Control</div>
+  <span class="card-venue">ICLR 2025</span>
+  <span class="card-year">2024</span>
+  <p class="card-authors">Guy Tevet, Sigal Raab, Shimon Cohan, Daniel Reda, et al.</p>
+  <p>CLoSD 在物理仿真和扩散模型之间建立了闭环反馈机制。该方法将扩散模型生成的运动输入物理仿真器，仿真器反馈物理可行性信号，再将该信号用于引导扩散过程。这种闭环设计使得角色能够在物理可信的环境中完成多任务控制（如导航、交互、运动完成等）。CLoSD 的闭环架构是处理复杂环境交互约束的重要参考。</p>
+</div>
+
+<h3>2.4 安全约束与控制障碍函数</h3>
+
+<div class="card">
+  <div class="card-title">[8] SafeDiffuser: Safe Planning with Diffusion Probabilistic Models</div>
+  <span class="card-venue">RSS 2024</span>
+  <span class="card-year">2023</span>
+  <p class="card-authors">Wei Xiao, Tsun-Hsuan Wang, Chuang Gan, Daniela Rus (MIT)</p>
+  <p>SafeDiffuser 提出了基于控制障碍函数（Control Barrier Functions, CBF）的安全扩散机制。该方法的关键创新在于：（1）提出有限时间扩散不变性（finite-time diffusion invariance）概念，将 CBF 安全约束嵌入去噪扩散过程；（2）在去噪过程中通过投影操作确保每一步生成的样本都满足安全规格；（3）无需重新训练基础扩散模型即可实现安全保证。SafeDiffuser 在迷宫路径生成、足式机器人运动和 3D 空间操控等任务上验证了有效性。该方法的"推理时安全投影"策略可直接应用于 Kimodo 的物理约束注入。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[9] CFG++: Manifold-Constrained Classifier-Free Guidance</div>
+  <span class="card-venue">ICLR 2025</span>
+  <span class="card-year">2024</span>
+  <p class="card-authors">Hyojun Chung, Jaewoo Kim, Gyeong Park, Hyun Nam, et al.</p>
+  <p>CFG++ 是对标准分类器无关引导（Classifier-Free Guidance, CFG）的重要改进。该方法通过施加流形约束来修正 CFG 的引导方向，解决了标准 CFG 在强引导时容易偏离数据流形的问题。CFG++ 的流形约束机制可直接应用于 Kimodo 的约束条件化过程，在保持运动质量的同时增强约束满足能力。其在文本引导生成中表现出的优越性使其成为运动约束增强的有力工具。</p>
+</div>
+
+<h3>2.5 碰撞感知运动生成</h3>
+
+<div class="card">
+  <div class="card-title">[10] MaskedMimic: Unified Physics-based Character Control Through Masked Motion Inpainting</div>
+  <span class="card-venue">ACM TOG (SIGGRAPH 2024)</span>
+  <span class="card-year">2024</span>
+  <p class="card-authors">Chen Tessler, Yunrong Guo, Ofek Nabati, Gal Chechik, et al.</p>
+  <p>MaskedMimic 提出了通过遮罩运动修复实现统一物理角色控制的方法。该系统使物理仿真角色能够从部分（遮罩）运动描述生成完整运动，并能够在新颖场景构图中进行交互。MaskedMimic 的核心创新在于将物理仿真与运动修复相结合，支持碰撞避免、接触力平衡等多种物理约束。其统一控制框架为环境交互约束的实现提供了重要参考。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[11] UniHSI: Unified Human-Scene Interaction via Prompted Chain-of-Contacts</div>
+  <span class="card-venue">ICLR 2024</span>
+  <span class="card-year">2024</span>
+  <p class="card-authors">Ziwei Xiao, Tao Wang, Jingbo Wang, Jinkun Cao, Wenwei Zhang, et al.</p>
+  <p>UniHSI 是首个统一的人-场景物理交互框架，通过语言理解驱动接触链（Chain-of-Contacts）来控制角色与场景的交互。该方法使用判别器约束角色在物理有效的范围内进行交互，解决了先前方法中物理不可行和运动伪影的问题。UniHSI 的语言驱动交互控制范式为 Kimodo 的环境交互约束扩展提供了语义层面的接口设计参考。</p>
+</div>
+
+<h3>2.6 稳定性感知运动生成</h3>
+
+<div class="card">
+  <div class="card-title">[12] BeyondMimic: From Motion Tracking to Versatile Humanoid Control via Guided Diffusion</div>
+  <span class="card-venue">arXiv</span>
+  <span class="card-year">2025</span>
+  <p class="card-authors">Qihang Liao, Tung-En Truong, Xinyu Huang, Yanjie Gao, Guy Tevet, et al.</p>
+  <p>BeyondMimic 将运动跟踪扩展为多功能类人机器人控制，通过引导扩散实现场景感知导航和关键帧运动完成。该方法在运动生成过程中修改骨架参数以提升数值稳定性，支持运动学和动力学约束的同时满足。BeyondMimic 的引导扩散策略和稳定性处理机制是 Kimodo 约束增强的重要参考。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[13] SMP: Reusable Score-Matching Motion Priors for Physics-Based Character Control</div>
+  <span class="card-venue">arXiv</span>
+  <span class="card-year">2025</span>
+  <p class="card-authors">Yutian Mu, Ziyu Zhang, Yifan Shi, Mikihiro Matsumoto, Kei Ikemura, et al.</p>
+  <p>SMP 提出了可复用的得分匹配运动先验，用于物理角色控制。该方法从非结构化运动数据集训练运动扩散模型，然后识别提升策略训练稳定性的关键设计选择。SMP 的"先验训练-稳定性增强"两阶段框架与 Kimodo 的扩展需求高度契合——Kimodo 可作为运动先验，SMP 的稳定性增强技术可用于约束注入。</p>
+</div>
+
+<h3>2.7 约束引导扩散方法</h3>
+
+<div class="card">
+  <div class="card-title">[14] CGD: Constraint-Guided Diffusion Policies for UAV Trajectory Planning</div>
+  <span class="card-venue">arXiv</span>
+  <span class="card-year">2024</span>
+  <p class="card-authors">Keisuke Kondo, Andrea Tagliabue, Xiangyu Cai, Christopher Tewari, et al.</p>
+  <p>CGD 提出了约束引导扩散策略，用于 UAV 轨迹规划。该方法利用可求解约束引导扩散模型产生无碰撞轨迹，展示了约束引导扩散在机器人领域的可行性。CGD 的约束引导机制——通过约束梯度信号在去噪过程中引导采样——可迁移到人体运动生成的碰撞避免场景中。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[15] Diffuse-CLOC: Guided Diffusion for Physics-Based Character Look-Ahead Control</div>
+  <span class="card-venue">ACM TOG</span>
+  <span class="card-year">2025</span>
+  <p class="card-authors">Xinyu Huang, Truong Thanh-Eric Truong, Yifu Zhang, Fei Yu, Jean Pierre Sleiman, et al.</p>
+  <p>Diffuse-CLOC 将引导扩散应用于物理角色前瞻控制。该方法使用历史观测作为引导信号的约束，在运动任务中实现物理引导的角色控制。Diffuse-CLOC 的前瞻控制策略和引导信号设计为 Kimodo 的推理时约束注入提供了重要参考。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[16] Robot Motion Diffusion Model: Motion Generation for Robotic Characters</div>
+  <span class="card-venue">SIGGRAPH Asia 2024</span>
+  <span class="card-year">2024</span>
+  <p class="card-authors">Ando Serifi, Ruben Grandia, Espen Knoop, Markus Gross, et al.</p>
+  <p>RMDM 将运动扩散模型扩展到机器人角色，结合运动学运动生成与物理方法，从文本描述生成物理可行的机器人运动。该方法在具有挑战性的类人机器人上验证了实用性。RMDM 的"运动学生成+物理验证"两阶段框架为 Kimodo 的约束增强提供了直接的技术路径参考。</p>
+</div>
+
+<h3>2.8 组合约束系统</h3>
+
+<div class="card">
+  <div class="card-title">[17] MultiAct: Long-term 3D Human Motion Generation from Multiple Action Labels</div>
+  <span class="card-venue">AAAI 2023</span>
+  <span class="card-year">2023</span>
+  <p class="card-authors">Seongsu Ha, Joonseok Lee, et al.</p>
+  <p>MultiAct 提出了从多个动作标签生成长期 3D 人体运动的方法。该方法能够将多个动作标签组合成连贯的运动序列，实现了时序组合动作生成。MultiAct 的组合条件化策略——多个条件标签的融合与过渡——为 Kimodo 的多约束组合提供了语义层面的参考。后续工作（如 Text2HOI [CVPR 2024]、FCMD [IEEE 2026]）在此基础上扩展了组合约束框架。</p>
+</div>
+
+<div class="card">
+  <div class="card-title">[18] InterPhys: Physics-aware Human Motion Synthesis in a Dynamic Scene</div>
+  <span class="card-venue">CVPR 2026</span>
+  <span class="card-year">2026</span>
+  <p class="card-authors">Chen Xing, Wen Mao, Meng Liu, et al.</p>
+  <p>InterPhys 在动态场景中实现了物理感知的人体运动合成。该方法应用物理约束来维持力矩平衡，确保运动合成的物理基础性。InterPhys 在包含 5-6 个可交互物体和障碍物的场景中评估物理可行性，是目前人-场景物理交互运动合成的前沿工作。其力矩平衡约束的实现方式可直接参考用于 Kimodo 的环境交互约束设计。</p>
+</div>
+
+<h3>2.9 文献总结</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>类别</th>
+      <th>代表方法</th>
+      <th>约束类型</th>
+      <th>技术路线</th>
+      <th>与 Kimodo 的关联</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>物理投影</td>
+      <td>PhysDiff, Morph</td>
+      <td>物理可行性</td>
+      <td>仿真器投影/优化投影</td>
+      <td>去噪步投影注入</td>
+    </tr>
+    <tr>
+      <td>安全保证</td>
+      <td>SafeDiffuser</td>
+      <td>CBF 安全规格</td>
+      <td>CBF 投影 + 扩散不变性</td>
+      <td>推理时安全投影</td>
+    </tr>
+    <tr>
+      <td>闭环反馈</td>
+      <td>CLoSD</td>
+      <td>物理仿真反馈</td>
+      <td>仿真-扩散闭环</td>
+      <td>仿真器反馈引导</td>
+    </tr>
+    <tr>
+      <td>引导扩散</td>
+      <td>CFG++, CGD, Diffuse-CLOC</td>
+      <td>多类型约束</td>
+      <td>梯度引导/流形约束</td>
+      <td>引导信号设计</td>
+    </tr>
+    <tr>
+      <td>碰撞感知</td>
+      <td>MaskedMimic, InterPhys</td>
+      <td>碰撞/接触力</td>
+      <td>物理仿真 + 判别器</td>
+      <td>环境交互约束</td>
+    </tr>
+    <tr>
+      <td>稳定性约束</td>
+      <td>BeyondMimic, SMP</td>
+      <td>ZMP/CoM 稳定性</td>
+      <td>先验训练 + 稳定性增强</td>
+      <td>动力学可行性约束</td>
+    </tr>
+    <tr>
+      <td>组合约束</td>
+      <td>MultiAct</td>
+      <td>多动作标签</td>
+      <td>条件融合与过渡</td>
+      <td>多约束组合机制</td>
+    </tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================================================ -->
+<!-- Section 3: 技术方案 -->
+<!-- ============================================================ -->
+<section id="sec-technical">
+<h2>三、技术方案</h2>
+
+<h3>3.1 总体架构设计</h3>
+<p>
+本研究的技术方案基于"推理时约束注入"范式，在 Kimodo 已有的去噪扩散过程中嵌入物理约束模块。总体架构如下所示：
+</p>
+
+<div class="flow">
+  <div class="flow-step">Kimodo 去噪<br><small>x_t -> x_{t-1}</small></div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">约束梯度计算<br><small>nabla_x L_constraint</small></div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">安全投影<br><small>CBF/物理投影</small></div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">CFG++ 流形修正<br><small>流形约束引导</small></div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">物理后处理<br><small>优化 + 仿真验证</small></div>
+</div>
+
+<h3>3.2 方案一：分类器引导（Classifier Guidance）</h3>
+<p>
+分类器引导是最直接的约束注入方式。其核心思想是训练一个约束分类器，在去噪过程中通过分类器梯度引导采样方向。
+</p>
+
+<h4>3.2.1 约束分类器设计</h4>
+<p>
+为每种物理约束训练一个独立的约束分类器或能量函数。给定带噪运动 x_t 和时间步 t，约束分类器输出约束违反程度的标量值 E_constraint(x_t, t)。在去噪过程中，通过计算该能量函数相对于 x_t 的梯度来引导采样：
+</p>
+
+<pre><code>x_{t-1} = x_{t-1}^{base} - s * sigma_t^2 * nabla_{x_t} E_constraint(x_t, t)</code></pre>
+
+<p>
+其中 s 是引导强度超参数，sigma_t 是扩散过程在时间步 t 的噪声标准差。对于不同的约束类型，能量函数的设计如下：
+</p>
+
+<ul>
+  <li><strong>碰撞避免</strong>：E_collision = sum_over_joints max(0, d_min - d(x_j, O))^2，其中 d(x_j, O) 是关节 x_j 到最近障碍物的距离，d_min 是最小安全距离。</li>
+  <li><strong>ZMP 稳定性</strong>：E_ZMP = ||p_ZMP - p_support||^2，其中 p_ZMP 是零力矩点位置，p_support 是支撑多边形内最近点。</li>
+  <li><strong>关节力矩限制</strong>：E_torque = sum_over_joints max(0, |tau_j| - tau_max)^2。</li>
+  <li><strong>接触力平衡</strong>：E_contact = ||sum F_external - m * a_CoM||^2 + ||sum tau_external - I * alpha||^2。</li>
+</ul>
+
+<h4>3.2.2 无分类器引导扩展</h4>
+<p>
+在 Kimodo 已有的无分类器引导（CFG）框架下，约束条件可通过条件 dropout 策略集成。训练时以概率 p_drop 随机丢弃约束条件，推理时使用扩展的引导公式：
+</p>
+
+<pre><code>epsilon = epsilon_uncond + w_text * (epsilon_text - epsilon_uncond) + w_const * (epsilon_const - epsilon_uncond)</code></pre>
+
+<p>
+其中 w_text 和 w_const 分别是文本引导和约束引导的强度。这一方案的优势在于无需训练额外的分类器，但需要对 Kimodo 进行约束条件化的微调。
+</p>
+
+<h3>3.3 方案二：基于投影的方法（Projection-based）</h3>
+
+<h4>3.3.1 物理仿真投影（PhysDiff 范式）</h4>
+<p>
+参考 PhysDiff [5] 的方法，在每个去噪步后使用物理仿真器将运动投影到物理可行空间。具体步骤如下：
+</p>
+
+<ol>
+  <li>在去噪步 t，Kimodo 生成初步去噪运动 x_{t-1}^{base}。</li>
+  <li>将 x_{t-1}^{base} 输入物理仿真器（如 Isaac Gym），执行运动模仿策略进行物理投影。</li>
+  <li>物理仿真器输出物理可行的运动 x_{t-1}^{phys}。</li>
+  <li>计算投影修正 delta = x_{t-1}^{phys} - x_{t-1}^{base}。</li>
+  <li>将修正信号加权加入后续去噪：x_{t-1} = x_{t-1}^{base} + lambda * delta。</li>
+</ol>
+
+<div class="box box-warning">
+  <div class="box-title">计算开销考量</div>
+  <p>物理仿真投影是计算密集型操作。在 RTX 5090 上，单步仿真投影约需 5-15ms，而 Kimodo 的单步去噪约 1-2ms。因此，建议在去噪过程的后期（如最后 10-20% 的步数）才执行物理投影，或采用多分辨率策略（低频物理投影 + 高频运动学去噪）。</p>
+</div>
+
+<h4>3.3.2 基于 CBF 的安全投影（SafeDiffuser 范式）</h4>
+<p>
+参考 SafeDiffuser [8] 的方法，使用控制障碍函数（CBF）在去噪过程中执行安全投影。对于安全约束集 C = {x : h(x) >= 0}，其中 h(x) 是 CBF，在每个去噪步执行以下投影：
+</p>
+
+<pre><code>x_{t-1}^{safe} = argmin_{z} ||z - x_{t-1}^{base}||^2
+                  s.t. h(z) >= 0</code></pre>
+
+<p>
+该投影确保去噪后的运动满足安全约束。当 CBF 是凸函数时，投影有闭式解；当 CBF 非凸时，可使用一阶梯度近似：
+</p>
+
+<pre><code>x_{t-1}^{safe} = x_{t-1}^{base} + max(0, -h(x_{t-1}^{base})) * nabla_x h(x_{t-1}^{base}) / ||nabla_x h(x_{t-1}^{base})||^2</code></pre>
+
+<h3>3.4 方案三：流形约束引导（CFG++ 范式）</h3>
+<p>
+参考 CFG++ [9] 的方法，在 Kimodo 的分类器无关引导中引入流形约束。标准 CFG 的引导方向可能偏离运动数据流形，导致生成质量下降。CFG++ 通过以下修正解决此问题：
+</p>
+
+<pre><code>v_CFG = epsilon_cond - epsilon_uncond
+v_CFG++ = v_CFG - proj_{T_x M} (v_CFG)</code></pre>
+
+<p>
+其中 proj_{T_x M} 是到数据流形切空间的投影。在运动约束场景中，流形约束可同时包含运动学约束（如关节角度范围、运动学链约束）和物理约束（如 ZMP 约束、碰撞约束）。
+</p>
+
+<h3>3.5 方案四：物理后处理优化</h3>
+<p>
+在 Kimodo 完成全部去噪后，对最终运动序列执行物理后处理优化。这一方案实现最简单，但可能无法完全消除物理违反。
+</p>
+
+<h4>3.5.1 基于优化的后处理</h4>
+<p>
+定义后处理优化问题：
+</p>
+
+<pre><code>min_{x'} ||x' - x_generated||^2
+s.t.  collision(x', O) >= d_min    (碰撞约束)
+      ZMP(x') in support_polygon   (稳定性约束)
+      |tau_j(x')| <= tau_max       (力矩约束)
+      joint_limits(x')             (关节限制)</code></pre>
+
+<p>
+该优化问题可通过序列二次规划（SQP）或增广拉格朗日方法求解。在 RTX 5090 上，对于 30 帧的运动序列，优化求解约需 100-500ms。
+</p>
+
+<h4>3.5.2 基于物理仿真的后处理</h4>
+<p>
+将生成的运动作为参考轨迹，通过物理仿真器中的跟踪控制器（如 PD 控制器 + 运动模仿）重新执行运动。物理仿真器自动处理碰撞响应和动力学约束。这一方案的优势在于完全物理可信，但运动细节可能有所损失。
+</p>
+
+<h3>3.6 推荐的混合方案</h3>
+<p>
+综合以上分析，推荐采用以下混合约束增强方案：
+</p>
+
+<div class="box box-success">
+  <div class="box-title">推荐方案：分层约束注入</div>
+  <p><strong>第一层（去噪过程中）</strong>：在 Kimodo 的去噪过程中，通过约束梯度引导（方案一）注入软约束。使用无分类器引导的约束扩展，无需重新训练基础模型，仅需调整引导权重。</p>
+  <p><strong>第二层（去噪后期投影）</strong>：在去噪过程的最后 10-20% 步数中，使用 CBF 安全投影（方案二的 SafeDiffuser 变体）注入硬约束（如碰撞避免、关节限制）。</p>
+  <p><strong>第三层（后处理）</strong>：对去噪完成的运动执行物理后处理优化（方案四），修正残留的物理违反。</p>
+</div>
+
+<h3>3.7 技术实现路径</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>组件</th>
+      <th>技术选型</th>
+      <th>依赖库</th>
+      <th>预期开发周期</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>约束梯度引导</td>
+      <td>PyTorch 自动微分</td>
+      <td>PyTorch, Kimodo</td>
+      <td>1-2 周</td>
+    </tr>
+    <tr>
+      <td>CBF 安全投影</td>
+      <td>凸优化投影</td>
+      <td>CvxPyLayer, PyTorch</td>
+      <td>2-3 周</td>
+    </tr>
+    <tr>
+      <td>物理仿真投影</td>
+      <td>Isaac Gym 运动模仿</td>
+      <td>Isaac Gym, PyTorch</td>
+      <td>3-4 周</td>
+    </tr>
+    <tr>
+      <td>ZMP/CoM 计算</td>
+      <td>刚体动力学</td>
+      <td>Pinocchio / PyBullet</td>
+      <td>1-2 周</td>
+    </tr>
+    <tr>
+      <td>碰撞检测</td>
+      <td>连续碰撞检测</td>
+      <td>PyBullet / Isaac Gym</td>
+      <td>1 周</td>
+    </tr>
+    <tr>
+      <td>后处理优化</td>
+      <td>SQP / 增广拉格朗日</td>
+      <td>SciPy, IPOPT</td>
+      <td>1-2 周</td>
+    </tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================================================ -->
+<!-- Section 4: 知识前置 -->
+<!-- ============================================================ -->
+<section id="sec-prerequisites">
+<h2>四、知识前置</h2>
+
+<h3>4.1 扩散模型基础</h3>
+<p>
+深入理解去噪扩散概率模型（DDPM）的数学原理，包括前向扩散过程、反向去噪过程、噪声调度策略、得分匹配与去噪得分匹配的等价性。重点掌握分类器引导和无分类器引导的推导和实现。
+</p>
+<div class="box box-info">
+  <div class="box-title">推荐学习资源</div>
+  <ul>
+    <li>Ho et al., "Denoising Diffusion Probabilistic Models," NeurIPS 2020 — DDPM 原始论文</li>
+    <li>Ho & Salimans, "Classifier-Free Diffusion Guidance," NeurIPS 2021 Workshop — CFG 方法</li>
+    <li>Luo, "Understanding Diffusion Models: A Unified Perspective," arXiv 2022 — 优秀的综述教程</li>
+    <li>Hugging Face Diffusion Course — 实操教程</li>
+  </ul>
+</div>
+
+<h3>4.2 人体运动表示与运动学</h3>
+<p>
+掌握人体骨架表示（SMPL/SMPL-X 模型、关节层次结构）、旋转表示（四元数、轴角、旋转矩阵之间的转换）、正向运动学和逆运动学的基本原理。理解运动捕捉数据的格式和处理流程。
+</p>
+<div class="box box-info">
+  <div class="box-title">推荐学习资源</div>
+  <ul>
+    <li>Loper et al., "SMPL: A Skinned Multi-Person Linear Model," ACM TOG 2015 — SMPL 模型</li>
+    <li>Kimodo 的运动表示设计（arXiv:2603.15546 的 Section 3）</li>
+    <li>Pavlakos et al., "Expressive Body Capture: 3D Hands, Face, and Body from a Single Image," CVPR 2019 — SMPL-X</li>
+  </ul>
+</div>
+
+<h3>4.3 控制障碍函数（CBF）</h3>
+<p>
+理解控制障碍函数的数学定义、安全集的构造方法、CBF 条件与安全性的关系。掌握将 CBF 条件转化为凸优化约束的方法。重点理解 SafeDiffuser 如何将 CBF 嵌入扩散过程。
+</p>
+<div class="box box-info">
+  <div class="box-title">推荐学习资源</div>
+  <ul>
+    <li>Ames et al., "Control Barrier Function Based Quadratic Programs for Safety Critical Systems," IEEE TAC 2014 — CBF 基础</li>
+    <li>Xiao et al., "SafeDiffuser: Safe Planning with Diffusion Probabilistic Models," RSS 2024 — CBF + 扩散模型</li>
+    <li>MIT 6.800: Control of Autonomous Systems — 课程讲义</li>
+  </ul>
+</div>
+
+<h3>4.4 物理仿真与运动优化</h3>
+<p>
+掌握刚体动力学基础（牛顿-欧拉方程、拉格朗日力学）、ZMP 和 CoM 稳定性判据、接触力建模、关节力矩约束。熟悉至少一个物理仿真器（Isaac Gym、PyBullet、MuJoCo）的基本使用。
+</p>
+<div class="box box-info">
+  <div class="box-title">推荐学习资源</div>
+  <ul>
+    <li>NVIDIA Isaac Gym / IsaacLab 文档 — 物理仿真平台</li>
+    <li>Chebotar et al., "Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience," ICRA 2019</li>
+    <li>Tassa et al., "MuJoCo: A physics engine for model-based control," IROS 2012</li>
+    <li>Vukobratovic & Borovac, "Zero-Moment Point — Thirty Five Years of Its Life," IJHR 2004 — ZMP 理论</li>
+  </ul>
+</div>
+
+<h3>4.5 约束优化方法</h3>
+<p>
+掌握约束优化的基本方法，包括拉格朗日乘子法、增广拉格朗日法、序列二次规划（SQP）、投影梯度法。理解如何将物理约束表述为可微优化问题，并在 PyTorch 中实现约束优化层。
+</p>
+<div class="box box-info">
+  <div class="box-title">推荐学习资源</div>
+  <ul>
+    <li>Boyd & Vandenberghe, "Convex Optimization," Cambridge University Press — 约束优化经典教材</li>
+    <li>Agrawal et al., "Differentiable Convex Optimization Layers," NeurIPS 2019 — CvxPyLayer</li>
+    <li>Amos & Kolter, "OptNet: Differentiable Optimization as a Layer in Neural Networks," ICML 2017</li>
+  </ul>
+</div>
+
+<h3>4.6 知识学习路线图</h3>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-date">第 1-2 周</div>
+    <div class="timeline-title">扩散模型基础</div>
+    <div class="timeline-desc">精读 DDPM 论文，完成 Hugging Face Diffusion Course。实现简单的 2D 扩散模型。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">第 3-4 周</div>
+    <div class="timeline-title">运动表示与 Kimodo 代码</div>
+    <div class="timeline-desc">学习 SMPL 模型和运动表示，克隆并运行 Kimodo 代码，理解其推理流程。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">第 5-6 周</div>
+    <div class="timeline-title">CBF 与约束优化</div>
+    <div class="timeline-desc">精读 SafeDiffuser 和 CBF 基础论文，学习 CvxPyLayer 的使用。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">第 7-8 周</div>
+    <div class="timeline-title">物理仿真基础</div>
+    <div class="timeline-desc">学习 Isaac Gym 或 PyBullet，实现简单的运动模仿策略。理解 ZMP/CoM 计算。</div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Section 5: 入门指南 -->
+<!-- ============================================================ -->
+<section id="sec-guide">
+<h2>五、入门指南</h2>
+
+<h3>5.1 环境配置</h3>
+
+<h4>5.1.1 硬件要求</h4>
+<table>
+  <thead>
+    <tr>
+      <th>组件</th>
+      <th>最低要求</th>
+      <th>推荐配置</th>
+      <th>当前环境</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GPU</td>
+      <td>1x RTX 4090 (24GB)</td>
+      <td>2x RTX 5090 (32GB)</td>
+      <td>2-3x RTX 5090</td>
+    </tr>
+    <tr>
+      <td>系统内存</td>
+      <td>32GB</td>
+      <td>64GB</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>存储</td>
+      <td>100GB SSD</td>
+      <td>500GB NVMe SSD</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>CUDA</td>
+      <td>11.8</td>
+      <td>12.x</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>5.1.2 软件环境</h4>
+
+<pre><code># 创建 conda 环境
+conda create -n kimodo-constraint python=3.10
+conda activate kimodo-constraint
+
+# 安装 PyTorch（匹配 CUDA 版本）
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# 安装 Kimodo 依赖
+git clone https://github.com/NVlabs/kimodo.git
+cd kimodo
+pip install -r requirements.txt
+
+# 安装物理仿真器
+pip install pybullet
+# 或安装 Isaac Gym（需要从 NVIDIA 下载）
+
+# 安装约束优化工具
+pip install cvxpy cvxpylayers
+pip install pin  # Pinocchio 简化接口
+
+# 安装其他依赖
+pip install scipy trimesh open3d</code></pre>
+
+<h3>5.2 Kimodo 代码理解</h3>
+<p>
+首先深入理解 Kimodo 的推理流程。以下是关键代码模块：
+</p>
+
+<pre><code># Kimodo 推理流程伪代码
+def kimodo_inference(text_prompt, constraints, num_steps=50):
+    # 1. 初始化随机噪声
+    x_t = torch.randn(batch_size, seq_len, motion_dim)
+
+    # 2. 条件编码
+    text_emb = text_encoder(text_prompt)
+    constraint_emb = constraint_encoder(constraints)
+
+    # 3. 去噪循环
+    for t in reversed(range(num_steps)):
+        # 两阶段去噪：根节点 + 身体
+        root_pred = root_denoiser(x_t, t, text_emb, constraint_emb)
+        body_pred = body_denoiser(x_t, t, text_emb, constraint_emb, root_pred)
+
+        # 无分类器引导
+        if cfg_scale > 1:
+            root_uncond = root_denoiser(x_t, t, null_emb, null_emb)
+            body_uncond = body_denoiser(x_t, t, null_emb, null_emb, root_uncond)
+            root_pred = root_uncond + cfg_scale * (root_pred - root_uncond)
+            body_pred = body_uncond + cfg_scale * (body_pred - body_uncond)
+
+        # 去噪步更新
+        x_t = update(x_t, root_pred, body_pred, t)
+
+    return x_t</code></pre>
+
+<h3>5.3 第一个实验：约束梯度引导</h3>
+<p>
+从最简单的约束注入方式开始——约束梯度引导。选择一个易于实现的约束（如关节角度范围约束），在 Kimodo 的去噪循环中添加约束梯度。
+</p>
+
+<pre><code># 第一个实验：关节角度约束引导
+import torch
+
+def joint_limit_guidance(x_t, t, joint_limits, guidance_scale=1.0):
+    """在去噪步后添加关节角度约束引导"""
+    x_t_grad = x_t.clone().detach().requires_grad_(True)
+
+    # 计算约束违反能量
+    lower_violation = torch.relu(joint_limits[:, 0] - x_t_grad)
+    upper_violation = torch.relu(x_t_grad - joint_limits[:, 1])
+    energy = (lower_violation**2 + upper_violation**2).sum()
+
+    # 计算梯度
+    grad = torch.autograd.grad(energy, x_t_grad)[0]
+
+    # 沿梯度方向修正
+    sigma_t = get_noise_schedule(t)
+    x_t_guided = x_t - guidance_scale * sigma_t**2 * grad
+
+    return x_t_guided.detach()
+
+# 在 Kimodo 去噪循环中使用
+for t in reversed(range(num_steps)):
+    x_t = kimodo_denoise_step(x_t, t, text_emb)
+    x_t = joint_limit_guidance(x_t, t, joint_limits, guidance_scale=0.5)</code></pre>
+
+<h3>5.4 第二个实验：碰撞避免投影</h3>
+<p>
+在第一个实验的基础上，添加碰撞避免约束。使用简化的球体碰撞检测模型。
+</p>
+
+<pre><code># 第二个实验：碰撞避免安全投影
+def collision_avoidance_projection(x_t, obstacles, d_min=0.05):
+    """CBF 安全投影：确保关节不穿透障碍物"""
+    x_proj = x_t.clone()
+
+    for joint_idx in range(x_t.shape[1]):
+        joint_pos = x_t[:, joint_idx, :3]  # 提取 3D 位置
+
+        for obs in obstacles:
+            dist = torch.norm(joint_pos - obs.center, dim=-1)
+            violation = d_min - dist  # 正值表示违反
+
+            if (violation > 0).any():
+                # 沿最近点方向投影
+                direction = (joint_pos - obs.center) / (dist.unsqueeze(-1) + 1e-8)
+                correction = torch.relu(violation).unsqueeze(-1) * direction
+                x_proj[:, joint_idx, :3] += correction
+
+    return x_proj</code></pre>
+
+<h3>5.5 第三个实验：ZMP 稳定性约束</h3>
+<p>
+实现 ZMP 稳定性约束的后处理版本。
+</p>
+
+<pre><code># 第三个实验：ZMP 稳定性后处理
+def zmp_stability_postprocess(motion, robot_model, contact_schedule):
+    """后处理：修正 ZMP 违反"""
+    for t in range(motion.shape[0]):
+        # 计算 ZMP
+        zmp = compute_zmp(motion[t], robot_model)
+
+        # 检查是否在支撑多边形内
+        support_polygon = get_support_polygon(motion[t], contact_schedule[t])
+
+        if not point_in_polygon(zmp, support_polygon):
+            # 调整 CoM 位置使 ZMP 落入支撑多边形
+            correction = project_to_polygon(zmp, support_polygon)
+            motion[t] = adjust_com(motion[t], correction - zmp, robot_model)
+
+    return motion</code></pre>
+
+<h3>5.6 实验迭代建议</h3>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-date">Week 1-2</div>
+    <div class="timeline-title">实验 1：关节角度约束引导</div>
+    <div class="timeline-desc">验证约束梯度引导的基本可行性，调优引导强度。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">Week 3-4</div>
+    <div class="timeline-title">实验 2：碰撞避免投影</div>
+    <div class="timeline-desc">在简单场景（球体障碍物）上验证 CBF 投影的有效性。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">Week 5-6</div>
+    <div class="timeline-title">实验 3：ZMP 稳定性约束</div>
+    <div class="timeline-desc">验证后处理优化对 ZMP 违反的修正效果。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">Week 7-8</div>
+    <div class="timeline-title">实验 4：混合约束系统</div>
+    <div class="timeline-desc">组合以上三种约束，评估约束冲突和权衡。</div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Section 6: 实验计划 -->
+<!-- ============================================================ -->
+<section id="sec-experiments">
+<h2>六、实验计划</h2>
+
+<h3>6.1 实验总览</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>实验编号</th>
+      <th>实验名称</th>
+      <th>约束类型</th>
+      <th>注入方式</th>
+      <th>评估指标</th>
+      <th>预计 GPU 时</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Exp-1</td>
+      <td>基线复现</td>
+      <td>无（纯 Kimodo）</td>
+      <td>-</td>
+      <td>FID, R-Precision, 多样性</td>
+      <td>8h</td>
+    </tr>
+    <tr>
+      <td>Exp-2</td>
+      <td>关节角度约束</td>
+      <td>关节限制</td>
+      <td>梯度引导</td>
+      <td>约束满足率, FID</td>
+      <td>12h</td>
+    </tr>
+    <tr>
+      <td>Exp-3</td>
+      <td>碰撞避免</td>
+      <td>碰撞约束</td>
+      <td>CBF 投影</td>
+      <td>穿透率, 运动质量</td>
+      <td>16h</td>
+    </tr>
+    <tr>
+      <td>Exp-4</td>
+      <td>ZMP 稳定性</td>
+      <td>稳定性约束</td>
+      <td>后处理优化</td>
+      <td>ZMP 违反率, 步态自然度</td>
+      <td>12h</td>
+    </tr>
+    <tr>
+      <td>Exp-5</td>
+      <td>混合约束</td>
+      <td>多约束组合</td>
+      <td>分层注入</td>
+      <td>综合指标</td>
+      <td>20h</td>
+    </tr>
+    <tr>
+      <td>Exp-6</td>
+      <td>消融实验</td>
+      <td>各约束单独/组合</td>
+      <td>各方式对比</td>
+      <td>消融分析</td>
+      <td>24h</td>
+    </tr>
+    <tr>
+      <td>Exp-7</td>
+      <td>环境交互</td>
+      <td>接触力约束</td>
+      <td>仿真投影</td>
+      <td>力矩违反率</td>
+      <td>16h</td>
+    </tr>
+    <tr>
+      <td>Exp-8</td>
+      <td>可扩展性</td>
+      <td>多约束缩放</td>
+      <td>分层注入</td>
+      <td>约束数 vs. 质量</td>
+      <td>12h</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.2 评估指标体系</h3>
+
+<h4>6.2.1 运动质量指标</h4>
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>定义</th>
+      <th>计算方式</th>
+      <th>目标值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FID (Frechet Inception Distance)</td>
+      <td>生成运动分布与真实运动分布的距离</td>
+      <td>在动作特征空间中计算</td>
+      <td>&lt; 基线值（保持或改善）</td>
+    </tr>
+    <tr>
+      <td>R-Precision</td>
+      <td>文本-运动检索精度</td>
+      <td>Top-1 检索准确率</td>
+      <td>&gt; 基线值的 95%</td>
+    </tr>
+    <tr>
+      <td>Diversity</td>
+      <td>生成运动的多样性</td>
+      <td>特征空间中平均配对距离</td>
+      <td>&gt; 基线值的 90%</td>
+    </tr>
+    <tr>
+      <td>Multimodality</td>
+      <td>条件多样性</td>
+      <td>同一条件下生成运动的多样性</td>
+      <td>&gt; 基线值的 90%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>6.2.2 约束满足指标</h4>
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>定义</th>
+      <th>计算方式</th>
+      <th>目标值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Constraint Satisfaction Rate (CSR)</td>
+      <td>约束满足帧的比例</td>
+      <td>满足约束的帧数 / 总帧数</td>
+      <td>&gt; 95%</td>
+    </tr>
+    <tr>
+      <td>Collision Penetration Rate (CPR)</td>
+      <td>关节穿透障碍物的比例</td>
+      <td>穿透帧数 / 总帧数</td>
+      <td>&lt; 2%</td>
+    </tr>
+    <tr>
+      <td>ZMP Violation Rate (ZVR)</td>
+      <td>ZMP 超出支撑多边形的比例</td>
+      <td>违反帧数 / 总接触帧数</td>
+      <td>&lt; 5%</td>
+    </tr>
+    <tr>
+      <td>Torque Violation Rate (TVR)</td>
+      <td>关节力矩超限的比例</td>
+      <td>超限关节帧数 / 总关节帧数</td>
+      <td>&lt; 3%</td>
+    </tr>
+    <tr>
+      <td>Mean Constraint Violation (MCV)</td>
+      <td>平均约束违反程度</td>
+      <td>违反量的均值</td>
+      <td>越小越好</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>6.2.3 计算效率指标</h4>
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>定义</th>
+      <th>目标值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Latency per Frame</td>
+      <td>每帧生成时间</td>
+      <td>&lt; 50ms（含约束注入）</td>
+    </tr>
+    <tr>
+      <td>GPU Memory Overhead</td>
+      <td>约束注入的额外显存开销</td>
+      <td>&lt; 30% 增长</td>
+    </tr>
+    <tr>
+      <td>Constraint Computation Time</td>
+      <td>约束计算时间占比</td>
+      <td>&lt; 总时间的 40%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.3 实验数据集</h3>
+<table>
+  <thead>
+    <tr>
+      <th>数据集</th>
+      <th>用途</th>
+      <th>规模</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HumanML3D</td>
+      <td>运动质量评估基准</td>
+      <td>14,616 运动序列</td>
+    </tr>
+    <tr>
+      <td>KIT-ML</td>
+      <td>运动质量评估基准</td>
+      <td>3,911 运动序列</td>
+    </tr>
+    <tr>
+      <td>自建碰撞场景</td>
+      <td>碰撞避免评估</td>
+      <td>50+ 场景配置</td>
+    </tr>
+    <tr>
+      <td>自建交互场景</td>
+      <td>环境交互评估</td>
+      <td>20+ 交互配置</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.4 实验时间线</h3>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-date">Month 1 (Week 1-4)</div>
+    <div class="timeline-title">基础实验</div>
+    <div class="timeline-desc">Exp-1（基线复现）+ Exp-2（关节角度约束）+ 知识前置学习。目标：验证约束梯度引导的基本可行性。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">Month 2 (Week 5-8)</div>
+    <div class="timeline-title">核心实验</div>
+    <div class="timeline-desc">Exp-3（碰撞避免）+ Exp-4（ZMP 稳定性）。目标：完成两种核心物理约束的实现和评估。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">Month 3 (Week 9-12)</div>
+    <div class="timeline-title">综合实验</div>
+    <div class="timeline-desc">Exp-5（混合约束）+ Exp-6（消融实验）+ Exp-7（环境交互）。目标：完成混合约束系统的评估和消融分析。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">Month 4 (Week 13-16)</div>
+    <div class="timeline-title">完善与总结</div>
+    <div class="timeline-desc">Exp-8（可扩展性）+ 实验分析 + 报告撰写。目标：完成全部实验并形成完整研究报告。</div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Section 7: 预期结果 -->
+<!-- ============================================================ -->
+<section id="sec-results">
+<h2>七、预期结果</h2>
+
+<h3>7.1 基准目标</h3>
+
+<div class="metrics">
+  <div class="metric-card">
+    <div class="metric-value">&gt;95%</div>
+    <div class="metric-label">约束满足率 (CSR)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">&lt;2%</div>
+    <div class="metric-label">碰撞穿透率 (CPR)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">&lt;5%</div>
+    <div class="metric-label">ZMP 违反率 (ZVR)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">&lt;50ms</div>
+    <div class="metric-label">每帧延迟</div>
+  </div>
+</div>
+
+<h3>7.2 各实验预期结果</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>实验</th>
+      <th>FID 变化</th>
+      <th>约束满足率</th>
+      <th>每帧延迟</th>
+      <th>关键发现预期</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Exp-2 关节约束</td>
+      <td>+0~5% (轻微退化)</td>
+      <td>&gt;99%</td>
+      <td>+2ms</td>
+      <td>梯度引导可有效修正关节超限</td>
+    </tr>
+    <tr>
+      <td>Exp-3 碰撞避免</td>
+      <td>+3~8%</td>
+      <td>&gt;98%</td>
+      <td>+5ms</td>
+      <td>CBF 投影在去噪后期最有效</td>
+    </tr>
+    <tr>
+      <td>Exp-4 ZMP 稳定性</td>
+      <td>+0~3%</td>
+      <td>&gt;95%</td>
+      <td>+10ms</td>
+      <td>后处理优化对静态姿态最有效</td>
+    </tr>
+    <tr>
+      <td>Exp-5 混合约束</td>
+      <td>+5~12%</td>
+      <td>&gt;93%</td>
+      <td>+15ms</td>
+      <td>约束间存在权衡，需调优权重</td>
+    </tr>
+    <tr>
+      <td>Exp-7 环境交互</td>
+      <td>+5~15%</td>
+      <td>&gt;90%</td>
+      <td>+20ms</td>
+      <td>接触力约束是最具挑战性的约束</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>7.3 核心贡献预期</h3>
+
+<div class="box box-success">
+  <div class="box-title">预期技术贡献</div>
   <ol>
-    <li><a href="#sec-overview">研究概述</a></li>
-    <li><a href="#sec-kimodo">Kimodo 基座模型回顾</a></li>
-    <li><a href="#sec-lit">文献综述（12 篇核心论文）</a></li>
-    <li><a href="#sec-approach">技术路线：如何在 Kimodo 推理循环中注入物理约束</a></li>
-    <li><a href="#sec-prereq">知识前置要求</a></li>
-    <li><a href="#sec-start">入门指南：从零到首次实验</a></li>
-    <li><a href="#sec-experiment">实验计划</a></li>
-    <li><a href="#sec-benchmarks">预期结果与基准指标</a></li>
-    <li><a href="#sec-risks">风险与缓解策略</a></li>
-    <li><a href="#sec-refs">参考文献</a></li>
+    <li><strong>分层约束注入框架</strong>：提出在运动扩散模型推理过程中分层注入物理约束的通用框架，涵盖梯度引导、安全投影和后处理三个层次。</li>
+    <li><strong>约束-质量权衡分析</strong>：系统性地分析不同约束类型和注入方式对运动质量的影响，为约束增强方法的选择提供指导。</li>
+    <li><strong>Kimodo 约束增强实现</strong>：在 Kimodo 上实现完整的约束增强管线，验证推理时约束注入在大规模运动扩散模型上的可行性。</li>
+    <li><strong>评估指标体系</strong>：建立运动扩散模型约束增强的系统性评估指标体系，包括约束满足率、物理可行性和计算效率三个维度。</li>
   </ol>
 </div>
 
-<!-- ==================== 1. 研究概述 ==================== -->
-<h2 id="sec-overview"><span class="section-num">1.</span> 研究概述</h2>
+<h3>7.4 与现有方法的对比预期</h3>
 
-<h3>1.1 问题定义</h3>
-<p>Kimodo 是 NVIDIA 于 2025 年发布的<strong>运动学运动扩散模型</strong>（Kinematic Motion Diffusion Model），基于 700 小时光学动捕数据训练，支持文本描述、全身关键帧、末端执行器位置/旋转、2D 路径点和 2D 路径等多种运动学约束的条件化生成。然而，Kimodo 当前的约束体系完全停留在<strong>运动学层面</strong>（kinematic constraints），缺乏以下关键能力：</p>
-
-<ul>
-  <li><strong>碰撞避免（Collision Avoidance）</strong>：生成的运动可能穿透障碍物、地面或人体自身</li>
-  <li><strong>力矩/动力学可行性（Torque/Dynamic Feasibility）</strong>：关节力矩、速度、加速度可能超出物理执行器的限制</li>
-  <li><strong>稳定性保证（Stability Guarantee）</strong>：缺乏零力矩点（ZMP）或质心（CoM）约束，生成的运动可能在物理仿真中失稳</li>
-  <li><strong>环境交互（Environment Interaction）</strong>：无法生成与场景物体自然交互的运动（如推门、坐椅子、避开家具）</li>
-</ul>
-
-<h3>1.2 研究目标</h3>
-<p>本方向的核心目标是：在保持 Kimodo 运动质量和多样性的前提下，通过在<strong>推理阶段（inference time）</strong>注入物理约束和环境交互约束，使生成的运动在物理仿真中可执行、稳定、无碰撞。</p>
-
-<div class="highlight-box">
-  <strong>核心思路</strong>：采用<strong>引导式扩散采样（guided diffusion sampling）</strong>范式，在 Kimodo 的去噪（denoising）过程中引入物理约束的梯度信号，将运动学可行域逐步收窄为物理可行域，同时保持模型的生成多样性。
-</div>
-
-<h3>1.3 为什么这个方向有前景</h3>
-<ol>
-  <li><strong>工业需求明确</strong>：机器人全身控制（whole-body control）、数字孪生、VR/AR 虚拟人等领域对物理可行运动的需求日益增长</li>
-  <li><strong>技术可行性高</strong>：2024-2025 年已有大量工作证明在扩散推理中注入物理约束是可行的（PhysDiff、CLoSD、SafeDiffuser 等）</li>
-  <li><strong>Kimodo 架构优势</strong>：Kimodo 的两阶段去噪器架构（root + body 分离预测）为分层注入不同约束提供了天然的接口</li>
-  <li><strong>与已有约束体系兼容</strong>：Kimodo 已支持运动学约束的条件化生成，扩展到物理约束是自然的延伸</li>
-</ol>
-
-<!-- ==================== 2. Kimodo 基座模型回顾 ==================== -->
-<h2 id="sec-kimodo"><span class="section-num">2.</span> Kimodo 基座模型回顾</h2>
-
-<div class="card">
-<h4>论文信息</h4>
-<p><strong>标题</strong>：Kimodo: Scaling Controllable Human Motion Generation</p>
-<p><strong>作者</strong>：Davis Rempe, Mathis Petrovich, Ye Yuan, Haotian Zhang, Xue Bin Peng, Yifeng Jiang, Tingwu Wang, Umar Iqbal, David Minor, Michael de Ruyter, Jiefeng Li, Chen Tessler, Edy Lim, Eugene Jeong, Sam Wu, Ehsan Hassani, Michael Huang, Jin-Bey Yu, Chaeyeon Chung, Lina Song, Olivier Dionne, Jan Kautz, Simon Yuen, Sanja Fidler</p>
-<p><strong>机构</strong>：NVIDIA Research</p>
-<p><strong>arXiv</strong>：2603.15546</p>
-</div>
-
-<h3>2.1 核心方法</h3>
-<ul>
-  <li><strong>数据规模</strong>：700 小时光学动捕数据——远超公开数据集（AMASS 约 40 小时）</li>
-  <li><strong>运动表示</strong>：精心设计的运动表示（motion representation），支持灵活的约束条件化</li>
-  <li><strong>两阶段去噪器</strong>：将根节点（root）和身体（body）的预测分解，减少运动伪影</li>
-  <li><strong>控制信号</strong>：文本、全身关键帧、稀疏关节位置/旋转、2D 路径点、密集 2D 路径</li>
-  <li><strong>扩散框架</strong>：基于 DDPM 的去噪扩散概率模型</li>
-</ul>
-
-<h3>2.2 约束增强的切入点</h3>
-<p>Kimodo 的两阶段架构（root prediction + body prediction）为约束注入提供了两个层次：</p>
 <table>
-  <tr><th>层次</th><th>内容</th><th>可注入约束类型</th></tr>
-  <tr><td>根节点预测</td><td>全局位置、朝向、速度</td><td>路径碰撞避免、CoM/ZMP 稳定性、全局力矩限制</td></tr>
-  <tr><td>身体预测</td><td>关节旋转、相对姿态</td><td>自碰撞避免、关节力矩限制、末端执行器精度、环境交互</td></tr>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>物理可行性</th>
+      <th>运动质量</th>
+      <th>计算效率</th>
+      <th>约束灵活性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Kimodo (基线)</td>
+      <td>低</td>
+      <td>高</td>
+      <td>高</td>
+      <td>仅运动学</td>
+    </tr>
+    <tr>
+      <td>PhysDiff</td>
+      <td>高</td>
+      <td>中</td>
+      <td>低</td>
+      <td>固定物理约束</td>
+    </tr>
+    <tr>
+      <td>SafeDiffuser</td>
+      <td>高</td>
+      <td>中高</td>
+      <td>中</td>
+      <td>CBF 约束</td>
+    </tr>
+    <tr>
+      <td>本方法 (预期)</td>
+      <td>高</td>
+      <td>中高</td>
+      <td>中高</td>
+      <td>多种约束灵活组合</td>
+    </tr>
+  </tbody>
 </table>
+</section>
 
-<!-- ==================== 3. 文献综述 ==================== -->
-<h2 id="sec-lit"><span class="section-num">3.</span> 文献综述</h2>
+<!-- ============================================================ -->
+<!-- Section 8: 风险与缓解 -->
+<!-- ============================================================ -->
+<section id="sec-risks">
+<h2>八、风险与缓解</h2>
 
-<p>以下综述涵盖了 2023-2025 年在物理约束运动生成、碰撞感知运动合成、约束引导扩散模型和环境交互运动生成等方向的核心论文。</p>
+<h3>8.1 技术风险</h3>
 
-<!-- 3.1 PhysDiff -->
 <div class="card">
-<h4>3.1 PhysDiff: Physics-Guided Human Motion Diffusion Model</h4>
-<p><span class="author">Changan Chen, Kadhiravani Hegde, Jiahao Wang, Zhen Wang, Carl Vondrick</span></p>
-<p><span class="venue">CVPR 2024</span> | arXiv:2312.07669</p>
-
-<p><strong>核心方法</strong>：PhysDiff 是最早将物理约束系统性地注入扩散运动生成过程的工作之一。其关键创新在于在每个去噪步骤中引入<strong>基于物理模拟器的优化</strong>：扩散模型预测运动序列后，物理模拟器评估其物理可行性（脚部接触、重力一致性、平衡性），并将反馈用于修正当前去噪步骤的输出。这种"扩散-模拟交替"（diffusion-simulation alternation）的策略有效消除了脚滑（foot skating）、漂浮（floating）等常见伪影。</p>
-
-<p><strong>关键结果</strong>：在 HumanML3D 和 KIT-ML 基准上，PhysDiff 在保持运动质量和多样性的同时，显著降低了物理不可行性指标（脚滑距离、穿透深度）。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：PhysDiff 的"去噪步骤中嵌入物理模拟"范式可直接应用于 Kimodo 的推理循环。Kimodo 的两阶段架构允许在 root 和 body 两个层次分别插入物理约束。</p>
+  <div class="card-title">风险 1：约束-质量权衡不可控</div>
+  <span class="card-venue" style="background: var(--danger);">高风险</span>
+  <p><strong>描述</strong>：物理约束注入可能导致运动质量严重退化。强约束引导可能使去噪过程偏离数据流形，生成不自然的运动。</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>采用自适应引导强度：根据约束违反程度动态调整引导权重，在违反严重时增强引导，在接近满足时减弱引导。</li>
+    <li>使用 CFG++ 的流形约束修正，防止引导方向偏离数据流形。</li>
+    <li>仅在去噪后期（高信噪比阶段）注入强约束，避免在早期去噪阶段过度干预。</li>
+    <li>建立约束-质量 Pareto 前沿分析，为不同应用场景选择最优工作点。</li>
+  </ul>
 </div>
 
-<!-- 3.2 CLoSD -->
 <div class="card">
-<h4>3.2 CLoSD: Closing the Loop for Safe Diffusion Models with Physics Simulators for Human Motion Generation</h4>
-<p><span class="author">Chendi Huang, Zhi Cao, et al.</span></p>
-<p><span class="venue">arXiv 2024</span> | arXiv:2410.01575</p>
-
-<p><strong>核心方法</strong>：CLoSD 提出了<strong>闭环扩散-仿真</strong>（closed-loop diffusion-simulation）框架。与 PhysDiff 的开环交替不同，CLoSD 在扩散过程中建立了一个持续的反馈循环：物理仿真器的结果不仅用于修正当前步骤，还通过<strong>状态回传</strong>影响后续去噪步骤的方向。这种方法确保了生成运动在整个时间序列上的物理一致性，而非仅在局部步骤上满足约束。</p>
-
-<p><strong>关键结果</strong>：在长序列（>4 秒）运动生成中，CLoSD 的物理可行性显著优于开环方法，特别是在需要维持长时间平衡的任务中。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：CLoSD 的闭环思想对于 Kimodo 生成长序列运动尤为重要。Kimodo 的两阶段架构可以在此基础上实现 root 层面的路径级闭环和 body 层面的姿态级闭环。</p>
+  <div class="card-title">风险 2：物理仿真投影延迟过高</div>
+  <span class="card-venue" style="background: var(--warning);">中风险</span>
+  <p><strong>描述</strong>：PhysDiff 风格的物理仿真投影在每个去噪步执行，计算开销可能过大，无法满足实时性要求。</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>仅在去噪过程的最后 10-20% 步数执行物理投影。</li>
+    <li>使用轻量级物理代理模型（如简化的刚体动力学模型）替代完整仿真器。</li>
+    <li>利用 RTX 5090 的多 GPU 并行：将批量样本分配到不同 GPU 上并行执行物理投影。</li>
+    <li>预计算可离线处理的约束（如静态场景的碰撞检测 BVH）。</li>
+  </ul>
 </div>
 
-<!-- 3.3 SafeDiffuser -->
 <div class="card">
-<h4>3.3 SafeDiffuser: Safe Diffusion Policy with Control Barrier Function</h4>
-<p><span class="author">Yuning Jiang, Zuxin Liu, et al.</span></p>
-<p><span class="venue">arXiv 2024</span> | arXiv:2405.02533</p>
-
-<p><strong>核心方法</strong>：SafeDiffuser 将<strong>控制障碍函数（Control Barrier Functions, CBFs）</strong>集成到扩散策略的去噪过程中。CBFs 提供了形式化的安全保证——确保系统状态始终停留在安全集合内。在每个去噪步骤中，SafeDiffuser 通过一个基于 CBF 的优化问题将预测的动作投影到安全区域，从而在不牺牲任务性能的前提下严格满足安全约束。</p>
-
-<p><strong>关键结果</strong>：在多个控制基准任务上，SafeDiffuser 在保持高任务回报的同时，将约束违反率降至接近零。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：CBFs 框架可直接映射到 Kimodo 的物理约束场景：碰撞避免可表述为"人体-障碍物距离 &gt; 0"的 CBF，关节力矩限制可表述为"力矩 &lt; 最大值"的 CBF。这种形式化方法比启发式惩罚更严格。</p>
+  <div class="card-title">风险 3：多约束冲突</div>
+  <span class="card-venue" style="background: var(--warning);">中风险</span>
+  <p><strong>描述</strong>：不同约束之间可能存在冲突。例如，避免碰撞的最优路径可能违反 ZMP 稳定性约束；满足力矩限制的运动可能无法完成指定的交互任务。</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>建立约束优先级体系：安全性约束（碰撞避免）&gt; 稳定性约束（ZMP）&gt; 舒适性约束（力矩）。</li>
+    <li>使用加权约束组合，通过超参数搜索确定最优权重配置。</li>
+    <li>实现约束冲突检测机制，在检测到冲突时降级到低优先级约束。</li>
+    <li>参考 MultiAct 的组合条件化策略，设计约束融合与过渡机制。</li>
+  </ul>
 </div>
 
-<!-- 3.4 SceneDiffuser -->
 <div class="card">
-<h4>3.4 SceneDiffuser: Scene-aware Human Motion Diffusion Model</h4>
-<p><span class="author">Xu, Zhang, et al.</span></p>
-<p><span class="venue">CVPR 2024</span> | arXiv:2311.15888</p>
-
-<p><strong>核心方法</strong>：SceneDiffuser 提出了<strong>场景感知的联合扩散框架</strong>，将 3D 场景几何信息（地板、家具、障碍物）直接编码为扩散模型的条件信号。与事后修正不同，SceneDiffuser 在模型架构层面实现了场景感知——运动生成和场景约束在同一个扩散过程中联合建模。该方法支持运动生成（motion generation）和运动规划（motion planning）两种模式。</p>
-
-<p><strong>关键结果</strong>：在场景交互基准上，SceneDiffuser 生成的运动在场景穿透率、交互自然度等指标上显著优于后处理方法。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：SceneDiffuser 的场景编码器可作为 Kimodo 的额外条件输入，使 Kimodo 在生成运动时"看到"3D 场景几何。这对于环境交互约束至关重要。</p>
+  <div class="card-title">风险 4：Kimodo 代码访问受限</div>
+  <span class="card-venue" style="background: var(--warning);">中风险</span>
+  <p><strong>描述</strong>：Kimodo 作为 NVIDIA 的研究项目，可能未完全开源，或仅提供推理接口而非训练代码。</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>优先使用推理时约束注入方案（本研究的推荐方案），仅需访问 Kimodo 的推理接口。</li>
+    <li>如果需要约束条件化微调，可使用 Kimodo 的输出作为参考运动，在约束增强模块上进行独立训练。</li>
+    <li>准备备选方案：使用开源的运动扩散模型（如 MDM、MLD）作为替代基础模型。</li>
+  </ul>
 </div>
 
-<!-- 3.5 InterGen -->
+<h3>8.2 资源风险</h3>
+
 <div class="card">
-<h4>3.5 InterGen: Diffusion-based Multi-person 3D Motion Generation and Interaction</h4>
-<p><span class="author">Han Liang, Jiachen Sun, Yuanhan Zhang, Jing Li, Yuan Zhou, Yi Yang, Ziwei Liu, Cheng Qian, et al.</span></p>
-<p><span class="venue">CVPR 2024</span> | arXiv:2312.14936</p>
-
-<p><strong>核心方法</strong>：InterGen 解决了多人交互运动生成问题，使用扩散模型联合生成多个角色的协调运动。其核心创新在于<strong>交互感知的联合去噪</strong>——在去噪过程中，多个角色的运动被联合建模，确保交互的时空一致性（如握手、跳舞等接触交互）。</p>
-
-<p><strong>关键结果</strong>：在 InterHuman 数据集上，InterGen 在交互质量、多样性和时空一致性指标上达到最优。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：InterGen 的交互建模思想可扩展到人-物交互（human-object interaction）场景——将物体视为"第二角色"，联合生成人和物体的协调运动。</p>
+  <div class="card-title">风险 5：GPU 算力不足</div>
+  <span class="card-venue" style="background: var(--accent);">低风险</span>
+  <p><strong>描述</strong>：2-3x RTX 5090 可能无法支撑大规模消融实验的需求。</p>
+  <p><strong>缓解措施</strong>：</p>
+  <ul>
+    <li>利用 Kimodo 的推理效率优势：Kimodo 本身推理速度较快，约束注入的额外开销可控。</li>
+    <li>采用混合精度训练/推理（FP16/BF16）降低显存占用。</li>
+    <li>合理安排实验优先级，先完成核心实验（Exp-1 到 Exp-5），再根据时间和资源情况决定是否进行 Exp-6 到 Exp-8。</li>
+    <li>使用梯度检查点（gradient checkpointing）减少显存占用。</li>
+  </ul>
 </div>
 
-<!-- 3.6 DiffuseLoco -->
-<div class="card">
-<h4>3.6 DiffuseLoco: Diffusion-Based Versatile and Transferable Locomotion Generation Across Diverse Terrains</h4>
-<p><span class="venue">arXiv 2024</span> | arXiv:2410.19118</p>
+<h3>8.3 风险评估矩阵</h3>
 
-<p><strong>核心方法</strong>：DiffuseLoco 将扩散模型应用于四足/双足机器人的步态生成，条件化于地形信息（高程图、坡度、摩擦系数）。该方法使用扩散模型生成<strong>多模态步态分布</strong>——对同一地形条件，模型可以生成多种合理的步态策略，而非收敛到单一解。这种多样性对于适应未知地形至关重要。</p>
-
-<p><strong>关键结果</strong>：在多种地形类型（平地、斜坡、楼梯、粗糙地面）上，DiffuseLoco 展示了优于传统方法的适应性和鲁棒性。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：DiffuseLoco 的地形条件化方法可直接用于 Kimodo 的环境感知——将地形/场景信息编码为扩散条件，使 Kimodo 生成适应特定环境的运动。</p>
-</div>
-
-<!-- 3.7 MDM -->
-<div class="card">
-<h4>3.7 MDM: Human Motion Diffusion Model</h4>
-<p><span class="author">Guy Tevet, Sigal Raab, Brian Gordon, Yoni Kafri, Shmuel Avidan, Daniel Berio, Amit H. Bermano</span></p>
-<p><span class="venue">ICLR 2023</span></p>
-
-<p><strong>核心方法</strong>：MDM 是运动扩散模型的奠基性工作之一，首次将 DDPM 应用于人体运动生成。与自回归方法不同，MDM 以<strong>非自回归</strong>方式一次性生成整个运动序列。该方法使用 SMPL 身体模型表示，支持文本到运动、动作到运动、无条件生成和运动填补等多种任务。MDM 采用<strong>无分类器引导（classifier-free guidance）</strong>实现可控生成。</p>
-
-<p><strong>关键意义</strong>：MDM 建立了运动扩散模型的基本范式，Kimodo 在此基础上进行了大规模数据训练和架构改进。理解 MDM 的扩散框架对于设计约束注入机制至关重要。</p>
-</div>
-
-<!-- 3.8 MotionDiffuse -->
-<div class="card">
-<h4>3.8 MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model</h4>
-<p><span class="author">Mingyuan Zhang, Zhongang Cai, Lei Pan, Fangzhou Hong, Xinying Guo, Yuxuan Liu, Ziwei Liu</span></p>
-<p><span class="venue">IEEE TPAMI 2024</span> | arXiv:2209.14912</p>
-
-<p><strong>核心方法</strong>：MotionDiffuse 实现了细粒度的文本驱动运动生成，支持多动作组合、时序控制和空间属性。该方法使用跨模态注意力机制将文本描述映射到运动空间，在 HumanML3D 和 KIT-ML 基准上超越了 MDM、MLD 等方法。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：MotionDiffuse 的跨模态条件化机制可为 Kimodo 的约束增强提供参考——物理约束信号可类似文本信号一样通过交叉注意力注入扩散过程。</p>
-</div>
-
-<!-- 3.9 PHC -->
-<div class="card">
-<h4>3.9 PHC: Perpetual Humanoid Control for Real-time Simulated Avatars</h4>
-<p><span class="author">Zhengyi Luo, Jialong Li, Shunlin Lu, Yuke Zhu, et al.</span></p>
-<p><span class="venue">2024</span></p>
-
-<p><strong>核心方法</strong>：PHC 训练了一个<strong>持续性人形控制器</strong>——可以不间断地跟踪多样化的动捕运动，即使在扰动后也能自动恢复。其关键技术包括渐进式训练课程（progressive curriculum）、运动噪声注入与恢复策略、以及接触感知的奖励设计。PHC 使用对抗式模仿学习（adversarial imitation learning）训练单一策略来跟踪广泛的运动。</p>
-
-<p><strong>关键结果</strong>：PHC 在 SMPL-based 人形模型上实现了高保真度的运动跟踪，支持实时交互控制。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：PHC 可作为 Kimodo 生成运动的<strong>后端物理验证器</strong>——Kimodo 生成运动学轨迹，PHC 验证其在物理仿真中的可执行性。两者形成"生成-验证"闭环。</p>
-</div>
-
-<!-- 3.10 AMP -->
-<div class="card">
-<h4>3.10 AMP: Adversarial Motion Priors for Stylized Physics-Based Character Animation</h4>
-<p><span class="author">Xue Bin Peng, Ze Ma, Pieter Abbeel, Sergey Levine, Angjoo Kanazawa</p>
-<p><span class="venue">SIGGRAPH 2021</span>（2024-2025 年仍有大量后续工作）</p>
-
-<p><strong>核心方法</strong>：AMP 使用对抗训练学习运动先验——判别器学习区分"真实运动"和"仿真运动"，策略网络通过最大化判别器得分来生成自然运动。与逐帧匹配动捕数据不同，AMP 仅要求运动在统计分布上与真实运动一致，从而允许更大的生成灵活性。</p>
-
-<p><strong>后续发展（2024-2025）</strong>：ASE（Adversarial Skill Embeddings）扩展了 AMP 的技能潜空间；PHC 改进了持续性控制；多组工作将 AMP 应用于人形机器人全身控制。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：AMP 的运动先验思想可用于设计 Kimodo 的<strong>物理合理性判别器</strong>——在扩散采样过程中，用判别器信号引导生成物理上更合理的运动。</p>
-</div>
-
-<!-- 3.11 Diffusion Policy -->
-<div class="card">
-<h4>4.11 Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</h4>
-<p><span class="author">Cheng Chi, Siyuan Feng, Yilun Du, Zhenjia Xu, Eric Cousineau, Benjamin Burchfiel, Shuran Song</span></p>
-<p><span class="venue">RSS 2023 / IJRR 2024</span> | arXiv:2303.04137</p>
-
-<p><strong>核心方法</strong>：Diffusion Policy 将扩散模型应用于机器人视觉运动策略学习，将动作生成建模为条件去噪过程。该方法的核心优势在于能够建模<strong>多模态动作分布</strong>——当多个有效动作对应同一观测时，传统 L2 回归策略会输出平均值，而 Diffusion Policy 可以采样出多样化的合理动作。</p>
-
-<p><strong>关键意义</strong>：Diffusion Policy 建立了扩散模型在机器人控制领域的范式，为后续的约束增强工作（SafeDiffuser 等）奠定了基础。</p>
-</div>
-
-<!-- 3.12 Diffuser -->
-<div class="card">
-<h4>4.12 Diffuser: Planning with Diffusion for Flexible Behavior Synthesis</h4>
-<p><span class="author">Michael Janner, Yilun Du, Joshua Tenenbaum, Sergey Levine</span></p>
-<p><span class="venue">ICML 2022</span></p>
-
-<p><strong>核心方法</strong>：Diffuser 将扩散模型应用于轨迹规划，将规划问题建模为<strong>条件序列生成</strong>。该方法支持多种条件化方式（奖励函数、目标状态、约束），并通过在去噪过程中引入梯度引导实现约束满足。Diffuser 的"规划即生成"（planning-as-generation）范式对后续约束增强工作影响深远。</p>
-
-<p><strong>与 Kimodo 的关联</strong>：Diffuser 的条件化框架可直接参考——Kimodo 的物理约束可类似地通过梯度引导在去噪过程中实现。</p>
-</div>
-
-<!-- ==================== 4. 技术路线 ==================== -->
-<h2 id="sec-approach"><span class="section-num">4.</span> 技术路线：如何在 Kimodo 推理循环中注入物理约束</h2>
-
-<h3>4.1 总体架构</h3>
-<p>基于文献综述，我们提出以下<strong>分层约束引导扩散</strong>（Hierarchical Constraint-Guided Diffusion, HCGD）技术路线：</p>
-
-<pre>
-┌──────────────────────────────────────────────────────────┐
-│                    Kimodo 推理循环                         │
-│                                                          │
-│  ┌─────────┐    ┌─────────┐    ┌─────────┐              │
-│  │  噪声    │───▶│ 去噪步骤 │───▶│ 运动输出 │              │
-│  │ z_T     │    │  z_t    │    │  z_0    │              │
-│  └─────────┘    └────┬────┘    └─────────┘              │
-│                      │                                   │
-│         ┌────────────┼────────────┐                      │
-│         ▼            ▼            ▼                      │
-│  ┌────────────┐ ┌──────────┐ ┌──────────┐              │
-│  │ 碰撞避免   │ │ 动力学   │ │ 稳定性   │              │
-│  │ 引导       │ │ 可行性   │ │ 引导     │              │
-│  │            │ │ 引导     │ │          │              │
-│  └────────────┘ └──────────┘ └──────────┘              │
-│         │            │            │                      │
-│         └────────────┼────────────┘                      │
-│                      ▼                                   │
-│              约束梯度求和                                  │
-│                      │                                   │
-│                      ▼                                   │
-│              修正 z_t ← z_t + α·∇L_constraint           │
-└──────────────────────────────────────────────────────────┘
-</pre>
-
-<h3>4.2 约束一：碰撞避免（Collision Avoidance）</h3>
-
-<h4>4.2.1 自碰撞避免</h4>
-<p>利用 SMPL 身体模型的顶点/关节位置，计算人体自身各部位之间的最小距离。当距离低于阈值时，通过梯度引导推开穿透部位。</p>
-<pre>
-L_self_collision = Σ_{i,j} max(0, d_min - d(i,j))^2
-其中 d(i,j) 为部位 i 和 j 之间的最小距离，d_min 为安全距离阈值
-</pre>
-
-<h4>4.2.2 环境碰撞避免</h4>
-<p>使用<strong>有符号距离场（Signed Distance Field, SDF）</strong>表示 3D 环境。对于每个关节位置 p，查询 SDF 值 φ(p)：φ(p) &lt; 0 表示穿透，φ(p) = 0 表示在表面，φ(p) &gt; 0 表示在表面外。</p>
-<pre>
-L_env_collision = Σ_{joints} max(0, d_safe - φ(p_j))^2
-其中 φ(p_j) 为关节 j 位置处的 SDF 值，d_safe 为安全裕度
-</pre>
-
-<h4>4.2.3 地面穿透避免</h4>
-<pre>
-L_ground = Σ_{joints} max(0, y_j - y_ground)^2  当 y_j &lt; y_ground
-</pre>
-
-<h3>4.3 约束二：动力学可行性（Dynamic Feasibility）</h3>
-
-<h4>4.3.1 关节力矩限制</h4>
-<p>从运动学轨迹（关节角度序列）通过逆动力学计算所需力矩，检查是否超出执行器限制。</p>
-<pre>
-τ = M(q)·q̈ + C(q,q̇)·q̇ + G(q)
-L_torque = Σ_{joints} max(0, |τ_j| - τ_max_j)^2
-</pre>
-<p><strong>简化近似</strong>：为避免在推理中进行完整的逆动力学计算，可使用预训练的神经网络近似力矩映射，或使用运动学代理指标（关节加速度峰值）作为力矩可行性的近似。</p>
-
-<h4>4.3.2 关节速度/加速度限制</h4>
-<pre>
-L_velocity = Σ_{joints} max(0, |q̇_j| - q̇_max_j)^2
-L_accel = Σ_{joints} max(0, |q̈_j| - q̈_max_j)^2
-</pre>
-
-<h3>4.4 约束三：稳定性保证（Stability Guarantee）</h3>
-
-<h4>4.4.1 ZMP 约束</h4>
-<p>零力矩点（ZMP）必须始终落在支撑多边形（support polygon）内部：</p>
-<pre>
-L_zmp = max(0, dist(ZMP, support_polygon) - margin)^2
-</pre>
-
-<h4>4.4.2 CoM 约束</h4>
-<p>质心（CoM）轨迹应保持在物理可实现的范围内：</p>
-<pre>
-L_com = Σ_t ||CoM(t) - CoM_target(t)||^2  +  max(0, |CoM_acc| - a_max)^2
-</pre>
-
-<h3>4.5 约束四：环境交互（Environment Interaction）</h3>
-
-<h4>4.5.1 接触约束</h4>
-<pre>
-L_contact = Σ_{contact_points} ||p_cp - p_surface||^2  当应接触时
-          + Σ_{contact_points} ||F_contact||^2  当不应接触时（无穿透力）
-</pre>
-
-<h4>4.5.2 物体交互约束</h4>
-<p>对于推门、坐椅子等交互任务，引入物体状态约束：</p>
-<pre>
-L_object = ||object_state(t) - object_target_state(t)||^2
-         + interaction_force_penalty
-</pre>
-
-<h3>4.6 总约束损失与采样策略</h3>
-<pre>
-L_total = λ_1·L_self_collision + λ_2·L_env_collision + λ_3·L_ground
-        + λ_4·L_torque + λ_5·L_velocity + λ_6·L_accel
-        + λ_7·L_zmp + λ_8·L_com
-        + λ_9·L_contact + λ_10·L_object
-
-在每个去噪步骤 t：
-  z_t_guided = z_t - α_t · ∇_{z_t} L_total(z_t)
-</pre>
-
-<div class="highlight-box">
-<strong>关键设计选择</strong>：权重 λ_i 应随去噪步骤自适应调整——在早期步骤（高噪声）使用较小权重以保持多样性，在后期步骤（低噪声）使用较大权重以满足约束。这类似于 classifier guidance 中的噪声调度策略。
-</div>
-
-<!-- ==================== 5. 知识前置要求 ==================== -->
-<h2 id="sec-prereq"><span class="section-num">5.</span> 知识前置要求</h2>
-
-<h3>5.1 扩散模型理论</h3>
-<div class="card">
-<h4>需要掌握的核心概念</h4>
-<ul>
-  <li>DDPM（Denoising Diffusion Probabilistic Models）的前向/反向过程</li>
-  <li>Classifier-free guidance 与 classifier guidance 的原理与实现</li>
-  <li>Score-based generative models（Score Matching, Langevin Dynamics）</li>
-  <li>条件扩散模型的条件化机制（cross-attention, adaptive normalization）</li>
-</ul>
-<h4>推荐学习资源</h4>
-<ul>
-  <li>论文：<em>"Denoising Diffusion Probabilistic Models"</em> (Ho et al., 2020) — DDPM 原始论文</li>
-  <li>论文：<em>"Diffusion Models Beat GANs on Image Synthesis"</em> (Dhariwal & Nichol, 2021) — Classifier guidance</li>
-  <li>论文：<em>"Classifier-Free Diffusion Guidance"</em> (Ho & Salimans, 2022)</li>
-  <li>教程：<a href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/">Lilian Weng 的扩散模型博客</a></li>
-  <li>课程：<a href="https://www.youtube.com/playlist?list=PLDXjT2LhMELHdLGpFfMQfCyQGkZJCk0kI">Caltech CMS 165 扩散模型课程</a></li>
-</ul>
-</div>
-
-<h3>5.2 物理仿真与动力学</h3>
-<div class="card">
-<h4>需要掌握的核心概念</h4>
-<ul>
-  <li>刚体动力学（Rigid Body Dynamics）：正/逆运动学、正/逆动力学</li>
-  <li>接触力学（Contact Mechanics）：碰撞检测、摩擦锥、接触力计算</li>
-  <li>人形机器人动力学：SMPL 模型、关节力矩、ZMP/CoM 稳定性理论</li>
-  <li>可微物理仿真（Differentiable Physics Simulation）：通过仿真器反向传播梯度</li>
-</ul>
-<h4>推荐学习资源</h4>
-<ul>
-  <li>教材：<em>Rigid Body Dynamics Algorithms</em> (Roy Featherstone) — 刚体动力学标准教材</li>
-  <li>教材：<em>Robotics: Modelling, Planning and Control</em> (Siciliano et al.)</li>
-  <li>工具：<a href="https://mujoco.org/">MuJoCo</a> — 物理仿真器（NVIDIA 项目常用）</li>
-  <li>工具：<a href="https://developer.nvidia.com/isaac-sim">NVIDIA Isaac Sim</a> — 可微物理仿真</li>
-  <li>论文：<em>"DiffTaichi: Differentiable Programming for Physical Simulation"</em> (Hu et al., ICLR 2019)</li>
-</ul>
-</div>
-
-<h3>5.3 约束优化</h3>
-<div class="card">
-<h4>需要掌握的核心概念</h4>
-<ul>
-  <li>拉格朗日乘子法（Lagrangian Multipliers）与 KKT 条件</li>
-  <li>控制障碍函数（Control Barrier Functions, CBFs）</li>
-  <li>模型预测控制（Model Predictive Control, MPC）</li>
-  <li>约束优化中的增广拉格朗日方法（Augmented Lagrangian）</li>
-</ul>
-<h4>推荐学习资源</h4>
-<ul>
-  <li>教材：<em>Convex Optimization</em> (Boyd & Vandenberghe) — <a href="https://web.stanford.edu/~boyd/cvxbook/">免费在线版</a></li>
-  <li>论文：<em>"Control Barrier Functions: Theory and Applications"</em> (Ames et al., 2019)</li>
-  <li>课程：<a href="https://www.edx.org/course/robotics">edX Robotics MicroMasters</a></li>
-</ul>
-</div>
-
-<h3>5.4 人体运动学与 SMPL</h3>
-<div class="card">
-<h4>需要掌握的核心概念</h4>
-<ul>
-  <li>SMPL/SMPL-X 身体模型的参数化（shape parameters, pose parameters）</li>
-  <li>关节层次结构（kinematic chain）与运动学约束</li>
-  <li>人体运动捕捉数据格式（AMASS、HumanML3D）</li>
-</ul>
-<h4>推荐学习资源</h4>
-<ul>
-  <li>论文：<em>"SMPL: A Skinned Multi-Person Linear Model"</em> (Loper et al., 2015)</li>
-  <li>工具：<a href="https://github.com/vchoutas/smplx">SMPL-X 官方代码库</a></li>
-  <li>数据集：<a href="https://amass.is.tue.mpg.de/">AMASS</a> — 大规模动作捕捉数据集</li>
-</ul>
-</div>
-
-<!-- ==================== 6. 入门指南 ==================== -->
-<h2 id="sec-start"><span class="section-num">6.</span> 入门指南：从零到首次实验</h2>
-
-<h3>第一阶段：环境搭建与基础学习（第 1-2 周）</h3>
-
-<p><span class="step-num">1</span><strong>搭建开发环境</strong></p>
-<ul>
-  <li>安装 MuJoCo 物理仿真器（<code>pip install mujoco</code>）</li>
-  <li>安装 SMPL 模型和相关工具（<code>smplx</code>, <code>human_body_prior</code>）</li>
-  <li>获取 Kimodo 代码和预训练权重（NVIDIA 官方仓库）</li>
-  <li>配置 GPU 环境（CUDA 11.8+, PyTorch 2.0+）</li>
-</ul>
-
-<p><span class="step-num">2</span><strong>理解 Kimodo 推理流程</strong></p>
-<ul>
-  <li>阅读 Kimodo 论文和代码，理解两阶段去噪器架构</li>
-  <li>运行 Kimodo 的推理示例，观察无约束生成的运动质量</li>
-  <li>定位 Kimodo 去噪循环的核心代码（<code>model.sample()</code> 或等效函数）</li>
-</ul>
-
-<p><span class="step-num">3</span><strong>学习扩散模型约束引导</strong></p>
-<ul>
-  <li>实现一个简单的 classifier guidance 示范（如 MNIST 上的类别引导）</li>
-  <li>阅读 PhysDiff 和 SafeDiffuser 的代码，理解其约束注入方式</li>
-</ul>
-
-<h3>第二阶段：初步实验（第 3-4 周）</h3>
-
-<p><span class="step-num">4</span><strong>实现地面穿透避免</strong></p>
-<ul>
-  <li>这是最简单的物理约束——所有关节的 y 坐标必须 ≥ 地面高度</li>
-  <li>在 Kimodo 的每个去噪步骤后添加地面约束投影</li>
-  <li>验证约束满足率（应达到 ~100%）和运动质量（应几乎无损失）</li>
-</ul>
-
-<p><span class="step-num">5</span><strong>实现自碰撞避免</strong></p>
-<ul>
-  <li>使用 SMPL 顶点计算身体各部位之间的最小距离</li>
-  <li>当距离低于阈值时，通过梯度引导推开穿透部位</li>
-  <li>在 Kimodo 的去噪循环中注入自碰撞约束</li>
-</ul>
-
-<h3>第三阶段：核心实验（第 5-8 周）</h3>
-
-<p><span class="step-num">6</span><strong>实现环境碰撞避免</strong></p>
-<ul>
-  <li>使用简单场景（如房间内的椅子、桌子）的 SDF 表示</li>
-  <li>在 Kimodo 的去噪循环中注入 SDF 引导信号</li>
-  <li>评估碰撞率、穿透深度和运动质量</li>
-</ul>
-
-<p><span class="step-num">7</span><strong>实现稳定性约束</strong></p>
-<ul>
-  <li>从运动轨迹计算 CoM 和 ZMP</li>
-  <li>在 Kimodo 的 root 预测阶段注入稳定性引导</li>
-  <li>在 MuJoCo 中验证运动的物理可执行性</li>
-</ul>
-
-<p><span class="step-num">8</span><strong>综合评估</strong></p>
-<ul>
-  <li>将所有约束组合使用，评估综合效果</li>
-  <li>与无约束 Kimodo、PhysDiff 等基线进行对比</li>
-  <li>进行消融实验，分析各约束的贡献</li>
-</ul>
-
-<!-- ==================== 7. 实验计划 ==================== -->
-<h2 id="sec-experiment"><span class="section-num">7.</span> 实验计划</h2>
-
-<h3>7.1 实验一：地面穿透避免（Ground Penetration Avoidance）</h3>
 <table>
-  <tr><th>项目</th><th>内容</th></tr>
-  <tr><td>目标</td><td>验证约束引导扩散在 Kimodo 上的基本可行性</td></tr>
-  <tr><td>方法</td><td>在每个去噪步骤后，将低于地面的关节 y 坐标投影到地面以上</td></tr>
-  <tr><td>数据集</td><td>HumanML3D 测试集（1000 条文本描述）</td></tr>
-  <tr><td>指标</td><td>穿透率（penetration rate）、穿透深度（penetration depth, cm）、FID（运动质量）、多样性（Diversity）</td></tr>
-  <tr><td>预期</td><td>穿透率降至 0%，FID 恶化 < 5%，多样性保持 > 90%</td></tr>
+  <thead>
+    <tr>
+      <th>风险</th>
+      <th>概率</th>
+      <th>影响</th>
+      <th>综合等级</th>
+      <th>缓解状态</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>约束-质量权衡</td>
+      <td>高</td>
+      <td>高</td>
+      <td style="color: var(--danger); font-weight: 700;">严重</td>
+      <td>已规划缓解</td>
+    </tr>
+    <tr>
+      <td>物理投影延迟</td>
+      <td>中</td>
+      <td>中</td>
+      <td style="color: var(--warning); font-weight: 700;">中等</td>
+      <td>已规划缓解</td>
+    </tr>
+    <tr>
+      <td>多约束冲突</td>
+      <td>中</td>
+      <td>中</td>
+      <td style="color: var(--warning); font-weight: 700;">中等</td>
+      <td>已规划缓解</td>
+    </tr>
+    <tr>
+      <td>代码访问受限</td>
+      <td>低</td>
+      <td>高</td>
+      <td style="color: var(--warning); font-weight: 700;">中等</td>
+      <td>已规划缓解</td>
+    </tr>
+    <tr>
+      <td>GPU 算力不足</td>
+      <td>低</td>
+      <td>低</td>
+      <td style="color: var(--success); font-weight: 700;">低</td>
+      <td>已规划缓解</td>
+    </tr>
+  </tbody>
 </table>
+</section>
 
-<h3>7.2 实验二：自碰撞避免（Self-Collision Avoidance）</h3>
-<table>
-  <tr><th>项目</th><th>内容</th></tr>
-  <tr><td>目标</td><td>消除 Kimodo 生成运动中的自穿透现象</td></tr>
-  <tr><td>方法</td><td>使用 SMPL 顶点计算部位间最小距离，梯度引导推开穿透</td></tr>
-  <tr><td>数据集</td><td>HumanML3D 测试集 + 自选复杂姿态文本描述</td></tr>
-  <tr><td>指标</td><td>自碰撞率（self-collision rate）、最小穿透深度、运动质量（FID）</td></tr>
-  <tr><td>预期</td><td>自碰撞率降低 > 80%，FID 恶化 < 8%</td></tr>
-</table>
-
-<h3>7.3 实验三：环境碰撞避免（Environment Collision Avoidance）</h3>
-<table>
-  <tr><th>项目</th><th>内容</th></tr>
-  <tr><td>目标</td><td>使 Kimodo 生成的运动在给定 3D 场景中无碰撞</td></tr>
-  <tr><td>方法</td><td>使用 SDF 表示场景几何，在去噪过程中注入 SDF 梯度引导</td></tr>
-  <tr><td>场景</td><td>3-5 个标准室内场景（房间、走廊、楼梯间），参考 SceneDiffuser 数据集</td></tr>
-  <tr><td>指标</td><td>环境碰撞率（env collision rate）、穿透体积（penetration volume）、运动自然度（FID + 人工评估）</td></tr>
-  <tr><td>预期</td><td>环境碰撞率降低 > 70%，FID 恶化 < 10%</td></tr>
-</table>
-
-<h3>7.4 实验四：动力学可行性验证（Dynamic Feasibility Validation）</h3>
-<table>
-  <tr><th>项目</th><th>内容</th></tr>
-  <tr><td>目标</td><td>验证生成运动在物理仿真中的可执行性</td></tr>
-  <tr><td>方法</td><td>将 Kimodo 生成的运动输入 MuJoCo 仿真器，检查关节力矩、速度是否超出限制</td></tr>
-  <tr><td>指标</td><td>力矩违反率（torque violation rate）、仿真成功率（sim success rate）、跟踪误差（tracking error）</td></tr>
-  <tr><td>预期</td><td>力矩违反率 < 5%，仿真成功率 > 85%</td></tr>
-</table>
-
-<h3>7.5 实验五：稳定性约束（Stability Constraints）</h3>
-<table>
-  <tr><th>项目</th><th>内容</th></tr>
-  <tr><td>目标</td><td>确保生成运动在物理仿真中保持平衡</td></tr>
-  <tr><td>方法</td><td>在 Kimodo 的 root 预测阶段注入 ZMP/CoM 约束</td></tr>
-  <tr><td>指标</td><td>ZMP 在支撑多边形内的时间比例、CoM 轨迹平滑度、MuJoCo 中的跌倒率</td></tr>
-  <tr><td>预期</td><td>ZMP 满足率 > 95%，跌倒率 < 10%</td></tr>
-</table>
-
-<h3>7.6 实验六：环境交互（Environment Interaction）</h3>
-<table>
-  <tr><th>项目</th><th>内容</th></tr>
-  <tr><td>目标</td><td>生成与场景物体自然交互的运动（如坐椅子、推门）</td></tr>
-  <tr><td>方法</td><td>将物体状态作为额外条件注入 Kimodo，引入接触约束和交互力约束</td></tr>
-  <tr><td>场景</td><td>3-5 个标准交互场景（坐椅子、推门、拿杯子、跨障碍物）</td></tr>
-  <tr><td>指标</td><td>交互成功率（interaction success rate）、接触自然度、物理合理性</td></tr>
-  <tr><td>预期</td><td>交互成功率 > 60%，接触自然度评分 > 3.5/5（人工评估）</td></tr>
-</table>
-
-<h3>7.7 消融实验矩阵</h3>
-<table>
-  <tr>
-    <th>实验配置</th>
-    <th>地面避免</th>
-    <th>自碰撞</th>
-    <th>环境碰撞</th>
-    <th>力矩限制</th>
-    <th>ZMP/CoM</th>
-  </tr>
-  <tr><td>Baseline（无约束）</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-  <tr><td>+地面</td><td>✓</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-  <tr><td>+自碰撞</td><td>✓</td><td>✓</td><td>-</td><td>-</td><td>-</td></tr>
-  <tr><td>+环境碰撞</td><td>✓</td><td>✓</td><td>✓</td><td>-</td><td>-</td></tr>
-  <tr><td>+动力学</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>-</td></tr>
-  <tr><td>全约束</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
-</table>
-
-<!-- ==================== 8. 预期结果与基准指标 ==================== -->
-<h2 id="sec-benchmarks"><span class="section-num">8.</span> 预期结果与基准指标</h2>
-
-<h3>8.1 关键性能指标</h3>
-<table>
-  <tr><th>指标</th><th>无约束 Kimodo（估计）</th><th>目标值</th><th>说明</th></tr>
-  <tr><td>地面穿透率</td><td>~5-15%</td><td>&lt; 1%</td><td>关节低于地面的帧比例</td></tr>
-  <tr><td>自碰撞率</td><td>~10-20%</td><td>&lt; 3%</td><td>身体部位穿透的帧比例</td></tr>
-  <tr><td>环境碰撞率</td><td>~30-50%</td><td>&lt; 10%</td><td>与场景物体穿透的帧比例</td></tr>
-  <tr><td>关节力矩违反率</td><td>N/A（未计算）</td><td>&lt; 5%</td><td>力矩超出限制的关节比例</td></tr>
-  <tr><td>ZMP 满足率</td><td>N/A</td><td>&gt; 95%</td><td>ZMP 在支撑多边形内的时间比例</td></tr>
-  <tr><td>MuJoCo 仿真成功率</td><td>~40-60%</td><td>&gt; 85%</td><td>运动在物理仿真中可完整执行的比例</td></tr>
-  <tr><td>FID（运动质量）</td><td>基准值</td><td>恶化 &lt; 10%</td><td>与真实运动的分布距离</td></tr>
-  <tr><td>Diversity（多样性）</td><td>基准值</td><td>保持 &gt; 85%</td><td>生成运动的多样性</td></tr>
-</table>
-
-<h3>8.2 与现有方法的对比目标</h3>
-<table>
-  <tr><th>方法</th><th>物理可行性</th><th>运动质量（FID）</th><th>生成速度</th></tr>
-  <tr><td>Kimodo（无约束）</td><td>低</td><td>最优</td><td>快</td></tr>
-  <tr><td>PhysDiff</td><td>中</td><td>中</td><td>慢（需物理仿真）</td></tr>
-  <tr><td>CLoSD</td><td>高</td><td>中</td><td>慢（闭环仿真）</td></tr>
-  <tr><td><strong>Kimodo + HCGD（本方法）</strong></td><td><strong>高</strong></td><td><strong>高（接近无约束）</strong></td><td><strong>中（梯度引导开销）</strong></td></tr>
-</table>
-
-<h3>8.3 成功标准</h3>
-<div class="highlight-box">
-<p><strong>最小可行成果</strong>：在 HumanML3D 测试集上，Kimodo + HCGD 的环境碰撞率降低 > 50%，同时 FID 恶化 < 15%。</p>
-<p><strong>理想成果</strong>：实现所有物理约束（碰撞、力矩、稳定性）的联合优化，在 MuJoCo 仿真成功率 > 85% 的同时，FID 恶化 < 10%。</p>
-</div>
-
-<!-- ==================== 9. 风险与缓解 ==================== -->
-<h2 id="sec-risks"><span class="section-num">9.</span> 风险与缓解策略</h2>
-
-<h3>9.1 技术风险</h3>
-
-<div class="card">
-<h4>风险 1：约束引导导致运动质量严重退化</h4>
-<p><strong>可能性</strong>：中高</p>
-<p><strong>影响</strong>：生成的运动虽然物理可行，但动作僵硬、不自然</p>
-<p><strong>缓解策略</strong>：</p>
-<ul>
-  <li>使用自适应权重调度——在去噪早期使用小权重（保持多样性），后期逐步增大（满足约束）</li>
-  <li>实现约束的"软"版本（soft constraints）——使用惩罚函数而非硬投影</li>
-  <li>参考 PhysDiff 的"物理梯度归一化"技术，防止约束梯度主导去噪方向</li>
-  <li>进行约束权重的超参数搜索，找到质量-可行性帕累托前沿</li>
-</ul>
-</div>
-
-<div class="card">
-<h4>风险 2：计算开销过大，推理速度不可接受</h4>
-<p><strong>可能性</strong>：中</p>
-<p><strong>影响</strong>：每次去噪步骤需要额外的物理计算，推理时间大幅增加</p>
-<p><strong>缓解策略</strong>：</p>
-<ul>
-  <li>使用轻量级代理模型（surrogate models）替代完整的物理仿真</li>
-  <li>预计算 SDF 和碰撞检测数据结构（BVH tree），加速查询</li>
-  <li>仅在去噪的最后 K 步（如最后 10 步）注入物理约束（因为早期步骤的噪声太大，物理约束无意义）</li>
-  <li>实现约束计算的 GPU 并行化</li>
-</ul>
-</div>
-
-<div class="card">
-<h4>风险 3：约束冲突——不同约束之间相互矛盾</h4>
-<p><strong>可能性</strong>：中</p>
-<p><strong>影响</strong>：例如，避免前方障碍物可能导致 ZMP 超出支撑多边形</p>
-<p><strong>缓解策略</strong>：</p>
-<ul>
-  <li>实现约束优先级层次——稳定性 > 碰撞避免 > 动力学可行性</li>
-  <li>使用增广拉格朗日方法（Augmented Lagrangian）自动调节约束权重</li>
-  <li>当检测到约束冲突时，回退到更宽松的约束组合</li>
-</ul>
-</div>
-
-<div class="card">
-<h4>风险 4：SDF 表示不够精确，复杂场景下碰撞检测失效</h4>
-<p><strong>可能性</strong>：低中</p>
-<p><strong>影响</strong>：在复杂几何场景中，SDF 的离散化可能导致漏检</p>
-<p><strong>缓解策略</strong>：</p>
-<ul>
-  <li>使用高分辨率 SDF 网格（如 256^3）或多分辨率 SDF</li>
-  <li>对于复杂场景，使用基于 BVH 的精确碰撞检测作为 SDF 的补充</li>
-  <li>参考 SceneDiffuser 的场景编码方法，使用神经 SDF 提高精度</li>
-</ul>
-</div>
-
-<h3>9.2 项目风险</h3>
-
-<div class="card">
-<h4>风险 5：Kimodo 代码/权重获取困难</h4>
-<p><strong>可能性</strong>：中</p>
-<p><strong>缓解策略</strong>：</p>
-<ul>
-  <li>联系 NVIDIA Research 团队，申请代码访问权限</li>
-  <li>如无法获取，使用开源运动扩散模型（MDM、MotionDiffuse）作为替代基座</li>
-  <li>约束注入方法本身是模型无关的，可迁移到任何运动扩散模型</li>
-</ul>
-</div>
-
-<div class="card">
-<h4>风险 6：缺乏合适的评估基准</h4>
-<p><strong>可能性</strong>：低中</p>
-<p><strong>缓解策略</strong>：</p>
-<ul>
-  <li>参考 SceneDiffuser、InterGen 等工作的评估协议</li>
-  <li>自建评估场景集（3-5 个标准场景，10-20 条测试文本）</li>
-  <li>引入人工评估（A/B test）作为自动指标的补充</li>
-</ul>
-</div>
-
-<!-- ==================== 10. 参考文献 ==================== -->
-<h2 id="sec-refs"><span class="section-num">10.</span> 参考文献</h2>
+<!-- ============================================================ -->
+<!-- Section 9: 参考文献 -->
+<!-- ============================================================ -->
+<section id="sec-refs">
+<h2>九、参考文献</h2>
 
 <ol class="ref-list">
-  <li>Rempe, D., Petrovich, M., Yuan, Y., et al. <strong>Kimodo: Scaling Controllable Human Motion Generation.</strong> arXiv:2603.15546, 2025.</li>
-
-  <li>Chen, C., Hegde, K., Wang, J., Wang, Z., Vondrick, C. <strong>PhysDiff: Physics-Guided Human Motion Diffusion Model.</strong> CVPR 2024. arXiv:2312.07669.</li>
-
-  <li>Huang, C., Cao, Z., et al. <strong>CLoSD: Closing the Loop for Safe Diffusion Models with Physics Simulators for Human Motion Generation.</strong> arXiv:2410.01575, 2024.</li>
-
-  <li>Jiang, Y., Liu, Z., et al. <strong>SafeDiffuser: Safe Diffusion Policy with Control Barrier Function.</strong> arXiv:2405.02533, 2024.</li>
-
-  <li>Xu, Zhang, et al. <strong>SceneDiffuser: Scene-aware Human Motion Diffusion Model.</strong> CVPR 2024. arXiv:2311.15888.</li>
-
-  <li>Liang, H., Sun, J., Zhang, Y., et al. <strong>InterGen: Diffusion-based Multi-person 3D Motion Generation and Interaction.</strong> CVPR 2024. arXiv:2312.14936.</li>
-
-  <li><strong>DiffuseLoco: Diffusion-Based Versatile and Transferable Locomotion Generation Across Diverse Terrains.</strong> arXiv:2410.19118, 2024.</li>
-
-  <li>Tevet, G., Raab, S., Gordon, B., et al. <strong>Human Motion Diffusion Model.</strong> ICLR 2023.</li>
-
-  <li>Zhang, M., Cai, Z., Pan, L., et al. <strong>MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model.</strong> IEEE TPAMI 2024. arXiv:2209.14912.</li>
-
-  <li>Luo, Z., Li, J., Lu, S., Zhu, Y., et al. <strong>PHC: Perpetual Humanoid Control for Real-time Simulated Avatars.</strong> 2024.</li>
-
-  <li>Peng, X.B., Ma, Z., Abbeel, P., Levine, S., Kanazawa, A. <strong>AMP: Adversarial Motion Priors for Stylized Physics-Based Character Animation.</strong> SIGGRAPH 2021.</li>
-
-  <li>Chi, C., Feng, S., Du, Y., Xu, Z., et al. <strong>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion.</strong> RSS 2023 / IJRR 2024. arXiv:2303.04137.</li>
-
-  <li>Janner, M., Du, Y., Tenenbaum, J., Levine, S. <strong>Diffuser: Planning with Diffusion for Flexible Behavior Synthesis.</strong> ICML 2022.</li>
-
-  <li>Ho, J., Jain, A., Abbeel, P. <strong>Denoising Diffusion Probabilistic Models.</strong> NeurIPS 2020. arXiv:2006.11239.</li>
-
-  <li>Dhariwal, P., Nichol, A. <strong>Diffusion Models Beat GANs on Image Synthesis.</strong> NeurIPS 2021.</li>
-
-  <li>Ho, J., Salimans, T. <strong>Classifier-Free Diffusion Guidance.</strong> NeurIPS 2021 Workshop.</li>
-
-  <li>Ames, A.D., Grizzle, J.W., Tabuada, P. <strong>Control Barrier Functions: Theory and Applications.</strong> European Control Conference, 2019.</li>
-
-  <li>Loper, M., Mahmood, N., Romero, J., Pons-Moll, G., Black, M.J. <strong>SMPL: A Skinned Multi-Person Linear Model.</strong> ACM TOGS (SIGGRAPH Asia), 2015.</li>
-
-  <li>Hu, Y., Anderson, L., Li, T.-M., et al. <strong>DiffTaichi: Differentiable Programming for Physical Simulation.</strong> ICLR 2020.</li>
-
-  <li>Fu, J., Liu, S., et al. <strong>MotionGPT: Human Motion as a Foreign Language.</strong> NeurIPS 2023. arXiv:2310.08394.</li>
+  <li>Tevet, G., Raab, S., Gordon, B., Shafir, Y., Cohen-Or, D., &amp; Bermano, A. H. (2022). Human Motion Diffusion Model. <em>arXiv preprint arXiv:2209.14916</em>. ICLR 2023.</li>
+  <li>Zhang, M., Cai, Z., Pan, L., Hong, F., Guo, X., Yang, L., &amp; Liu, Z. (2022). MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model. <em>ACM Transactions on Graphics (SIGGRAPH 2023)</em>, 41(4).</li>
+  <li>Chen, X., Jiang, B., Liu, W., Huang, Z., Fu, B., Chen, T., Yu, J., &amp; Yu, G. (2022). Executing Your Commands via Motion Diffusion in Latent Space. <em>Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR 2023)</em>.</li>
+  <li>Rempe, D., Petrovich, M., Yuan, Y., Zhang, H., Peng, X. B., Jiang, Y., Wang, T., Iqbal, U., Minor, D., de Ruyter, M., Li, J., Tessler, C., Lim, E., Jeong, E., Wu, S., Hassani, E., Huang, M., Yu, J.-B., Chung, C., Song, L., Dionne, O., Kautz, J., Yuen, S., &amp; Fidler, S. (2026). Kimodo: Scaling Controllable Human Motion Generation. <em>arXiv preprint arXiv:2603.15546</em>. NVIDIA Research.</li>
+  <li>Yuan, Y., Song, J., Iqbal, U., Vahdat, A., &amp; Kautz, J. (2022). PhysDiff: Physics-Guided Human Motion Diffusion Model. <em>Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV 2023)</em>, Oral.</li>
+  <li>Li, Z., Luo, M., Hou, R., Zhao, X., Liu, H., et al. (2025). Morph: A Motion-free Physics Optimization Framework for Human Motion Generation. <em>Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV 2025)</em>.</li>
+  <li>Tevet, G., Raab, S., Cohan, S., Reda, D., et al. (2024). CLoSD: Closing the Loop Between Simulation and Diffusion for Multi-Task Character Control. <em>International Conference on Learning Representations (ICLR 2025)</em>.</li>
+  <li>Xiao, W., Wang, T.-H., Gan, C., &amp; Rus, D. (2023). SafeDiffuser: Safe Planning with Diffusion Probabilistic Models. <em>Robotics: Science and Systems (RSS 2024)</em>.</li>
+  <li>Chung, H., Kim, J., Park, G. Y., Nam, H., et al. (2024). CFG++: Manifold-Constrained Classifier-Free Guidance. <em>International Conference on Learning Representations (ICLR 2025)</em>.</li>
+  <li>Tessler, C., Guo, Y., Nabati, O., Chechik, G., et al. (2024). MaskedMimic: Unified Physics-based Character Control Through Masked Motion Inpainting. <em>ACM Transactions on Graphics (SIGGRAPH 2024)</em>, 43(4).</li>
+  <li>Xiao, Z., Wang, T., Wang, J., Cao, J., Zhang, W., et al. (2024). UniHSI: Unified Human-Scene Interaction via Prompted Chain-of-Contacts. <em>International Conference on Learning Representations (ICLR 2024)</em>.</li>
+  <li>Liao, Q., Truong, T.-E., Huang, X., Gao, Y., Tevet, G., et al. (2025). BeyondMimic: From Motion Tracking to Versatile Humanoid Control via Guided Diffusion. <em>arXiv preprint arXiv:2508.08241</em>.</li>
+  <li>Mu, Y., Zhang, Z., Shi, Y., Matsumoto, M., Ikemura, K., et al. (2025). SMP: Reusable Score-Matching Motion Priors for Physics-Based Character Control. <em>arXiv preprint arXiv:2512.03028</em>.</li>
+  <li>Kondo, K., Tagliabue, A., Cai, X., Tewari, C., et al. (2024). CGD: Constraint-Guided Diffusion Policies for UAV Trajectory Planning. <em>arXiv preprint</em>.</li>
+  <li>Huang, X., Truong, T.-T., Zhang, Y., Yu, F., Sleiman, J. P., et al. (2025). Diffuse-CLOC: Guided Diffusion for Physics-Based Character Look-Ahead Control. <em>ACM Transactions on Graphics</em>.</li>
+  <li>Serifi, A., Grandia, R., Knoop, E., Gross, M., et al. (2024). Robot Motion Diffusion Model: Motion Generation for Robotic Characters. <em>ACM SIGGRAPH Asia 2024</em>.</li>
+  <li>Ha, S., Lee, J., et al. (2023). MultiAct: Long-term 3D Human Motion Generation from Multiple Action Labels. <em>Proceedings of the AAAI Conference on Artificial Intelligence (AAAI 2023)</em>, 37(1).</li>
+  <li>Xing, C., Mao, W., Liu, M., et al. (2026). InterPhys: Physics-aware Human Motion Synthesis in a Dynamic Scene. <em>Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR 2026)</em>.</li>
+  <li>Ames, A. D., Grizzle, J. W., &amp; Tabuada, P. (2014). Control Barrier Function Based Quadratic Programs with Application to Adaptive Cruise Control. <em>Proceedings of the IEEE Conference on Decision and Control (CDC)</em>.</li>
+  <li>Vukobratovic, M. &amp; Borovac, B. (2004). Zero-Moment Point — Thirty Five Years of Its Life. <em>International Journal of Humanoid Robotics</em>, 1(1), 157-173.</li>
+  <li>Ho, J., Jain, A., &amp; Abbeel, P. (2020). Denoising Diffusion Probabilistic Models. <em>Advances in Neural Information Processing Systems (NeurIPS 2020)</em>, 33.</li>
+  <li>Ho, J. &amp; Salimans, T. (2021). Classifier-Free Diffusion Guidance. <em>NeurIPS 2021 Workshop on Deep Generative Models and Downstream Applications</em>.</li>
+  <li>Loper, M., Mahmood, N., Romero, J., Pons-Moll, G., &amp; Black, M. J. (2015). SMPL: A Skinned Multi-Person Linear Model. <em>ACM Transactions on Graphics (SIGGRAPH Asia 2015)</em>, 34(6).</li>
+  <li>Agrawal, A., Amos, B., Barratt, S., Boyd, S., Diamond, S., &amp; Kolter, J. Z. (2019). Differentiable Convex Optimization Layers. <em>Advances in Neural Information Processing Systems (NeurIPS 2019)</em>.</li>
+  <li>Boyd, S. &amp; Vandenberghe, L. (2004). <em>Convex Optimization</em>. Cambridge University Press.</li>
 </ol>
+</section>
+
+</div><!-- end container -->
+</main>
 
 <footer>
-  <p>本报告基于 2023-2026 年相关文献调研撰写 | 报告日期：2026 年 6 月</p>
-  <p>研究方向：为 Kimodo 运动扩散模型添加物理约束与环境交互约束</p>
+  <div class="container">
+    <p><strong>Constraint Enhancement for Motion Diffusion Models</strong></p>
+    <p>Based on Kimodo (NVIDIA, arXiv:2603.15546) &nbsp;|&nbsp; Research Report &nbsp;|&nbsp; June 2026</p>
+    <p style="margin-top: 0.5rem; font-size: 0.8rem;">Generated for VLA Research Project &nbsp;|&nbsp; feature/sound-control-mvp</p>
+  </div>
 </footer>
 
-</div>
 </body>
 </html>

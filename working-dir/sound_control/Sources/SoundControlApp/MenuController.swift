@@ -9,6 +9,8 @@ final class MenuController: NSObject, NSMenuDelegate {
     private lazy var mixer = AudioMixer(store: store)
     private var timer: Timer?
     private var rowControllers: [AppRowController] = []
+    private var isMenuOpen = false
+    private var currentMenuSignature = ""
 
     override init() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -19,9 +21,9 @@ final class MenuController: NSObject, NSMenuDelegate {
         menu.delegate = self
         statusItem.menu = menu
 
-        refresh()
+        refresh(forceRebuild: true)
         timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
-            self?.refresh()
+            self?.refresh(forceRebuild: false)
         }
     }
 
@@ -32,24 +34,44 @@ final class MenuController: NSObject, NSMenuDelegate {
     }
 
     func menuWillOpen(_ menu: NSMenu) {
-        refresh()
+        isMenuOpen = true
+        refresh(forceRebuild: true)
+    }
+
+    func menuDidClose(_ menu: NSMenu) {
+        isMenuOpen = false
+        refresh(forceRebuild: true)
     }
 
     @objc private func refreshAction() {
-        refresh()
+        refresh(forceRebuild: true)
     }
 
     @objc private func quitAction() {
         NSApp.terminate(nil)
     }
 
-    private func refresh() {
+    private func refresh(forceRebuild: Bool) {
         let apps = monitor.refresh()
         mixer.sync(apps: apps)
-        rebuildMenu(apps: apps)
+        let signature = menuSignature(for: apps)
+        guard forceRebuild || (!isMenuOpen && signature != currentMenuSignature) else {
+            return
+        }
+        rebuildMenu(apps: apps, signature: signature)
     }
 
-    private func rebuildMenu(apps: [AudioApp]) {
+    private func menuSignature(for apps: [AudioApp]) -> String {
+        apps.map { app in
+            let setting = store.setting(for: app.persistenceIdentifier)
+            let error = mixer.error(for: app) ?? ""
+            return "\(app.id):\(app.processObjectIDs):\(app.name):\(setting.volume):\(setting.muted):\(error)"
+        }
+        .joined(separator: "|")
+    }
+
+    private func rebuildMenu(apps: [AudioApp], signature: String) {
+        currentMenuSignature = signature
         rowControllers.removeAll()
         menu.removeAllItems()
 
@@ -64,7 +86,7 @@ final class MenuController: NSObject, NSMenuDelegate {
             menu.addItem(emptyItem)
         } else {
             for app in apps {
-                let row = AppRowController(app: app, store: store) { [weak self] in
+                let row = AppRowController(app: app, store: store, errorMessage: mixer.error(for: app)) { [weak self] in
                     guard let self else { return }
                     self.mixer.sync(apps: self.monitor.activeApps)
                 }
@@ -94,7 +116,7 @@ private final class AppRowController: NSObject {
     private let muteButton: NSButton
     private let percentLabel: NSTextField
 
-    init(app: AudioApp, store: VolumeStore, onChange: @escaping () -> Void) {
+    init(app: AudioApp, store: VolumeStore, errorMessage: String?, onChange: @escaping () -> Void) {
         self.app = app
         self.store = store
         self.onChange = onChange
@@ -113,14 +135,16 @@ private final class AppRowController: NSObject {
         nameLabel.font = .systemFont(ofSize: 13, weight: .medium)
         view.addSubview(nameLabel)
 
-        let detail = app.isHelperBacked ? "进程级 · helper" : "进程级"
+        let detail = errorMessage == nil ? (app.isHelperBacked ? "进程级 · helper" : "进程级") : "Tap 失败"
         let detailLabel = NSTextField(labelWithString: detail)
         detailLabel.frame = NSRect(x: 48, y: 7, width: 120, height: 15)
-        detailLabel.textColor = .secondaryLabelColor
-        detailLabel.font = .systemFont(ofSize: 11)
+        detailLabel.textColor = errorMessage == nil ? .secondaryLabelColor : .systemRed
+        detailLabel.font = .systemFont(ofSize: 11, weight: errorMessage == nil ? .regular : .medium)
+        detailLabel.toolTip = errorMessage
         view.addSubview(detailLabel)
 
         slider = NSSlider(value: Double(setting.volume), minValue: 0.0, maxValue: 1.0, target: nil, action: nil)
+        slider.isContinuous = false
         slider.frame = NSRect(x: 165, y: 12, width: 115, height: 24)
         view.addSubview(slider)
 

@@ -21,6 +21,16 @@ public final class ProcessTapController {
     private var deviceProcID: AudioDeviceIOProcID?
     private var tapDescription: CATapDescription?
     private var activated = false
+    private var renderCount: UInt64 = 0
+    private var inputPeak: Float = 0.0
+
+    public var hasRenderedAudio: Bool {
+        renderCount > 0
+    }
+
+    public var lastInputPeak: Float {
+        inputPeak
+    }
 
     public init(app: AudioApp) {
         self.app = app
@@ -120,6 +130,18 @@ public final class ProcessTapController {
         activated = true
     }
 
+    public static func inputIndexForOutput(
+        outputIndex: Int,
+        inputBufferCount: Int,
+        outputBufferCount: Int
+    ) -> Int {
+        guard inputBufferCount > 0 else { return -1 }
+        if inputBufferCount > outputBufferCount {
+            return min(inputBufferCount - outputBufferCount + outputIndex, inputBufferCount - 1)
+        }
+        return min(outputIndex, inputBufferCount - 1)
+    }
+
     public func invalidate() {
         if aggregateDeviceID.isValid {
             if let deviceProcID {
@@ -152,6 +174,8 @@ public final class ProcessTapController {
 
         tapDescription = nil
         activated = false
+        renderCount = 0
+        inputPeak = 0.0
     }
 
     private func process(
@@ -165,13 +189,19 @@ public final class ProcessTapController {
 
         let inputBuffers = UnsafeMutableAudioBufferListPointer(UnsafeMutablePointer(mutating: inputData))
         let outputBuffers = UnsafeMutableAudioBufferListPointer(outputData)
+        renderCount &+= 1
+        var callbackPeak: Float = 0.0
 
         for outputIndex in 0..<outputBuffers.count {
             let outputBuffer = outputBuffers[outputIndex]
             guard let outputPointer = outputBuffer.mData else { continue }
 
-            let inputIndex = min(outputIndex, max(inputBuffers.count - 1, 0))
-            guard inputIndex < inputBuffers.count else {
+            let inputIndex = Self.inputIndexForOutput(
+                outputIndex: outputIndex,
+                inputBufferCount: inputBuffers.count,
+                outputBufferCount: outputBuffers.count
+            )
+            guard inputIndex >= 0, inputIndex < inputBuffers.count else {
                 memset(outputPointer, 0, Int(outputBuffer.mDataByteSize))
                 continue
             }
@@ -193,9 +223,18 @@ public final class ProcessTapController {
                 continue
             }
 
+            let inputSamples = inputPointer.assumingMemoryBound(to: Float.self)
+            let selectedInputSampleCount = frameCount * inputChannels
+            for sampleIndex in 0..<selectedInputSampleCount {
+                let absSample = abs(inputSamples[sampleIndex])
+                if absSample > callbackPeak {
+                    callbackPeak = absSample
+                }
+            }
+
             currentVolume += (targetVolume - currentVolume) * rampCoefficient
             SampleGain.apply(
-                inputSamples: inputPointer.assumingMemoryBound(to: Float.self),
+                inputSamples: inputSamples,
                 inputChannels: inputChannels,
                 frameCount: frameCount,
                 outputSamples: outputPointer.assumingMemoryBound(to: Float.self),
@@ -208,6 +247,8 @@ public final class ProcessTapController {
                 memset(outputPointer.advanced(by: writtenBytes), 0, Int(outputBuffer.mDataByteSize) - writtenBytes)
             }
         }
+
+        inputPeak = callbackPeak
     }
 
     private static func zero(_ outputData: UnsafeMutablePointer<AudioBufferList>) {

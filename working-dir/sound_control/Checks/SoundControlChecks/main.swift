@@ -69,6 +69,21 @@ func checkSampleGain() throws {
     )
 }
 
+func checkAggregateInputMapping() throws {
+    try expect(
+        ProcessTapController.inputIndexForOutput(outputIndex: 0, inputBufferCount: 4, outputBufferCount: 2) == 2,
+        "aggregate mapping should read the first tap buffer when aggregate input has extra device buffers"
+    )
+    try expect(
+        ProcessTapController.inputIndexForOutput(outputIndex: 1, inputBufferCount: 4, outputBufferCount: 2) == 3,
+        "aggregate mapping should read the second tap buffer when aggregate input has extra device buffers"
+    )
+    try expect(
+        ProcessTapController.inputIndexForOutput(outputIndex: 0, inputBufferCount: 1, outputBufferCount: 2) == 0,
+        "single input buffer should be reused for first output buffer"
+    )
+}
+
 func checkTap(named nameFragment: String) throws {
     let deadline = Date().addingTimeInterval(5)
     let monitor = AudioProcessMonitor()
@@ -93,8 +108,11 @@ func checkTap(named nameFragment: String) throws {
     tap.volume = 0.5
     try tap.activate()
     Thread.sleep(forTimeInterval: 1.0)
+    try expect(tap.hasRenderedAudio, "tap should receive at least one IO callback")
+    let peak = tap.lastInputPeak
+    try expect(peak > 0.0, "tap input peak should be non-zero while source audio is playing")
     tap.invalidate()
-    print("SoundControlChecks: tap PASS for \(app.name) pid=\(app.id)")
+    print("SoundControlChecks: tap PASS for \(app.name) pid=\(app.id) peak=\(peak)")
 }
 
 do {
@@ -118,6 +136,7 @@ do {
 
     try checkVolumeStore()
     try checkSampleGain()
+    try checkAggregateInputMapping()
     print("SoundControlChecks: PASS")
 } catch {
     fputs("SoundControlChecks: FAIL - \(error.localizedDescription)\n", stderr)

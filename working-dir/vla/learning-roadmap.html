@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLA & Motion Diffusion 学习路线图 — 从零到前沿</title>
+    <style>
+        :root {
+            --bg: #0f0f1a;
+            --bg2: #1a1a2e;
+            --bg3: #16213e;
+            --accent: #00d4ff;
+            --accent2: #7b2ff7;
+            --accent3: #ff6b6b;
+            --text: #e8e8e8;
+            --text2: #a0a0b8;
+            --card: #1e1e36;
+            --border: #2a2a4a;
+            --success: #00e676;
+            --warning: #ffd740;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+        .hero {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 50%, #0a2a4e 100%);
+            padding: 80px 20px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,212,255,0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(123,47,247,0.05) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-20px, 20px); }
+        }
+        .hero h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 16px;
+        }
+        .hero .subtitle {
+            font-size: 1.2em;
+            color: var(--text2);
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .hero .badge {
+            display: inline-block;
+            background: rgba(0,212,255,0.15);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 4px 16px;
+            font-size: 0.85em;
+            color: var(--accent);
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        nav.toc {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 32px;
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+        nav.toc h2 {
+            color: var(--accent);
+            font-size: 1.4em;
+            margin-bottom: 16px;
+        }
+        nav.toc ul {
+            list-style: none;
+            columns: 2;
+            gap: 20px;
+        }
+        nav.toc li {
+            padding: 6px 0;
+        }
+        nav.toc a {
+            color: var(--text2);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        nav.toc a:hover {
+            color: var(--accent);
+        }
+        nav.toc .phase-tag {
+            display: inline-block;
+            background: rgba(0,212,255,0.1);
+            border-radius: 4px;
+            padding: 1px 8px;
+            font-size: 0.8em;
+            color: var(--accent);
+            margin-right: 8px;
+        }
+        section.phase {
+            margin: 48px auto;
+            max-width: 1100px;
+        }
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+        .phase-num {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .phase-header h2 {
+            font-size: 1.6em;
+        }
+        .phase-header .time {
+            margin-left: auto;
+            background: rgba(0,212,255,0.1);
+            border-radius: 8px;
+            padding: 4px 14px;
+            font-size: 0.85em;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            color: var(--accent);
+            font-size: 1.15em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h3 .icon { font-size: 1.2em; }
+        .card ul, .card ol {
+            padding-left: 20px;
+        }
+        .card li {
+            margin-bottom: 8px;
+            color: var(--text2);
+        }
+        .card li strong {
+            color: var(--text);
+        }
+        .card p {
+            color: var(--text2);
+            margin-bottom: 10px;
+        }
+        .card a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(0,212,255,0.3);
+        }
+        .card a:hover {
+            border-bottom-color: var(--accent);
+        }
+        .exercise {
+            background: rgba(0,230,118,0.06);
+            border-left: 3px solid var(--success);
+        }
+        .exercise h3 { color: var(--success); }
+        .milestone {
+            background: rgba(255,215,64,0.06);
+            border-left: 3px solid var(--warning);
+        }
+        .milestone h3 { color: var(--warning); }
+        .resource-tag {
+            display: inline-block;
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 6px;
+            margin-bottom: 4px;
+        }
+        .tag-paper { background: rgba(123,47,247,0.2); color: #c4a0ff; }
+        .tag-video { background: rgba(255,107,107,0.2); color: #ff9e9e; }
+        .tag-code { background: rgba(0,230,118,0.2); color: #66ffaa; }
+        .tag-course { background: rgba(0,212,255,0.2); color: #80eaff; }
+        .tag-book { background: rgba(255,215,64,0.2); color: #ffe580; }
+        .timeline {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 40px auto;
+            max-width: 1100px;
+            overflow-x: auto;
+        }
+        .timeline h2 {
+            color: var(--accent);
+            margin-bottom: 24px;
+            font-size: 1.4em;
+        }
+        .tl-bar {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            min-width: 900px;
+        }
+        .tl-seg {
+            height: 40px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #fff;
+            position: relative;
+        }
+        .tl-labels {
+            display: flex;
+            gap: 4px;
+            min-width: 900px;
+        }
+        .tl-label {
+            font-size: 0.7em;
+            color: var(--text2);
+            text-align: center;
+            padding: 2px 0;
+        }
+        .formula-box {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .formula-box .formula-title {
+            color: var(--accent);
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .formula-box code {
+            color: var(--text);
+            font-size: 0.92em;
+            line-height: 2;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0 8px 32px;
+            position: relative;
+            color: var(--text2);
+        }
+        .checklist li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+        }
+        .stuck-section {
+            background: rgba(255,107,107,0.06);
+            border: 1px solid rgba(255,107,107,0.2);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin: 20px 0;
+        }
+        .stuck-section h3 {
+            color: var(--accent3);
+            margin-bottom: 12px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            nav.toc ul { columns: 1; }
+            .hero h1 { font-size: 2em; }
+        }
+        .quick-ref {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin: 20px 0;
+        }
+        .quick-ref h3 {
+            color: var(--accent2);
+            margin-bottom: 16px;
+        }
+        .ref-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .ref-grid { grid-template-columns: 1fr; }
+        }
+        .ref-item {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .ref-item h4 {
+            color: var(--accent);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+        .ref-item code {
+            display: block;
+            color: var(--text2);
+            font-size: 0.85em;
+            line-height: 1.8;
+        }
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text2);
+            font-size: 0.85em;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 48px 0;
+        }
+        .paper-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>VLA & Motion Diffusion</h1>
+    <h1 style="font-size:2em; margin-top:-10px;">学习路线图</h1>
+    <p class="subtitle">
+        从零基础到前沿研究 — 一份为你量身定制的 16 周学习计划<br>
+        覆盖深度学习基础、运动表示、扩散模型、运动扩散、机器人控制与 VLA 前沿
+    </p>
+    <span class="badge">适用背景：有 Python / PyTorch 基础 · 2-3x RTX 5090 · 已部署 Kimodo Docker</span>
+</div>
+
+<!-- ===== TOC ===== -->
+<div class="container">
+<nav class="toc" id="toc">
+    <h2>目录导航</h2>
+    <ul>
+        <li><a href="#prereq"><span class="phase-tag">准备</span>先修知识自测清单</a></li>
+        <li><a href="#timeline"><span class="phase-tag">总览</span>16 周可视化时间线</a></li>
+        <li><a href="#phase1"><span class="phase-tag">P1</span>基础夯实（第 1-3 周）</a></li>
+        <li><a href="#phase2"><span class="phase-tag">P2</span>运动表示（第 4-5 周）</a></li>
+        <li><a href="#phase3"><span class="phase-tag">P3</span>扩散模型（第 6-8 周）</a></li>
+        <li><a href="#phase4"><span class="phase-tag">P4</span>运动扩散模型（第 9-11 周）</a></li>
+        <li><a href="#phase5"><span class="phase-tag">P5</span>机器人与 Sim-to-Real（第 12-14 周）</a></li>
+        <li><a href="#phase6"><span class="phase-tag">P6</span>研究前沿（第 15-16 周）</a></li>
+        <li><a href="#quickref"><span class="phase-tag">参考</span>核心公式速查</a></li>
+        <li><a href="#resources"><span class="phase-tag">参考</span>推荐频道与课程</a></li>
+        <li><a href="#stuck"><span class="phase-tag">帮助</span>卡住时怎么办</a></li>
+    </ul>
+</nav>
+
+<!-- ===== PREREQUISITES ===== -->
+<section class="phase" id="prereq">
+    <div class="phase-header">
+        <div class="phase-num" style="background:linear-gradient(135deg,#ff6b6b,#ffd740);color:#000;">?</div>
+        <div>
+            <h2>先修知识自测清单</h2>
+            <p style="color:var(--text2);margin-top:4px;">开始前请逐项自评，了解自己的起点</p>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3><span class="icon">🐍</span> Python & PyTorch</h3>
+            <ul class="checklist">
+                <li>能独立写 Python 类、装饰器、生成器</li>
+                <li>理解 PyTorch 的 Tensor 操作、广播机制</li>
+                <li>写过自定义 Dataset 和 DataLoader</li>
+                <li>理解 autograd、backward() 的计算图</li>
+                <li>写过完整的训练循环（train/eval/save）</li>
+                <li>了解 torch.nn.Module 的继承与参数注册</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3><span class="icon">📐</span> 数学基础</h3>
+            <ul class="checklist">
+                <li>线性代数：矩阵乘法、特征值、SVD</li>
+                <li>概率论：高斯分布、贝叶斯公式、MLE</li>
+                <li>微积分：链式法则、偏导数、梯度</li>
+                <li>了解什么是损失函数和优化器</li>
+                <li>知道 KL 散度的基本含义</li>
+                <li>（加分）了解马尔可夫链的基本概念</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3><span class="icon">🤖</span> 机器人 & 3D</h3>
+            <ul class="checklist">
+                <li>知道什么是旋转矩阵、欧拉角</li>
+                <li>了解齐次变换矩阵的概念</li>
+                <li>（加分）用过 MuJoCo 或 Isaac Sim</li>
+                <li>（加分）了解 URDF 文件格式</li>
+                <li>（加分）接触过 SMPL 人体模型</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3><span class="icon">🧠</span> 深度学习</h3>
+            <ul class="checklist">
+                <li>理解 CNN 的卷积、池化、感受野</li>
+                <li>理解 RNN / LSTM 的基本原理</li>
+                <li>理解 Transformer 的 Self-Attention</li>
+                <li>了解什么是预训练和微调</li>
+                <li>（加分）了解扩散模型的基本直觉</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;border-left:3px solid var(--accent);">
+        <h3><span class="icon">💡</span> 自测评分标准</h3>
+        <p><strong>18+ 项勾选：</strong>可以直接从 Phase 2 开始，Phase 1 作为回顾。</p>
+        <p><strong>12-17 项勾选：</strong>建议按顺序走 Phase 1-6，但可以加速 Phase 1。</p>
+        <p><strong>12 项以下：</strong>Phase 1 需要认真对待，不要跳过。</p>
+    </div>
+</section>
+
+<!-- ===== TIMELINE ===== -->
+<section class="timeline" id="timeline">
+    <h2>16 周学习时间线</h2>
+    <div class="tl-bar">
+        <div class="tl-seg" style="flex:3;background:linear-gradient(135deg,#4a9eff,#2196F3);">P1 基础</div>
+        <div class="tl-seg" style="flex:2;background:linear-gradient(135deg,#7b2ff7,#9c27b0);">P2 运动</div>
+        <div class="tl-seg" style="flex:3;background:linear-gradient(135deg,#00bcd4,#009688);">P3 扩散</div>
+        <div class="tl-seg" style="flex:3;background:linear-gradient(135deg,#ff6b6b,#e91e63);">P4 运动扩散</div>
+        <div class="tl-seg" style="flex:3;background:linear-gradient(135deg,#ffd740,#ff9800);">P5 机器人</div>
+        <div class="tl-seg" style="flex:2;background:linear-gradient(135deg,#00e676,#4caf50);">P6 前沿</div>
+    </div>
+    <div class="tl-labels">
+        <div class="tl-label" style="flex:3;">W1-3<br>每天 3-4h</div>
+        <div class="tl-label" style="flex:2;">W4-5<br>每天 4h</div>
+        <div class="tl-label" style="flex:3;">W6-8<br>每天 4-5h</div>
+        <div class="tl-label" style="flex:3;">W9-11<br>每天 4-5h</div>
+        <div class="tl-label" style="flex:3;">W12-14<br>每天 4h</div>
+        <div class="tl-label" style="flex:2;">W15-16<br>每天 4-5h</div>
+    </div>
+    <p style="color:var(--text2);margin-top:16px;font-size:0.9em;">
+        总计约 16 周，每天 3-5 小时，周末可适当加量。建议使用 tmux 管理服务器上的训练任务。
+    </p>
+</section>
+
+<!-- ============================================ -->
+<!-- PHASE 1 -->
+<!-- ============================================ -->
+<section class="phase" id="phase1">
+    <div class="phase-header">
+        <div class="phase-num" style="background:linear-gradient(135deg,#4a9eff,#2196F3);">1</div>
+        <div>
+            <h2>Phase 1: 基础夯实</h2>
+            <p style="color:var(--text2);margin-top:4px;">深度学习 · PyTorch · 3D 几何 · 线性代数</p>
+        </div>
+        <span class="time">第 1-3 周 · 每天 3-4 小时</span>
+    </div>
+
+    <!-- 1.1 Transformer -->
+    <div class="card">
+        <h3><span class="icon">🧠</span> 1.1 Transformer 架构与注意力机制</h3>
+        <p>Transformer 是几乎所有现代模型（包括扩散模型中的去噪网络）的骨干。你需要深入理解 Self-Attention 的计算过程。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>Self-Attention 计算：</strong>Q、K、V 矩阵的含义，Scaled Dot-Product Attention 公式</li>
+            <li><strong>Multi-Head Attention：</strong>为什么要多头？每个头学什么？</li>
+            <li><strong>Positional Encoding：</strong>正弦位置编码 vs 学习位置编码 vs RoPE</li>
+            <li><strong>Layer Normalization：</strong>Pre-Norm vs Post-Norm 的区别</li>
+            <li><strong>Feed-Forward Network：</strong>两层 MLP + 激活函数的作用</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need (Vaswani et al., 2017)</a> — 必读原文
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                Andrej Karpathy — <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY">"Let's build GPT: from scratch, in code, spelled out"</a> — 手把手用 PyTorch 实现 GPT，极其推荐
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                3Blue1Brown — <a href="https://www.youtube.com/watch?v=eMlx5fFNoYc">"Attention in transformers, visually explained"</a> — 最佳直觉理解
+            </li>
+            <li>
+                <span class="resource-tag tag-course">课程</span>
+                Stanford CS224n — <a href="https://web.stanford.edu/class/cs224n/">Natural Language Processing with Deep Learning</a> — 第 6-9 讲覆盖 Transformer
+            </li>
+            <li>
+                <span class="resource-tag tag-book">博客</span>
+                Lilian Weng — <a href="https://lilianweng.github.io/posts/2018-06-24-attention/">"Attention? Attention!"</a> — 极其全面的注意力机制综述
+            </li>
+        </ul>
+    </div>
+
+    <!-- 1.2 PyTorch -->
+    <div class="card">
+        <h3><span class="icon">🔥</span> 1.2 PyTorch 进阶</h3>
+        <p>你需要从"会用 PyTorch"进阶到"理解 PyTorch 内部机制"，这对后续阅读和修改扩散模型代码至关重要。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>计算图与 autograd：</strong>动态计算图的构建、.detach()、.retain_grad()、torch.no_grad() 的区别</li>
+            <li><strong>自定义 Dataset：</strong>继承 torch.utils.data.Dataset，实现 __getitem__ 和 __len__</li>
+            <li><strong>混合精度训练：</strong>torch.cuda.amp.autocast 和 GradScaler 的使用</li>
+            <li><strong>分布式训练：</strong>DataParallel vs DistributedDataParallel 的区别</li>
+            <li><strong>梯度管理：</strong>梯度裁剪 (clip_grad_norm_)、梯度累积、梯度检查点</li>
+            <li><strong>模型保存：</strong>state_dict vs 全模型保存、checkpoint 策略</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-course">教程</span>
+                <a href="https://pytorch.org/tutorials/">PyTorch 官方教程</a> — 重点看 "Learning PyTorch" 和 "Advanced" 系列
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                Andrej Karpathy — <a href="https://www.youtube.com/watch?v=VMj-3S1tku0">"The spelled-out intro to neural networks and backpropagation: building micrograd"</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/pytorch/examples">PyTorch Examples</a> — 官方示例仓库
+            </li>
+            <li>
+                <span class="resource-tag tag-book">书籍</span>
+                <a href="https://d2l.ai/">Dive into Deep Learning (d2l.ai)</a> — 交互式深度学习教材，PyTorch 版本
+            </li>
+        </ul>
+    </div>
+
+    <!-- 1.3 3D Geometry -->
+    <div class="card">
+        <h3><span class="icon">📐</span> 1.3 三维几何基础</h3>
+        <p>这是理解运动表示的基石。旋转的表示方式直接影响扩散模型的设计。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>欧拉角 (Euler Angles)：</strong>三个角度表示旋转，直观但有万向锁 (Gimbal Lock) 问题</li>
+            <li><strong>旋转矩阵 (Rotation Matrix)：</strong>3x3 正交矩阵，SO(3) 群，det(R)=1，R^T R = I</li>
+            <li><strong>四元数 (Quaternion)：</strong>4 个参数表示旋转，无万向锁，q = [w, x, y, z]，单位四元数 |q|=1</li>
+            <li><strong>轴角 (Axis-Angle)：</strong>一个旋转轴 + 一个旋转角度，通过 Rodrigues 公式转旋转矩阵</li>
+            <li><strong>6D 旋转表示：</strong>用旋转矩阵的前两列（6 个数）表示旋转，再通过 Gram-Schmidt 正交化恢复 — 这是运动扩散模型中最常用的表示</li>
+            <li><strong>齐次变换矩阵：</strong>4x4 矩阵统一表示旋转和平移，T = [R t; 0 1]</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1812.07035">"On the Continuity of Rotation Representations in Neural Networks" (Zhou et al., CVPR 2019)</a> — 提出 6D 旋转表示，运动扩散模型必读
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                3Blue1Brown — <a href="https://www.youtube.com/watch?v=f5sYwTyreEg">"Visualizing quaternions"</a> — 四元数的最佳直觉解释
+            </li>
+            <li>
+                <span class="resource-tag tag-course">课程</span>
+                <a href="https://www.edx.org/learn/robotics/columbia-university-robotics-kinematics">Columbia Robotics: Kinematics</a> — 坐标变换系统讲解
+            </li>
+            <li>
+                <span class="resource-tag tag-book">书籍</span>
+                <a href="http://hades.mech.northwestern.edu/index.php/Modern_Robotics">Modern Robotics (Lynch & Park)</a> — 免费在线教材，第 2-3 章覆盖旋转与变换
+            </li>
+        </ul>
+    </div>
+
+    <!-- Exercise -->
+    <div class="card exercise">
+        <h3><span class="icon">💻</span> Phase 1 实践练习</h3>
+        <ol>
+            <li><strong>Transformer from Scratch：</strong>从零实现一个简单的 Transformer encoder，输入随机序列，确认 loss 下降。不用 nn.Transformer，自己写 Attention。</li>
+            <li><strong>旋转表示转换库：</strong>实现以下转换函数：
+                <br>· euler_to_matrix, quaternion_to_matrix, axis_angle_to_matrix
+                <br>· matrix_to_quaternion（用 Shepperd 方法）
+                <br>· 6D_to_matrix（Zhou et al. 的方法）
+                <br>· 对每个函数写单元测试，验证往返转换误差 < 1e-6
+            </li>
+            <li><strong>自定义训练循环：</strong>用 PyTorch 在 MNIST/CIFAR-10 上训练一个小型 CNN，包含：混合精度、梯度裁剪、学习率调度、checkpoint 保存/恢复。</li>
+            <li><strong>齐次变换链：</strong>给定一个机器人手臂（3 个关节），用齐次变换矩阵计算末端执行器位置（正运动学）。</li>
+        </ol>
+    </div>
+
+    <!-- Milestone -->
+    <div class="card milestone">
+        <h3><span class="icon">✅</span> Phase 1 里程碑检查</h3>
+        <ul>
+            <li>能在 10 分钟内手写 Self-Attention 的 PyTorch 实现</li>
+            <li>能解释为什么 6D 旋转表示比四元数更适合神经网络回归</li>
+            <li>能从零写一个完整的训练循环（含混合精度和 checkpoint）</li>
+            <li>能用齐次变换矩阵计算多关节机器人的正运动学</li>
+            <li>理解 SO(3) 和 SE(3) 的区别</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PHASE 2 -->
+<!-- ============================================ -->
+<section class="phase" id="phase2">
+    <div class="phase-header">
+        <div class="phase-num" style="background:linear-gradient(135deg,#7b2ff7,#9c27b0);">2</div>
+        <div>
+            <h2>Phase 2: 运动表示</h2>
+            <p style="color:var(--text2);margin-top:4px;">人体模型 · 机器人运动学 · 动捕格式 · 运动表示</p>
+        </div>
+        <span class="time">第 4-5 周 · 每天 4 小时</span>
+    </div>
+
+    <!-- 2.1 Human Body Models -->
+    <div class="card">
+        <h3><span class="icon">🦴</span> 2.1 人体模型：SMPL / SMPL-X / SOMA</h3>
+        <p>SMPL 是目前最广泛使用的参数化人体模型，几乎所有运动扩散模型都基于它。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>SMPL 模型：</strong>输入形状参数 β（10 维）和姿态参数 θ（72 维 = 24 关节 x 3），输出人体网格（6890 个顶点）
+                <br>· Shape Space：由 PCA 学习的身体形状变化
+                <br>· Pose Space：24 个关节点的轴角旋转
+                <br>· Linear Blend Skinning (LBS)：将顶点绑定到骨骼并变形
+            </li>
+            <li><strong>SMPL-X：</strong>扩展版，加入手部（MANO）和面部（FLAME），总参数更多</li>
+            <li><strong>SOMA：</strong>NVIDIA 的骨架模型，用于 Kimodo 的人形机器人运动表示</li>
+            <li><strong>关键理解：</strong>SMPL 的姿态参数 θ 经过不同表示（轴角/6D）后就是扩散模型的生成目标</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1512.03012">"SMPL: A Skinned Multi-Person Linear Model" (Loper et al., SIGGRAPH Asia 2015)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1904.05866">"SMPL-X: A Unified Model" (Pavlakos et al., CVPR 2019)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/vchoutas/smplx">smplx — SMPL/SMPL-X 的 PyTorch 实现</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/nicolocampagnoli/smpl-pytorch">smpl-pytorch — 纯 PyTorch 实现</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/results?search_query=SMPL+body+model+explained">YouTube 搜索 "SMPL body model explained"</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 2.2 Robot Kinematics -->
+    <div class="card">
+        <h3><span class="icon">🦾</span> 2.2 机器人运动学</h3>
+        <p>理解机器人是如何通过关节角度来控制末端位置的，这是 VLA 系统最终需要输出的内容。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>正运动学 (FK)：</strong>给定所有关节角度，计算末端执行器位置 — 本质是齐次变换矩阵的链乘</li>
+            <li><strong>逆运动学 (IK)：</strong>给定末端位置，求关节角度 — 通常用数值方法（雅可比矩阵迭代）</li>
+            <li><strong>URDF 文件：</strong>Unified Robot Description Format，XML 格式描述机器人结构
+                <br>· link: 刚体连杆（质量、惯量、碰撞几何）
+                <br>· joint: 关节类型（revolute/prismatic/continuous/fixed）
+                <br>· 关节限位、阻尼、摩擦
+            </li>
+            <li><strong>关节空间 vs 笛卡尔空间：</strong>在关节空间做扩散 vs 在笛卡尔空间做扩散的区别</li>
+            <li><strong>DH 参数：</strong>Denavit-Hartenberg 约定，经典但实际中常用 URDF 替代</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-book">书籍</span>
+                <a href="http://hades.mech.northwestern.edu/index.php/Modern_Robotics">Modern Robotics (Lynch & Park)</a> — 免费在线，第 2-6 章
+            </li>
+            <li>
+                <span class="resource-tag tag-course">课程</span>
+                <a href="https://www.coursera.org/learn/robotics-flight">Robotics: Aerial Robotics (UPenn, Coursera)</a> — 运动学基础
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/google-deepmind/dm_control">DeepMind dm_control</a> — MuJoCo 的 Python 封装，可加载 URDF
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/results?search_query=forward+inverse+kinematics+tutorial">YouTube 搜索 "forward inverse kinematics tutorial"</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 2.3 Motion Capture -->
+    <div class="card">
+        <h3><span class="icon">🎬</span> 2.3 动捕数据与格式</h3>
+        <p>运动扩散模型的训练数据来源。理解数据从哪里来、长什么样，是理解模型的第一步。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>BVH 格式：</strong>Biovision Hierarchy，文本格式存储骨骼层级和每帧旋转
+                <br>· HIERARCHY 部分定义骨骼树
+                <br>· MOTION 部分存储每帧的旋转数据
+            </li>
+            <li><strong>AMASS 数据集：</strong>大规模统一动捕仓库，将 300+ 个数据集统一到 SMPL 参数空间
+                <br>· 论文：<a href="https://arxiv.org/abs/1904.03278">AMASS: Archive of Motion Capture as Surface Shapes</a>
+                <br>· 网站：<a href="https://amass.is.tue.mpg.de/">amass.is.tue.mpg.de</a>
+            </li>
+            <li><strong>HumanML3D 数据集：</strong>基于 AMASS 的文本-运动对数据集（~14,600 对）
+                <br>· 论文：<a href="https://arxiv.org/abs/2207.01696">"HumanML3D: A Large and Diverse Multi-modal Human Motion Dataset"</a>
+                <br>· 包含文本描述和对应的 SMPL 运动序列
+            </li>
+            <li><strong>FK 输出格式：</strong>从关节角度通过正运动学得到的 3D 关节位置</li>
+            <li><strong>关键理解：</strong>动捕数据 → SMPL 拟合 → 参数化表示 → 扩散模型训练数据</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/EricGuo5513/HumanML3D">HumanML3D 数据处理代码</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/GuyTevet/motion-diffusion-model">MDM 仓库的数据加载代码</a> — 看 dataset/ 目录
+            </li>
+        </ul>
+    </div>
+
+    <!-- 2.4 Motion Representations -->
+    <div class="card">
+        <h3><span class="icon">🔄</span> 2.4 运动表示方法</h3>
+        <p>不同的运动表示方式对扩散模型的性能影响巨大。这是 Phase 2 最核心的内容。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>关节角度 (Joint Angles)：</strong>最直观，但有不连续性和万向锁问题</li>
+            <li><strong>旋转矩阵 (Rotation Matrices)：</strong>连续但冗余（9 个数表示 3 DOF），直接在 R^9 上做扩散需要投影回 SO(3)</li>
+            <li><strong>6D 旋转表示：</strong>6 个数表示旋转，连续且相对紧凑，通过 Gram-Schmidt 正交化恢复旋转矩阵 — 这是 MDM 和 Kimodo 的选择</li>
+            <li><strong>四元数：</strong>4 个数，有双覆盖问题（q 和 -q 表示同一旋转），不适合直接做扩散</li>
+            <li><strong>轴角 (Axis-Angle)：</strong>3 个数（方向=旋转轴，模长=角度），有不连续性</li>
+            <li><strong>位置表示：</strong>直接用 3D 关节位置（通常在根节点归一化的坐标系下）</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>为什么 6D 表示最好？</strong></p>
+        <p>Zhou et al. (CVPR 2019) 证明了：从 R^n 到 SO(3) 的连续映射，n 至少需要 5。6D 表示是满足连续性的最小实用维度，且可以通过简单的 Gram-Schmidt 过程映射回 SO(3)。</p>
+    </div>
+
+    <!-- Exercise -->
+    <div class="card exercise">
+        <h3><span class="icon">💻</span> Phase 2 实践练习</h3>
+        <ol>
+            <li><strong>SMPL 可视化：</strong>安装 smplx 库，加载 SMPL 模型，随机生成姿态参数，用 matplotlib 或 open3d 可视化人体网格。</li>
+            <li><strong>BVH 解析器：</strong>写一个 BVH 文件解析器，读取骨骼层级和运动数据，将其转换为旋转矩阵序列。</li>
+            <li><strong>URDF 加载与 FK：</strong>用 MuJoCo 加载一个机器人 URDF（如 Franka Panda），实现正运动学计算。</li>
+            <li><strong>运动表示对比：</strong>取一段 BVH 动捕数据，分别用欧拉角、四元数、6D 表示、轴角表示同一条运动，可视化对比平滑度。</li>
+        </ol>
+    </div>
+
+    <!-- Milestone -->
+    <div class="card milestone">
+        <h3><span class="icon">✅</span> Phase 2 里程碑检查</h3>
+        <ul>
+            <li>能解释 SMPL 模型的输入输出，理解 β 和 θ 参数的含义</li>
+            <li>能解析 BVH 文件并转换为任意旋转表示</li>
+            <li>能解释为什么 6D 旋转表示优于其他表示</li>
+            <li>能用 MuJoCo 加载 URDF 并做正运动学计算</li>
+            <li>理解 AMASS → HumanML3D 的数据处理流程</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PHASE 3 -->
+<!-- ============================================ -->
+<section class="phase" id="phase3">
+    <div class="phase-header">
+        <div class="phase-num" style="background:linear-gradient(135deg,#00bcd4,#009688);">3</div>
+        <div>
+            <h2>Phase 3: 扩散模型</h2>
+            <p style="color:var(--text2);margin-top:4px;">Score Matching · DDPM · DDIM · CFG · 一致性模型 · Flow Matching</p>
+        </div>
+        <span class="time">第 6-8 周 · 每天 4-5 小时</span>
+    </div>
+
+    <!-- 3.1 Score Matching -->
+    <div class="card">
+        <h3><span class="icon">📊</span> 3.1 Score Matching 与去噪分数匹配</h3>
+        <p>扩散模型的理论根基。理解"分数"（score）的概念是理解整个扩散模型框架的关键。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>分数函数 (Score Function)：</strong>s(x) = ∇_x log p(x)，即数据分布对数概率的梯度
+                <br>· 不需要知道归一化常数，只需要知道梯度方向
+                <br>· 分数指向数据密度增长最快的方向
+            </li>
+            <li><strong>Score Matching (Hyvarinen, 2005)：</strong>直接学习分数函数，但对高维数据计算量大</li>
+            <li><strong>Denoising Score Matching (Vincent, 2011)：</strong>通过加噪 → 去噪来隐式学习分数
+                <br>· 给数据加高斯噪声：x̃ = x + σε
+                <br>· 训练网络预测噪声方向（即分数方向）
+            </li>
+            <li><strong>Noise Conditional Score Network (NCSN)：</strong>在不同噪声尺度上学习分数函数</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1907.05600">"Generative Modeling by Estimating Gradients of the Data Distribution" (Song & Ermon, NeurIPS 2019)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                Yang Song — <a href="https://www.youtube.com/results?search_query=Yang+Song+score+matching+diffusion">ICML 2022 Tutorial on Diffusion Models</a> — 作者亲自讲解
+            </li>
+            <li>
+                <span class="resource-tag tag-book">博客</span>
+                Lilian Weng — <a href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/">"What are Diffusion Models?"</a> — 最全面的扩散模型入门博客
+            </li>
+        </ul>
+    </div>
+
+    <!-- 3.2 DDPM -->
+    <div class="card">
+        <h3><span class="icon">🌊</span> 3.2 DDPM (Denoising Diffusion Probabilistic Models)</h3>
+        <p>现代扩散模型的奠基之作。这是你必须深入理解的核心论文。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>前向过程 (Forward Process)：</strong>逐步给数据加高斯噪声
+                <br>· q(x_t | x_{t-1}) = N(x_t; √(1-β_t) x_{t-1}, β_t I)
+                <br>· β_t 是方差调度 (variance schedule)，通常从 1e-4 线性增加到 0.02
+                <br>· 可以一步到位：q(x_t | x_0) = N(x_t; √ᾱ_t x_0, (1-ᾱ_t) I)，其中 ᾱ_t = ∏_{s=1}^t (1-β_s)
+            </li>
+            <li><strong>反向过程 (Reverse Process)：</strong>逐步去噪
+                <br>· p_θ(x_{t-1} | x_t) = N(x_{t-1}; μ_θ(x_t, t), Σ_θ(x_t, t))
+                <br>· 训练网络预测噪声 ε_θ(x_t, t)
+            </li>
+            <li><strong>训练目标：</strong>L = E_{t,x_0,ε} [||ε - ε_θ(x_t, t)||²]
+                <br>· 惊人地简洁：就是预测加的噪声
+            </li>
+            <li><strong>采样过程：</strong>从纯噪声开始，迭代去噪
+                <br>· x_{t-1} = (1/√(1-β_t)) (x_t - (β_t/√(1-ᾱ_t)) ε_θ(x_t, t)) + √β_t z
+            </li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2006.11239">"Denoising Diffusion Probabilistic Models" (Ho et al., NeurIPS 2020)</a> — 必读原文
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/watch?v=HoKDTa5jHVA">Yannic Kilcher — "Diffusion Models | Paper Explanation"</a> — 逐公式讲解 DDPM
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/watch?v=TBCR8xFvKKQ">Caltech CMS 155 — Diffusion Models Lecture</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/hojonathanho/diffusion">DDPM 官方代码 (TensorFlow)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/lucidrains/denoising-diffusion-pytorch">lucidrains/denoising-diffusion-pytorch</a> — 清晰的 PyTorch 实现，强烈推荐
+            </li>
+        </ul>
+    </div>
+
+    <!-- 3.3 DDIM -->
+    <div class="card">
+        <h3><span class="icon">⚡</span> 3.3 DDIM 与加速采样</h3>
+        <p>DDPM 需要 1000 步采样，太慢了。DDIM 通过非马尔可夫过程实现大步跳跃。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>DDIM 的关键洞察：</strong>DDPM 的训练目标可以用于一族非马尔可夫前向过程</li>
+            <li><strong>确定性采样：</strong>当 η=0 时，DDIM 采样是确定性的（给定初始噪声 x_T，输出唯一）</li>
+            <li><strong>加速采样：</strong>只用 50 步甚至 10 步就能得到不错的结果</li>
+            <li><strong>隐空间插值：</strong>因为 DDIM 是确定性的，可以在 x_T 空间做有意义的插值</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2010.02502">"Denoising Diffusion Implicit Models" (Song et al., ICLR 2021)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/ermongroup/ddim">DDIM 官方代码</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 3.4 CFG -->
+    <div class="card">
+        <h3><span class="icon">🎛️</span> 3.4 Classifier-Free Guidance (CFG)</h3>
+        <p>条件生成的杀手锏。所有文本驱动的运动扩散模型都使用 CFG。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>Classifier Guidance：</strong>用分类器的梯度引导生成，但需要额外训练分类器</li>
+            <li><strong>CFG：</strong>不需要额外分类器！同时训练有条件和无条件模型
+                <br>· ε̃ = ε_θ(x_t, t, ∅) + w · (ε_θ(x_t, t, c) - ε_θ(x_t, t, ∅))
+                <br>· w 是引导强度，∅ 是空条件（通常用空字符串或零向量）
+                <br>· w > 1 时生成质量提高但多样性降低
+            </li>
+            <li><strong>CFG 在运动生成中的应用：</strong>w 通常设为 2.5-7.5，控制文本描述的遵循程度</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2207.12598">"Classifier-Free Diffusion Guidance" (Ho & Salimans, NeurIPS 2021 Workshop)</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 3.5 Consistency Models -->
+    <div class="card">
+        <h3><span class="icon">🎯</span> 3.5 一致性模型 (Consistency Models) & LCM</h3>
+        <p>进一步加速：1-2 步生成。MotionLCM 就是基于这个思路。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>核心思想：</strong>训练一个模型，使得 ODE 轨迹上的任意点都能直接映射到起点 x_0</li>
+            <li><strong>自一致性 (Self-Consistency)：</strong>f_θ(x_t, t) = f_θ(x_{t'}, t')，对任意 t, t' 成立</li>
+            <li><strong>LCM (Latent Consistency Models)：</strong>在隐空间中训练一致性模型，进一步加速</li>
+            <li><strong>蒸馏训练：</strong>从预训练的扩散模型蒸馏到一致性模型</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2303.01469">"Consistency Models" (Song et al., ICML 2023)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2310.04378">"Latent Consistency Models" (Luo et al., 2023)</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 3.6 Flow Matching -->
+    <div class="card">
+        <h3><span class="icon">🌊</span> 3.6 Flow Matching</h3>
+        <p>比扩散模型更简洁的框架，pi0 和一些最新运动模型使用此方法。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>连续归一化流 (CNF)：</strong>学习一个速度场 v_θ(x_t, t)，将噪声分布传输到数据分布</li>
+            <li><strong>Flow Matching：</strong>直接回归条件向量场
+                <br>· 插值路径：x_t = (1-t) x_0 + t x_1，其中 x_0 是噪声，x_1 是数据
+                <br>· 目标速度：u_t = x_1 - x_0
+                <br>· 训练：L = E_{t,x_0,x_1} [||v_θ(x_t, t) - (x_1 - x_0)||²]
+            </li>
+            <li><strong>与扩散模型的关系：</strong>Flow Matching 可以看作一种更简洁的扩散模型，不需要噪声调度</li>
+            <li><strong>优势：</strong>训练更稳定，推理路径更直，采样步数更少</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2210.02747">"Flow Matching for Generative Modeling" (Lipman et al., ICLR 2023)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2307.01952">"Stochastic Interpolants" (Albergo & Vanden-Eijnden, 2023)</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Exercise -->
+    <div class="card exercise">
+        <h3><span class="icon">💻</span> Phase 3 实践练习</h3>
+        <ol>
+            <li><strong>DDPM from Scratch：</strong>用 lucidrains 的代码作为参考，自己从零实现一个简单的 DDPM，在 MNIST 或 CIFAR-10 上训练。理解每一行代码。</li>
+            <li><strong>DDIM 采样：</strong>在训练好的 DDPM 上实现 DDIM 采样，比较 1000 步 vs 50 步 vs 10 步的质量差异。</li>
+            <li><strong>CFG 实验：</strong>在条件生成任务（如类别条件生成）上实现 CFG，尝试不同 w 值（1, 2, 5, 7.5, 15），观察质量与多样性的权衡。</li>
+            <li><strong>Flow Matching：</strong>实现一个简单的 2D Flow Matching 模型，将高斯分布传输到一个复杂的 2D 分布（如两个月牙形）。</li>
+            <li><strong>可视化：</strong>将扩散过程的每一步可视化，制作去噪过程的 GIF 动画。</li>
+        </ol>
+    </div>
+
+    <!-- Milestone -->
+    <div class="card milestone">
+        <h3><span class="icon">✅</span> Phase 3 里程碑检查</h3>
+        <ul>
+            <li>能从零推导 DDPM 的训练目标（ELBO 简化版）</li>
+            <li>能解释 DDIM 如何实现加速采样</li>
+            <li>能解释 CFG 的公式并理解 w 的作用</li>
+            <li>能从零实现一个能在 MNIST 上工作的 DDPM</li>
+            <li>能解释 Flow Matching 与扩散模型的关系</li>
+            <li>理解 U-Net 在扩散模型中的角色（为什么用 U-Net 而不是简单的 MLP）</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PHASE 4 -->
+<!-- ============================================ -->
+<section class="phase" id="phase4">
+    <div class="phase-header">
+        <div class="phase-num" style="background:linear-gradient(135deg,#ff6b6b,#e91e63);">4</div>
+        <div>
+            <h2>Phase 4: 运动扩散模型</h2>
+            <p style="color:var(--text2);margin-top:4px;">MDM · MotionDiffuse · MLD · Kimodo · MotionLCM</p>
+        </div>
+        <span class="time">第 9-11 周 · 每天 4-5 小时</span>
+    </div>
+
+    <!-- 4.1 MDM -->
+    <div class="card">
+        <h3><span class="icon">🎭</span> 4.1 MDM: Motion Diffusion Model (ICLR 2023)</h3>
+        <p>第一个将扩散模型成功应用于文本驱动运动生成的工作。这是你的入门必读论文。</p>
+        <p><strong>核心架构：</strong></p>
+        <ul>
+            <li><strong>去噪网络：</strong>Transformer-based（不是 U-Net！），输入是运动序列 x_t ∈ R^{T×D}
+                <br>· T 是帧数，D 是每帧的运动维度
+                <br>· 时间步 t 通过 sinusoidal embedding 编码
+                <br>· 文本条件通过交叉注意力注入
+            </li>
+            <li><strong>运动表示：</strong>使用 HumanML3D 的表示（关节位置 + 速度 + 脚接触标签）</li>
+            <li><strong>分类器引导：</strong>训练一个运动质量分类器来提升生成质量</li>
+            <li><strong>关键创新：</strong>证明了 Transformer 可以作为扩散模型的去噪网络处理序列运动数据</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2209.14795">"Human Motion Diffusion Model" (Tevet et al., ICLR 2023)</a> — 必读
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/GuyTevet/motion-diffusion-model">GitHub: GuyTevet/motion-diffusion-model</a> — 官方实现，必读代码
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/results?search_query=MDM+motion+diffusion+model+ICLR+2023">YouTube 搜索 "MDM motion diffusion model ICLR 2023"</a>
+            </li>
+        </ul>
+        <p style="margin-top:12px;"><strong>代码阅读指南：</strong></p>
+        <ul>
+            <li>先看 <code>model/diffusion.py</code> — 扩散过程的核心实现</li>
+            <li>再看 <code>model/networks.py</code> — Transformer 去噪网络</li>
+            <li>然后看 <code>data_loaders/humanml/</code> — 数据加载和表示</li>
+            <li>最后看 <code>train.py</code> — 训练循环</li>
+        </ul>
+    </div>
+
+    <!-- 4.2 MotionDiffuse -->
+    <div class="card">
+        <h3><span class="icon">🎨</span> 4.2 MotionDiffuse (TPAMI 2024)</h3>
+        <p>使用 U-Net 架构做运动扩散的代表工作，在某些指标上优于 MDM。</p>
+        <p><strong>核心架构：</strong></p>
+        <ul>
+            <li><strong>去噪网络：</strong>1D U-Net（类似图像扩散但用 1D 卷积）
+                <br>· 时间步通过 FiLM (Feature-wise Linear Modulation) 注入
+                <br>· 文本通过交叉注意力注入
+            </li>
+            <li><strong>多粒度文本嵌入：</strong>同时使用词级和句子级文本特征</li>
+            <li><strong>运动表示：</strong>直接用 SMPL 参数（轴角表示）</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2208.15001">"MotionDiffuse: Text-Driven Human Motion Generation with Diffusion Model" (Zhang et al., TPAMI 2024)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/mingyuan-zhang/MotionDiffuse">GitHub: mingyuan-zhang/MotionDiffuse</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 4.3 MLD -->
+    <div class="card">
+        <h3><span class="icon">🗜️</span> 4.3 MLD: Motion Latent Diffusion</h3>
+        <p>先将运动压缩到隐空间，再在隐空间做扩散 — 类似 Stable Diffusion 的思路。</p>
+        <p><strong>核心架构：</strong></p>
+        <ul>
+            <li><strong>VQ-VAE 编码器：</strong>将运动序列压缩到低维隐空间
+                <br>· 编码器：运动 → 隐向量 z
+                <br>· 解码器：隐向量 z → 运动
+                <br>· 向量量化 (VQ) 或连续隐空间
+            </li>
+            <li><strong>隐空间扩散：</strong>在 z 空间做扩散，计算量大大减少</li>
+            <li><strong>优势：</strong>更快的训练和推理，更好的解耦</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2212.04048">"Human Motion Generation with Multimodal Latent Diffusion" (Chen et al., CVPR 2023)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/ChenFengZzz/MotionLatentDiffusion">GitHub: MotionLatentDiffusion</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 4.4 Kimodo -->
+    <div class="card" style="border: 2px solid var(--accent); background: rgba(0,212,255,0.03);">
+        <h3><span class="icon">🦎</span> 4.4 Kimodo 架构深度解析 (重点！)</h3>
+        <p>NVIDIA 的 Kimodo 是你正在使用的核心模型。你需要从"会用"升级到"深入理解"。</p>
+        <p><strong>核心架构组件：</strong></p>
+        <ul>
+            <li><strong>去噪器 (Denoiser)：</strong>
+                <br>· 基于 Transformer 的架构处理运动序列
+                <br>· 时间步编码：sinusoidal embedding + MLP
+                <br>· 位置编码处理序列中的帧位置
+            </li>
+            <li><strong>文本编码器 (Text Encoder)：</strong>
+                <br>· 通常使用预训练的 CLIP 或 T5 模型
+                <br>· 文本特征通过交叉注意力与运动特征交互
+                <br>· CFG 需要同时处理有条件和无条件输入
+            </li>
+            <li><strong>约束系统 (Constraints)：</strong>
+                <br>· 关节限位约束：确保生成的关节角度在物理可行范围内
+                <br>· 碰撞约束：避免身体部位穿透
+                <br>· 接触约束：脚部与地面的接触逻辑
+                <br>· 末端位置约束：指定手或脚的目标位置
+            </li>
+            <li><strong>运动表示：</strong>
+                <br>· SOMA 骨架模型
+                <br>· 6D 旋转表示
+                <br>· 根节点归一化
+            </li>
+            <li><strong>后处理流程：</strong>
+                <br>· 扩散生成 → 运动重定向 (Retargeting) → 跟踪控制 (Tracking)
+                <br>· 从人形运动到机器人可执行的运动
+            </li>
+        </ul>
+        <p style="margin-top:12px;"><strong>学习策略：</strong></p>
+        <ol>
+            <li>先完整阅读 Kimodo 的 Docker 镜像中的代码结构</li>
+            <li>找到模型定义文件，逐层理解网络结构</li>
+            <li>找到配置文件，理解每个超参数的含义</li>
+            <li>用调试模式跑一次推理，打印每一步的 tensor shape</li>
+            <li>修改 CFG 的 w 值，观察输出变化</li>
+        </ol>
+    </div>
+
+    <!-- 4.5 MotionLCM -->
+    <div class="card">
+        <h3><span class="icon">⚡</span> 4.5 MotionLCM: 实时运动生成</h3>
+        <p>基于一致性模型的实时运生成，采样步数只需 1-2 步。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>运动一致性模型：</strong>将运动扩散模型蒸馏为一致性模型</li>
+            <li><strong>单步/两步生成：</strong>从噪声直接映射到运动，延迟极低</li>
+            <li><strong>实时应用：</strong>可用于交互式运动生成、游戏、实时控制</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2404.19759">"MotionLCM: Real-time Controllable Motion Generation via Latent Consistency Model" (Dai et al., 2024)</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Exercise -->
+    <div class="card exercise">
+        <h3><span class="icon">💻</span> Phase 4 实践练习</h3>
+        <ol>
+            <li><strong>MDM 代码走读：</strong>Clone MDM 仓库，在 HumanML3D 数据集上跑通训练和推理。记录每一步的理解。</li>
+            <li><strong>Kimodo 探索：</strong>深入 Kimodo Docker 镜像的代码：
+                <br>· 找到模型定义文件，画出网络结构图
+                <br>· 找到推理流程，理解从文本到运动的完整 pipeline
+                <br>· 尝试修改 CFG scale，记录输出变化
+            </li>
+            <li><strong>消融实验：</strong>在 Kimodo 上做以下消融：
+                <br>· 改变采样步数（10, 20, 50, 100），对比质量
+                <br>· 改变 CFG scale（1, 2, 5, 7.5），对比文本遵循度
+                <br>· 可视化不同随机种子的生成结果多样性
+            </li>
+            <li><strong>运动可视化：</strong>写一个脚本，将 Kimodo 输出的运动数据渲染为动画（可以用 matplotlib 3D 或 open3d）。</li>
+        </ol>
+    </div>
+
+    <!-- Milestone -->
+    <div class="card milestone">
+        <h3><span class="icon">✅</span> Phase 4 里程碑检查</h3>
+        <ul>
+            <li>能画出 MDM 的完整架构图并解释每个组件</li>
+            <li>能解释 Kimodo 中文本条件如何注入去噪过程</li>
+            <li>能独立运行 Kimodo 的训练和推理</li>
+            <li>理解隐空间扩散（MLD）和直接扩散（MDM）的权衡</li>
+            <li>能做基本的消融实验并解读结果</li>
+            <li>理解 MotionLCM 如何实现实时生成</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PHASE 5 -->
+<!-- ============================================ -->
+<section class="phase" id="phase5">
+    <div class="phase-header">
+        <div class="phase-num" style="background:linear-gradient(135deg,#ffd740,#ff9800);">5</div>
+        <div>
+            <h2>Phase 5: 机器人与 Sim-to-Real</h2>
+            <p style="color:var(--text2);margin-top:4px;">MuJoCo · 强化学习 · Sim-to-Real · 全身控制</p>
+        </div>
+        <span class="time">第 12-14 周 · 每天 4 小时</span>
+    </div>
+
+    <!-- 5.1 MuJoCo -->
+    <div class="card">
+        <h3><span class="icon">🏗️</span> 5.1 MuJoCo 基础</h3>
+        <p>MuJoCo 是机器人仿真的事实标准。你需要掌握建模、仿真和渲染。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>MJCF 格式：</strong>MuJoCo 的原生 XML 格式，描述机器人模型
+                <br>· &lt;worldbody&gt;: 刚体层级结构
+                <br>· &lt;joint&gt;: 关节定义（hinge, slide, ball, free）
+                <br>· &lt;actuator&gt;: 执行器（电机、气缸）
+                <br>· &lt;geom&gt;: 几何形状（碰撞和可视）
+                <br>· &lt;sensor&gt;: 传感器（力、速度、加速度）
+            </li>
+            <li><strong>MuJoCo 物理引擎：</strong>
+                <br>· 接触动力学：软接触模型、摩擦锥
+                <br>· 约束求解器：PGS (Projected Gauss-Seidel)
+                <br>· 积分器：Euler, RK4, implicit
+            </li>
+            <li><strong>Python API：</strong>
+                <br>· <code>mujoco.MjModel.from_xml_path()</code> — 加载模型
+                <br>· <code>mujoco.mj_step()</code> — 仿真步进
+                <br>· <code>mujoco.mj_forward()</code> — 正运动学
+                <br>· <code>mujoco.mj_inverse()</code> — 逆运动学
+            </li>
+            <li><strong>渲染：</strong>mujoco.Renderer — 可以渲染 RGB、深度图</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-course">文档</span>
+                <a href="https://mujoco.org/documentation">MuJoCo 官方文档</a> — 最权威的参考
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/google-deepmind/mujoco">DeepMind MuJoCo GitHub</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/results?search_query=MuJoCo+tutorial+python+2024">YouTube 搜索 "MuJoCo tutorial python 2024"</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/google-deepmind/dm_control">dm_control</a> — DeepMind 的 MuJoCo Python 封装
+            </li>
+        </ul>
+    </div>
+
+    <!-- 5.2 RL for Locomotion -->
+    <div class="card">
+        <h3><span class="icon">🏃</span> 5.2 强化学习与运动控制</h3>
+        <p>用 RL 训练人形机器人的行走策略，这是 sim-to-real 的基础。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>PPO (Proximal Policy Optimization)：</strong>
+                <br>· 策略梯度方法，用 clipping 限制策略更新幅度
+                <br>· L^{CLIP} = E[min(r_t(θ)A_t, clip(r_t(θ), 1-ε, 1+ε)A_t)]
+                <br>· 人形运动控制的首选算法
+            </li>
+            <li><strong>SAC (Soft Actor-Critic)：</strong>
+                <br>· 最大熵 RL，鼓励探索
+                <br>· 连续动作空间的 off-policy 算法
+                <br>· 适合精细操作任务
+            </li>
+            <li><strong>运动控制的 RL 设计：</strong>
+                <br>· 奖励函数设计：速度跟踪、能量效率、姿态稳定性
+                <br>· 观测空间：关节角度、角速度、IMU 数据、根节点高度
+                <br>· 动作空间：关节力矩或目标角度
+                <br>· Episode 设计：何时 reset、终止条件
+            </li>
+            <li><strong>课程学习 (Curriculum Learning)：</strong>从简单任务逐步增加难度</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1707.06347">"Proximal Policy Optimization Algorithms" (Schulman et al., 2017)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-course">课程</span>
+                <a href="https://spinningup.openai.com/">OpenAI Spinning Up in Deep RL</a> — 最好的 RL 入门资源
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/vwxyzjn/cleanrl">CleanRL</a> — 单文件 RL 实现，含 PPO + MuJoCo
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/DLR-RM/stable-baselines3">Stable Baselines3</a> — 生产级 RL 库
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                David Silver — <a href="https://www.youtube.com/playlist?list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ">UCL RL 课程</a> — 经典系列
+            </li>
+            <li>
+                <span class="resource-tag tag-book">书籍</span>
+                <a href="http://incompleteideas.net/book/the-book-2nd.html">Reinforcement Learning: An Introduction (Sutton & Barto)</a> — 免费在线
+            </li>
+        </ul>
+    </div>
+
+    <!-- 5.3 Sim-to-Real -->
+    <div class="card">
+        <h3><span class="icon">🌉</span> 5.3 Sim-to-Real 迁移</h3>
+        <p>在仿真中训练的策略如何部署到真实机器人上？这是最大的挑战之一。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>Domain Randomization (域随机化)：</strong>
+                <br>· 随机化物理参数：质量、摩擦、阻尼
+                <br>· 随机化视觉：纹理、光照、相机参数
+                <br>· 随机化动力学：延迟、噪声
+                <br>· 核心思想：如果策略在足够多样的仿真环境中都能工作，它在真实环境中也能工作
+            </li>
+            <li><strong>System Identification (系统辨识)：</strong>
+                <br>· 从真实数据中估计仿真参数
+                <br>· 使仿真尽可能接近真实
+            </li>
+            <li><strong>Teacher-Student 范式：</strong>
+                <br>· Teacher：在仿真中用特权信息（完整状态）训练
+                <br>· Student：用 Teacher 的行为做监督，但只用可观测信息
+                <br>· Student 可以部署到真实机器人
+            </li>
+            <li><strong>NVIDIA Isaac Sim / Isaac Lab：</strong>
+                <br>· GPU 并行仿真：同时运行数千个环境
+                <br>· PhysX 5 物理引擎
+                <br>· 与 Kimodo pipeline 的集成
+            </li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1703.06907">"Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World" (Tobin et al., 2017)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/1910.00490">"Learning Agile and Dynamic Motor Skills for Legged Robots" (Hwangbo et al., Science Robotics 2019)</a> — Teacher-Student 的经典应用
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/isaac-sim/IsaacLab">NVIDIA Isaac Lab</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/results?search_query=NVIDIA+Isaac+Sim+humanoid+tutorial">YouTube 搜索 "NVIDIA Isaac Sim humanoid tutorial"</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 5.4 Whole-Body Control -->
+    <div class="card">
+        <h3><span class="icon">🤖</span> 5.4 全身人形机器人控制</h3>
+        <p>将运动扩散模型生成的运动转化为机器人可执行的控制信号。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>运动重定向 (Motion Retargeting)：</strong>
+                <br>· 人形运动 → 机器人运动：骨架差异、比例差异
+                <br>· 逆运动学求解：给定期望末端位置，求关节角度
+                <br>· 物理可行性检查：力矩限制、关节限位
+            </li>
+            <li><strong>运动跟踪 (Motion Tracking)：</strong>
+                <br>· 用 RL 或 MPC 跟踪参考运动
+                <br>· PD 控制器：τ = K_p(q_ref - q) + K_d(q̇_ref - q̇)
+                <br>· 全身动力学：考虑接触力、平衡
+            </li>
+            <li><strong>MPC (Model Predictive Control)：</strong>
+                <br>· 在有限时域内优化控制序列
+                <br>· 适用于需要实时反应的场景
+            </li>
+            <li><strong>Kimodo Pipeline：</strong>
+                <br>· 文本 → 运动扩散 → 运动重定向 → 运动跟踪 → 机器人执行
+                <br>· 每一步都有物理约束和可行性检查
+            </li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2209.14388">"Learning Physically Simulated Humanoid Skills from Motion Capture Data" (Luo et al., 2023)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2312.03146">"Expressive Whole-Body Control for Humanoid Robots" (Luo et al., 2024)</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Exercise -->
+    <div class="card exercise">
+        <h3><span class="icon">💻</span> Phase 5 实践练习</h3>
+        <ol>
+            <li><strong>MuJoCo 入门：</strong>安装 MuJoCo，加载内置的 humanoid 模型，用手动设置关节角度做正运动学可视化。</li>
+            <li><strong>PPO 训练：</strong>用 CleanRL 在 MuJoCo Humanoid-v4 上训练 PPO 策略，记录奖励曲线。</li>
+            <li><strong>运动重定向：</strong>取 Kimodo 生成的运动数据，写一个简单的重定向脚本，将人形运动映射到 MuJoCo 机器人模型的关节空间。</li>
+            <li><strong>Motion Tracking：</strong>用 PD 控制器让 MuJoCo 中的人形机器人跟踪一段参考运动序列。</li>
+            <li><strong>域随机化实验：</strong>在训练 RL 策略时加入域随机化，比较有无随机化的 sim-to-real 效果。</li>
+        </ol>
+    </div>
+
+    <!-- Milestone -->
+    <div class="card milestone">
+        <h3><span class="icon">✅</span> Phase 5 里程碑检查</h3>
+        <ul>
+            <li>能用 MuJoCo 建模和仿真一个简单的机器人</li>
+            <li>能用 PPO 训练人形机器人行走策略</li>
+            <li>能解释 domain randomization 的原理和实现</li>
+            <li>能实现简单的运动重定向 pipeline</li>
+            <li>理解 Kimodo 从生成到执行的完整流程</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PHASE 6 -->
+<!-- ============================================ -->
+<section class="phase" id="phase6">
+    <div class="phase-header">
+        <div class="phase-num" style="background:linear-gradient(135deg,#00e676,#4caf50);">6</div>
+        <div>
+            <h2>Phase 6: 研究前沿</h2>
+            <p style="color:var(--text2);margin-top:4px;">VLA 模型 · Diffusion Policy · Kimodo 下游 · 论文复现</p>
+        </div>
+        <span class="time">第 15-16 周 · 每天 4-5 小时</span>
+    </div>
+
+    <!-- 6.1 VLA Models -->
+    <div class="card">
+        <h3><span class="icon">🌐</span> 6.1 VLA 模型：从 RT-2 到 pi0</h3>
+        <p>Vision-Language-Action 模型是机器人基础模型的最新范式。</p>
+        <p><strong>核心模型：</strong></p>
+        <ul>
+            <li><strong>RT-2 (Robotics Transformer 2)：</strong>
+                <br>· Google DeepMind, 2023
+                <br>· 将大型 VLM 微调为动作输出模型
+                <br>· 动作被 token 化为整数（如 "1 128 91 241 5 101"）
+                <br>· 利用网络知识进行机器人控制
+                <br>· 论文：<a href="https://arxiv.org/abs/2307.15818">arxiv 2307.15818</a>
+            </li>
+            <li><strong>Octo：</strong>
+                <br>· 开源通用机器人策略，2024
+                <br>· 在 Open X-Embodiment 数据集上训练（800k+ 轨迹）
+                <br>· 模块化架构：可适配不同机器人和任务
+                <br>· 论文：<a href="https://arxiv.org/abs/2405.12213">arxiv 2405.12213</a>
+            </li>
+            <li><strong>OpenVLA：</strong>
+                <br>· 开源 VLA，基于 Prismatic VLM（7B 参数）
+                <br>· 可微调到特定机器人和任务
+                <br>· 论文：<a href="https://arxiv.org/abs/2406.09246">arxiv 2406.09246</a>
+            </li>
+            <li><strong>pi0 (Physical Intelligence)：</strong>
+                <br>· 使用 Flow Matching 生成连续动作
+                <br>· 跨多种机器人 embodiment 训练
+                <br>· 代表了 VLA + Flow Matching 的最新方向
+                <br>· 论文：<a href="https://arxiv.org/abs/2410.24164">arxiv 2410.24164</a>
+            </li>
+        </ul>
+        <p style="margin-top:12px;"><strong>关键趋势：</strong></p>
+        <ul>
+            <li>从离散动作 token（RT-2）到连续动作生成（pi0）的演进</li>
+            <li>从单一机器人到多 embodiment 的泛化</li>
+            <li>扩散/Flow 模型在动作生成中的核心地位</li>
+            <li>预训练 → 微调的范式从 NLP 迁移到机器人学</li>
+        </ul>
+    </div>
+
+    <!-- 6.2 Diffusion Policy -->
+    <div class="card">
+        <h3><span class="icon">🎮</span> 6.2 Diffusion Policy</h3>
+        <p>将扩散模型直接用于机器人控制策略学习，是 VLA 的重要分支。</p>
+        <p><strong>核心概念：</strong></p>
+        <ul>
+            <li><strong>核心思想：</strong>将策略 π(a|s) 建模为条件扩散模型
+                <br>· 输入：视觉观测 + 机器人状态
+                <br>· 输出：未来 K 步的动作序列
+                <br>· 用扩散过程处理多模态动作分布
+            </li>
+            <li><strong>为什么用扩散：</strong>
+                <br>· 传统方法（如 BC）难以处理多模态分布
+                <br>· 扩散模型天然适合建模多模态分布
+                <br>· 训练稳定，不需要对抗训练
+            </li>
+            <li><strong>架构选择：</strong>
+                <br>· U-Net backbone：处理视觉输入
+                <br>· 时间步编码：与 DDPM 相同
+                <br>· 观测条件：通过 FiLM 或交叉注意力
+            </li>
+            <li><strong>关键结果：</strong>在 Push-T、RoboMimic 等基准上达到 SOTA</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>推荐资源：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2303.04137">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion" (Chi et al., RSS 2023)</a> — 必读
+            </li>
+            <li>
+                <span class="resource-tag tag-code">代码</span>
+                <a href="https://github.com/real-stanford/diffusion_policy">GitHub: real-stanford/diffusion_policy</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-video">视频</span>
+                <a href="https://www.youtube.com/results?search_query=Diffusion+Policy+robot+manipulation">YouTube 搜索 "Diffusion Policy robot manipulation"</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 6.3 Kimodo Downstream -->
+    <div class="card">
+        <h3><span class="icon">🔗</span> 6.3 Kimodo 下游 Pipeline</h3>
+        <p>理解 Kimodo 的运动输出如何转化为真实机器人的行为。</p>
+        <p><strong>Pipeline 流程：</strong></p>
+        <ol>
+            <li><strong>文本输入：</strong>自然语言描述期望的运动（如"向前走三步然后转身"）</li>
+            <li><strong>运动扩散生成：</strong>Kimodo 生成符合描述的人形运动序列</li>
+            <li><strong>运动重定向 (Retargeting)：</strong>
+                <br>· 从 SOMA 人形骨架 → 目标机器人骨架
+                <br>· 处理骨架差异（关节数量、比例、自由度）
+                <br>· 保持运动的物理合理性
+            </li>
+            <li><strong>运动跟踪控制 (Tracking)：</strong>
+                <br>· 用 RL 策略跟踪重定向后的参考运动
+                <br>· 处理物理仿真中的偏差
+                <br>· 实时调整以保持平衡
+            </li>
+            <li><strong>Sim-to-Real 部署：</strong>
+                <br>· 域随机化确保仿真策略迁移到真实机器人
+                <br>· 状态估计和传感器融合
+                <br>· 安全约束和急停机制
+            </li>
+        </ol>
+    </div>
+
+    <!-- 6.4 Reading & Reproducing -->
+    <div class="card">
+        <h3><span class="icon">📚</span> 6.4 论文阅读与复现策略</h3>
+        <p>从消费者变成研究者的关键能力。</p>
+        <p><strong>论文阅读方法：</strong></p>
+        <ol>
+            <li><strong>第一遍（10 分钟）：</strong>只看 Abstract、Introduction 的最后一段、所有 Figure 和 Conclusion</li>
+            <li><strong>第二遍（1 小时）：</strong>读 Method 部分，画出架构图，理解输入输出</li>
+            <li><strong>第三遍（2-3 小时）：</strong>读 Related Work、Experiments、Ablation，理解设计决策的理由</li>
+            <li><strong>第四遍（动手）：</strong>Clone 代码仓库，跑通 demo，修改关键参数</li>
+        </ol>
+        <p style="margin-top:12px;"><strong>论文复现策略：</strong></p>
+        <ul>
+            <li>先跑通官方代码，确认结果可复现</li>
+            <li>逐步替换组件，理解每个设计决策的贡献</li>
+            <li>从简单版本开始，逐步增加复杂度</li>
+            <li>记录实验日志，保存所有 checkpoint</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>必读近期论文：</strong></p>
+        <ul>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2310.16828">"MotionGPT: Human Motion as a Foreign Language" (Jiang et al., NeurIPS 2023)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2403.09698">"TREEMoE: Tree-Structured Mixture of Experts for Human Motion Generation" (2024)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2312.07407">"InterDiff: Generating 3D Human-Object Interactions with Physics-Informed Diffusion" (2023)</a>
+            </li>
+            <li>
+                <span class="resource-tag tag-paper">论文</span>
+                <a href="https://arxiv.org/abs/2404.10398">"Whole-Body Humanoid Robot Locomotion with Human Reference" (2024)</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Exercise -->
+    <div class="card exercise">
+        <h3><span class="icon">💻</span> Phase 6 实践练习</h3>
+        <ol>
+            <li><strong>Diffusion Policy 实现：</strong>Clone Diffusion Policy 仓库，在 Push-T 基准上训练一个策略，理解动作扩散的过程。</li>
+            <li><strong>VLA 探索：</strong>尝试运行 OpenVLA 的推理代码，理解 VLA 的输入输出格式。</li>
+            <li><strong>论文复现：</strong>选择一篇运动扩散论文（如 MotionDiffuse），复现其关键结果，记录遇到的问题和解决方案。</li>
+            <li><strong>端到端实验：</strong>用 Kimodo 生成运动 → 重定向到 MuJoCo 机器人 → 用 PD 控制器跟踪，实现完整的 pipeline。</li>
+            <li><strong>研究提案：</strong>基于你对 Kimodo 的理解，写一份 1 页的研究改进提案（可以是新的约束、新的条件机制、或新的应用场景）。</li>
+        </ol>
+    </div>
+
+    <!-- Milestone -->
+    <div class="card milestone">
+        <h3><span class="icon">✅</span> Phase 6 里程碑检查</h3>
+        <ul>
+            <li>能解释 VLA 模型的演进（RT-2 → Octo → OpenVLA → pi0）</li>
+            <li>能解释 Diffusion Policy 的原理和优势</li>
+            <li>能独立复现一篇运动扩散论文的关键结果</li>
+            <li>能运行 Kimodo 的完整下游 pipeline</li>
+            <li>能提出有见地的研究改进方向</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- QUICK REFERENCE -->
+<!-- ============================================ -->
+<div class="divider"></div>
+
+<section id="quickref">
+    <h2 style="color:var(--accent);font-size:1.6em;margin-bottom:24px;">核心公式速查</h2>
+
+    <div class="ref-grid">
+        <div class="quick-ref">
+            <h3>高斯扩散 (DDPM)</h3>
+            <div class="formula-box">
+                <div class="formula-title">前向加噪</div>
+                <code>q(x_t | x_0) = N(x_t; √ᾱ_t · x_0, (1 - ᾱ_t) · I)</code>
+            </div>
+            <div class="formula-box">
+                <div class="formula-title">重参数化</div>
+                <code>x_t = √ᾱ_t · x_0 + √(1 - ᾱ_t) · ε, ε ~ N(0, I)</code>
+            </div>
+            <div class="formula-box">
+                <div class="formula-title">训练目标</div>
+                <code>L = E_{t, x_0, ε} [ ||ε - ε_θ(x_t, t)||² ]</code>
+            </div>
+            <div class="formula-box">
+                <div class="formula-title">DDPM 采样</div>
+                <code>x_{t-1} = (1/√α_t)(x_t - β_t/√(1-ᾱ_t) · ε_θ(x_t,t)) + σ_t · z</code>
+            </div>
+        </div>
+
+        <div class="quick-ref">
+            <h3>Classifier-Free Guidance</h3>
+            <div class="formula-box">
+                <div class="formula-title">CFG 公式</div>
+                <code>ε̃ = ε_θ(x_t, t, ∅) + w · (ε_θ(x_t, t, c) - ε_θ(x_t, t, ∅))</code>
+            </div>
+            <div class="formula-box">
+                <div class="formula-title">其中</div>
+                <code>w = 引导强度 (通常 2.5-7.5)
+c = 有条件输入 (如文本嵌入)
+∅ = 无条件输入 (如空字符串)</code>
+            </div>
+        </div>
+
+        <div class="quick-ref">
+            <h3>Flow Matching</h3>
+            <div class="formula-box">
+                <div class="formula-title">插值路径</div>
+                <code>x_t = (1 - t) · x_0 + t · x_1
+其中 x_0 ~ N(0,I), x_1 ~ p_data</code>
+            </div>
+            <div class="formula-box">
+                <div class="formula-title">训练目标</div>
+                <code>L = E_{t, x_0, x_1} [ ||v_θ(x_t, t) - (x_1 - x_0)||² ]</code>
+            </div>
+        </div>
+
+        <div class="quick-ref">
+            <h3>旋转表示</h3>
+            <div class="formula-box">
+                <div class="formula-title">Rodrigues 公式 (轴角 → 旋转矩阵)</div>
+                <code>R = I + sin(θ)·[ω]_× + (1-cos(θ))·[ω]_×²
+其中 [ω]_× 是反对称矩阵</code>
+            </div>
+            <div class="formula-box">
+                <div class="formula-title">6D → 旋转矩阵 (Zhou et al.)</div>
+                <code>输入: a₁, a₂ ∈ R³ (旋转矩阵前两列)
+b₁ = normalize(a₁)
+b₂ = normalize(a₂ - (a₂·b₁)b₁)
+b₃ = b₁ × b₂
+R = [b₁ | b₂ | b₃]</code>
+            </div>
+        </div>
+
+        <div class="quick-ref">
+            <h3>齐次变换</h3>
+            <div class="formula-box">
+                <div class="formula-title">SE(3) 变换矩阵</div>
+                <code>T = [ R  t ]    R ∈ SO(3), t ∈ R³
+     [ 0  1 ]
+
+T₁ · T₂ = [R₁R₂  R₁t₂+t₁]
+           [  0       1   ]</code>
+            </div>
+            <div class="formula-box">
+                <div class="formula-title">正运动学</div>
+                <code>T_0n = T_01 · T_12 · ... · T_(n-1)n
+末端位置 = T_0n · [0,0,0,1]ᵀ</code>
+            </div>
+        </div>
+
+        <div class="quick-ref">
+            <h3>PPO</h3>
+            <div class="formula-box">
+                <div class="formula-title">PPO-Clip 目标</div>
+                <code>L^{CLIP} = E[min(r_t(θ)A_t,
+         clip(r_t(θ), 1-ε, 1+ε)A_t)]
+
+r_t(θ) = π_θ(a|s) / π_{θ_old}(a|s)</code>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- RECOMMENDED CHANNELS -->
+<!-- ============================================ -->
+<div class="divider"></div>
+
+<section id="resources">
+    <h2 style="color:var(--accent);font-size:1.6em;margin-bottom:24px;">推荐学习频道与课程</h2>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3><span class="icon">📺</span> YouTube 频道</h3>
+            <ul>
+                <li><strong>3Blue1Brown</strong> — 线性代数、神经网络、注意力机制的最佳直觉解释
+                    <br><a href="https://www.youtube.com/@3blue1brown">@3blue1brown</a>
+                </li>
+                <li><strong>Andrej Karpathy</strong> — 从零构建神经网络/GPT，极其实用
+                    <br><a href="https://www.youtube.com/@AndrejKarpathy">@AndrejKarpathy</a>
+                </li>
+                <li><strong>Yannic Kilcher</strong> — 深度学习论文讲解，覆盖面广
+                    <br><a href="https://www.youtube.com/@YannicKilcher">@YannicKilcher</a>
+                </li>
+                <li><strong>Two Minute Papers</strong> — 快速了解最新研究动态
+                    <br><a href="https://www.youtube.com/@TwoMinutePapers">@TwoMinutePapers</a>
+                </li>
+                <li><strong>StatQuest with Josh Starmer</strong> — 统计学和机器学习基础讲解
+                    <br><a href="https://www.youtube.com/@statquest">@statquest</a>
+                </li>
+                <li><strong>AI Coffee Break with Letitia</strong> — 论文速读
+                    <br><a href="https://www.youtube.com/@AICoffeeBreak">@AICoffeeBreak</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3><span class="icon">🎓</span> 系统课程</h3>
+            <ul>
+                <li><strong>Stanford CS231n</strong> — 计算机视觉基础
+                    <br><a href="https://cs231n.stanford.edu/">cs231n.stanford.edu</a>
+                </li>
+                <li><strong>Stanford CS224n</strong> — NLP 与深度学习
+                    <br><a href="https://web.stanford.edu/class/cs224n/">web.stanford.edu/class/cs224n</a>
+                </li>
+                <li><strong>Stanford CS236</strong> — 深度生成模型
+                    <br><a href="https://deepgenerativemodels.github.io/">deepgenerativemodels.github.io</a>
+                </li>
+                <li><strong>CMU 10-418/618</strong> — 扩散模型专题
+                    <br><a href="https://diffusion.cs.cmu.edu/">diffusion.cs.cmu.edu</a> (如有)
+                </li>
+                <li><strong>OpenAI Spinning Up</strong> — 强化学习入门
+                    <br><a href="https://spinningup.openai.com/">spinningup.openai.com</a>
+                </li>
+                <li><strong>Coursera: Modern Robotics</strong> — 机器人运动学
+                    <br><a href="https://www.coursera.org/specializations/modernrobotics">coursera.org/specializations/modernrobotics</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3><span class="icon">📖</span> 博客与教程</h3>
+            <ul>
+                <li><strong>Lilian Weng's Blog</strong> — 最全面的 AI 博客之一
+                    <br><a href="https://lilianweng.github.io/">lilianweng.github.io</a>
+                    <br>推荐："What are Diffusion Models?", "Attention? Attention!"
+                </li>
+                <li><strong>Distill.pub</strong> — 交互式机器学习文章（已停更但仍很有价值）
+                    <br><a href="https://distill.pub/">distill.pub</a>
+                </li>
+                <li><strong>d2l.ai</strong> — Dive into Deep Learning
+                    <br><a href="https://d2l.ai/">d2l.ai</a>
+                </li>
+                <li><strong>PyTorch 官方教程</strong>
+                    <br><a href="https://pytorch.org/tutorials/">pytorch.org/tutorials</a>
+                </li>
+                <li><strong>HuggingFace 扩散模型课程</strong>
+                    <br><a href="https://huggingface.co/diffusion-models-course">huggingface.co/diffusion-models-course</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3><span class="icon">📚</span> 关键书籍</h3>
+            <ul>
+                <li><strong>Deep Learning</strong> (Goodfellow, Bengio, Courville)
+                    <br><a href="https://www.deeplearningbook.org/">deeplearningbook.org</a> — 免费在线
+                </li>
+                <li><strong>Reinforcement Learning: An Introduction</strong> (Sutton & Barto)
+                    <br><a href="http://incompleteideas.net/book/the-book-2nd.html">incompleteideas.net</a> — 免费在线
+                </li>
+                <li><strong>Modern Robotics</strong> (Lynch & Park)
+                    <br><a href="http://hades.mech.northwestern.edu/index.php/Modern_Robotics">免费在线 + Coursera</a>
+                </li>
+                <li><strong>Probabilistic Machine Learning</strong> (Murphy)
+                    <br>高阶参考，适合深入理解概率方法
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- STUCK SECTION -->
+<!-- ============================================ -->
+<div class="divider"></div>
+
+<section id="stuck">
+    <h2 style="color:var(--accent);font-size:1.6em;margin-bottom:24px;">卡住时怎么办</h2>
+
+    <div class="stuck-section">
+        <h3>数学看不懂？</h3>
+        <ul>
+            <li><strong>先看直觉，再看公式：</strong>先看 3Blue1Brown 的视频建立直觉，再回到论文公式</li>
+            <li><strong>手推一遍：</strong>拿纸笔把关键推导手写一遍，不要只用眼睛看</li>
+            <li><strong>简化到 2D：</strong>先在 2D 空间理解概念（如 2D 高斯的扩散），再推广到高维</li>
+            <li><strong>ChatGPT/Claude：</strong>把公式贴给 AI，让它用通俗语言解释</li>
+        </ul>
+    </div>
+
+    <div class="stuck-section">
+        <h3>代码跑不通？</h3>
+        <ul>
+            <li><strong>Docker 环境：</strong>确保 Docker 容器内的 CUDA、PyTorch 版本匹配</li>
+            <li><strong>Shape 调试：</strong>在关键位置插入 <code>print(x.shape)</code>，确认 tensor 维度正确</li>
+            <li><strong>小数据集测试：</strong>先在 10-100 个样本上过拟合，确认代码逻辑正确</li>
+            <li><strong>RTX 5090 注意：</strong>确认 PyTorch 版本支持你的 GPU 架构，可能需要 nightly 版本</li>
+            <li><strong>内存问题：</strong>用 <code>nvidia-smi</code> 监控显存，考虑 gradient accumulation</li>
+        </ul>
+    </div>
+
+    <div class="stuck-section">
+        <h3>概念混淆？</h3>
+        <ul>
+            <li><strong>画图：</strong>用纸笔或 draw.io 画出模型架构、数据流、损失函数的关系</li>
+            <li><strong>对比表格：</strong>列出不同方法的异同（如 DDPM vs DDIM vs Flow Matching）</li>
+            <li><strong>写博客：</strong>尝试用自己的话写一篇解释，教是最好的学</li>
+            <li><strong>GitHub Issues：</strong>在相关仓库的 Issues 中搜索，往往有人问过类似问题</li>
+        </ul>
+    </div>
+
+    <div class="stuck-section">
+        <h3>训练不收敛？</h3>
+        <ul>
+            <li><strong>学习率：</strong>从 1e-4 开始，太大 loss 会震荡，太小收敛慢</li>
+            <li><strong>数据检查：</strong>可视化几个 batch 的数据，确认没有异常值</li>
+            <li><strong>Loss 曲线：</strong>用 TensorBoard/WandB 监控 loss，观察是否在下降</li>
+            <li><strong>梯度检查：</strong>监控梯度范数，确认没有梯度爆炸或消失</li>
+            <li><strong>过拟合测试：</strong>先在小数据集上确认能过拟合，再扩大数据量</li>
+        </ul>
+    </div>
+
+    <div class="stuck-section">
+        <h3>论文读不懂？</h3>
+        <ul>
+            <li><strong>先读代码：</strong>有时候代码比论文更清晰，先跑通代码再回头读论文</li>
+            <li><strong>找讲解视频：</strong>YouTube 上搜 "paper_name explained" 或 "paper_name walkthrough"</li>
+            <li><strong>读引用论文：</strong>如果某篇论文的基础概念不懂，先去读它引用的基础论文</li>
+            <li><strong>Reddit / Twitter：</strong>r/MachineLearning 和 ML Twitter 上经常有论文讨论</li>
+        </ul>
+    </div>
+
+    <div class="stuck-section">
+        <h3>GPU 资源管理（RTX 5090 x2-3）</h3>
+        <ul>
+            <li><strong>并行训练：</strong>用 DistributedDataParallel 在多卡上训练</li>
+            <li><strong>混合精度：</strong>用 torch.cuda.amp 节省约 40% 显存</li>
+            <li><strong>Gradient Checkpointing：</strong>用时间换空间，减少显存占用</li>
+            <li><strong>Batch Size：</strong>RTX 5090 有 32GB 显存，可以尝试较大 batch size</li>
+            <li><strong>服务器任务管理：</strong>用 tmux 管理长时间训练任务，避免 SSH 断开导致训练中断</li>
+            <li><strong>WandB：</strong>用 WandB 监控远程训练，避免频繁 SSH</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- KEY FORMULAS REFERENCE -->
+<!-- ============================================ -->
+<div class="divider"></div>
+
+<section id="keyformulas">
+    <h2 style="color:var(--accent);font-size:1.6em;margin-bottom:24px;">重要概念对照表</h2>
+
+    <div class="card" style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:2px solid var(--border);">
+                    <th style="text-align:left;padding:12px;color:var(--accent);">缩写</th>
+                    <th style="text-align:left;padding:12px;color:var(--accent);">全称</th>
+                    <th style="text-align:left;padding:12px;color:var(--accent);">一句话解释</th>
+                    <th style="text-align:left;padding:12px;color:var(--accent);">arxiv</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>DDPM</strong></td>
+                    <td style="padding:10px;">Denoising Diffusion Probabilistic Models</td>
+                    <td style="padding:10px;color:var(--text2);">通过加噪-去噪训练生成模型</td>
+                    <td style="padding:10px;"><a href="https://arxiv.org/abs/2006.11239" style="color:var(--accent);">2006.11239</a></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>DDIM</strong></td>
+                    <td style="padding:10px;">Denoising Diffusion Implicit Models</td>
+                    <td style="padding:10px;color:var(--text2);">加速扩散采样，支持确定性生成</td>
+                    <td style="padding:10px;"><a href="https://arxiv.org/abs/2010.02502" style="color:var(--accent);">2010.02502</a></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>CFG</strong></td>
+                    <td style="padding:10px;">Classifier-Free Guidance</td>
+                    <td style="padding:10px;color:var(--text2);">无需分类器的条件引导生成</td>
+                    <td style="padding:10px;"><a href="https://arxiv.org/abs/2207.12598" style="color:var(--accent);">2207.12598</a></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>MDM</strong></td>
+                    <td style="padding:10px;">Human Motion Diffusion Model</td>
+                    <td style="padding:10px;color:var(--text2);">用 Transformer 做运动扩散生成</td>
+                    <td style="padding:10px;"><a href="https://arxiv.org/abs/2209.14795" style="color:var(--accent);">2209.14795</a></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>MLD</strong></td>
+                    <td style="padding:10px;">Motion Latent Diffusion</td>
+                    <td style="padding:10px;color:var(--text2);">在隐空间做运动扩散</td>
+                    <td style="padding:10px;"><a href="https://arxiv.org/abs/2212.04048" style="color:var(--accent);">2212.04048</a></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>SMPL</strong></td>
+                    <td style="padding:10px;">Skinned Multi-Person Linear Model</td>
+                    <td style="padding:10px;color:var(--text2);">参数化人体模型</td>
+                    <td style="padding:10px;"><a href="https://arxiv.org/abs/1512.03012" style="color:var(--accent);">1512.03012</a></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>VLA</strong></td>
+                    <td style="padding:10px;">Vision-Language-Action Model</td>
+                    <td style="padding:10px;color:var(--text2);">视觉-语言-动作统一模型</td>
+                    <td style="padding:10px;">—</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>PPO</strong></td>
+                    <td style="padding:10px;">Proximal Policy Optimization</td>
+                    <td style="padding:10px;color:var(--text2);">稳定的策略梯度 RL 算法</td>
+                    <td style="padding:10px;"><a href="https://arxiv.org/abs/1707.06347" style="color:var(--accent);">1707.06347</a></td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:10px;"><strong>FK/IK</strong></td>
+                    <td style="padding:10px;">Forward/Inverse Kinematics</td>
+                    <td style="padding:10px;color:var(--text2);">正/逆运动学</td>
+                    <td style="padding:10px;">—</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px;"><strong>SE(3)</strong></td>
+                    <td style="padding:10px;">Special Euclidean Group</td>
+                    <td style="padding:10px;color:var(--text2);">三维刚体变换群（旋转+平移）</td>
+                    <td style="padding:10px;">—</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- FINAL NOTES -->
+<!-- ============================================ -->
+<div class="divider"></div>
+
+<section>
+    <h2 style="color:var(--accent);font-size:1.6em;margin-bottom:24px;">学习建议</h2>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3><span class="icon">⏰</span> 时间管理</h3>
+            <ul>
+                <li>工作日：3-4 小时（1h 读论文/教程 + 2-3h 写代码）</li>
+                <li>周末：5-6 小时（可以做更大的实验）</li>
+                <li>每天记录学习笔记，用 Obsidian 或 Notion</li>
+                <li>每周回顾一次，调整下周计划</li>
+                <li>用 WandB 记录所有实验</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3><span class="icon">🎯</span> 学习原则</h3>
+            <ul>
+                <li><strong>动手优先：</strong>每学一个概念，立刻写代码实现</li>
+                <li><strong>从简到繁：</strong>先在简单环境验证，再扩展到复杂场景</li>
+                <li><strong>画图理解：</strong>架构图、流程图、数据流图是最好的理解工具</li>
+                <li><strong>教是最好的学：</strong>尝试给别人讲解，写学习笔记</li>
+                <li><strong>不要跳过基础：</strong>Phase 1-3 的基础不扎实，后面会很痛苦</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--accent);margin-top:20px;">
+        <h3><span class="icon">🚀</span> 16 周后的你</h3>
+        <p>完成这 16 周的学习后，你将能够：</p>
+        <ul>
+            <li>深入理解 Kimodo 的每一个组件，并能做有意义的修改</li>
+            <li>阅读最新的运动扩散和 VLA 论文，理解其贡献和局限</li>
+            <li>设计和实施消融实验，验证新想法</li>
+            <li>搭建从运动生成到机器人执行的完整 pipeline</li>
+            <li>在 Kimodo 的基础上做创新性研究</li>
+            <li>与该领域的研究者进行有深度的技术讨论</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <p>VLA & Motion Diffusion 学习路线图 · 为使用 Kimodo 的研究者定制 · 2026</p>
+    <p style="margin-top:8px;">基于 Kimodo (NVIDIA), MDM, Diffusion Policy, VLA 等前沿研究整理</p>
+    <p style="margin-top:8px;color:var(--text2);font-size:0.8em;">arxiv 链接仅供学习参考，请支持原作者的工作</p>
+</footer>
+
+</div><!-- container -->
+</body>
+</html>

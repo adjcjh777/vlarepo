@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Bus Register"
+  short_description: "Register this Codex session on Agent Bus"
+  default_prompt: "Use $agent-bus-register to register this Codex session as an Agent Bus participant."

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -eu
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
+export CODEX_AGENT_BUS_HOME="${CODEX_AGENT_BUS_HOME:-$HOME/.codex/agent-bus}"
+exec python3 -m agent_bus.hooks "$@"

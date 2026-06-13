@@ -14,7 +14,13 @@ Use this skill to make the current Codex session discoverable on the local Codex
    - If no name is given, infer a short name from the current project folder, such as `build-small-agent`.
    - Keep `role` concrete, for example `Executes implementation and tests in this project`.
 
-2. Run the bundled script:
+2. Optional: run preflight when diagnosing setup:
+
+```bash
+python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py --preflight
+```
+
+3. Run the bundled script:
 
 ```bash
 python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
@@ -32,9 +38,9 @@ python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
   --tag qa
 ```
 
-3. Report the registered `agent_id`, `name`, `session_id`, and `cwd`.
+4. Report the registered `agent_id`, `name`, `session_id`, and `cwd`. If the script returns `warnings`, include them because registration can succeed while the global Agent Bus CLI/hook installation is still missing.
 
-4. If registration fails because no current session record exists, do not invent a session id. Tell the user to install/enable Agent Bus and open a fresh Codex session, or provide the session id from `/status`:
+5. If registration fails because no current session record exists, do not invent a session id. Follow the script's `next_steps`. Usually either install/enable Agent Bus and open a fresh Codex session, or provide the session id from `/status`:
 
 ```bash
 python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
@@ -49,6 +55,7 @@ python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
 - Otherwise use `~/.codex/agent-bus`.
 - Match the current session by finding the newest registry record whose `cwd` equals the current working directory.
 - Prefer unnamed hook records when multiple records share the same `cwd`.
+- If `~/.codex/tools/codex-agent-bus/bin/agent-bus` is missing, explain that the global Agent Bus install has not been completed and show the install command, but do not run it automatically.
 - Never read Codex auth files, API keys, or transcripts.
 - Never edit `~/.codex/config.toml`; installation is separate and must be explicit.
 

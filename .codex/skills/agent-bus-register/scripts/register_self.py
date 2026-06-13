@@ -20,6 +20,7 @@ except ImportError:  # pragma: no cover
 
 
 DEFAULT_ROLE = "Registered through the agent-bus-register skill."
+DEFAULT_TOOL_ROOT = Path.home() / ".codex" / "tools" / "codex-agent-bus"
 
 
 def utc_now() -> str:
@@ -32,6 +33,87 @@ def bus_home(value: Optional[str]) -> Path:
     if os.environ.get("CODEX_AGENT_BUS_HOME"):
         return Path(os.environ["CODEX_AGENT_BUS_HOME"]).expanduser()
     return Path.home() / ".codex" / "agent-bus"
+
+
+def possible_source_roots() -> List[Path]:
+    roots: List[Path] = []
+    if os.environ.get("CODEX_AGENT_BUS_SOURCE"):
+        roots.append(Path(os.environ["CODEX_AGENT_BUS_SOURCE"]).expanduser())
+    roots.extend(
+        [
+            Path.cwd() / "codex-agent-bus",
+            Path.home() / "working-dir" / "codex-agent-bus",
+            DEFAULT_TOOL_ROOT,
+        ]
+    )
+    seen = set()
+    unique = []
+    for root in roots:
+        resolved = str(root)
+        if resolved not in seen:
+            unique.append(root)
+            seen.add(resolved)
+    return unique
+
+
+def find_source_installer() -> Optional[Path]:
+    for root in possible_source_roots():
+        installer = root / "scripts" / "install_agent_bus.py"
+        if installer.exists():
+            return installer
+    return None
+
+
+def config_mentions_agent_bus(config_path: Path) -> Optional[bool]:
+    if not config_path.exists():
+        return False
+    try:
+        return "agent_bus" in config_path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+
+
+def diagnostics(home: Path, registry_path: Path, cwd: str) -> Dict[str, Any]:
+    cli = DEFAULT_TOOL_ROOT / "bin" / "agent-bus"
+    hook = DEFAULT_TOOL_ROOT / "bin" / "agent-bus-hook"
+    mcp = DEFAULT_TOOL_ROOT / "bin" / "agent-bus-mcp"
+    config_path = Path.home() / ".codex" / "config.toml"
+    registry = load_registry(registry_path)
+    agents = list(registry.get("agents", {}).values())
+    cwd_matches = [item for item in agents if item.get("cwd") and realpath(str(item.get("cwd"))) == realpath(cwd)]
+    installer = find_source_installer()
+    install_command = None
+    if installer:
+        install_command = "cd %s && python3 scripts/install_agent_bus.py --user" % installer.parents[1]
+    return {
+        "bus_home": str(home),
+        "registry": str(registry_path),
+        "registry_exists": registry_path.exists(),
+        "agent_count": len(agents),
+        "cwd": str(Path(cwd).expanduser()),
+        "cwd_match_count": len(cwd_matches),
+        "installed_cli": str(cli),
+        "installed_cli_exists": cli.exists() and os.access(str(cli), os.X_OK),
+        "installed_hook_exists": hook.exists() and os.access(str(hook), os.X_OK),
+        "installed_mcp_exists": mcp.exists() and os.access(str(mcp), os.X_OK),
+        "user_config": str(config_path),
+        "user_config_mentions_agent_bus": config_mentions_agent_bus(config_path),
+        "source_installer": str(installer) if installer else None,
+        "install_command": install_command,
+    }
+
+
+def setup_warnings(diag: Dict[str, Any]) -> List[str]:
+    warnings: List[str] = []
+    if not diag.get("installed_cli_exists"):
+        warnings.append("Agent Bus CLI is missing or not executable: %s" % diag.get("installed_cli"))
+    if not diag.get("installed_hook_exists"):
+        warnings.append("Agent Bus hook wrapper is missing or not executable under ~/.codex/tools/codex-agent-bus/bin.")
+    if not diag.get("installed_mcp_exists"):
+        warnings.append("Agent Bus MCP wrapper is missing or not executable under ~/.codex/tools/codex-agent-bus/bin.")
+    if not diag.get("user_config_mentions_agent_bus"):
+        warnings.append("~/.codex/config.toml does not appear to contain the agent_bus user-level configuration.")
+    return warnings
 
 
 def slugify(value: str) -> str:
@@ -74,7 +156,7 @@ def realpath(value: str) -> str:
 
 
 def choose_current_record(agents: Iterable[Dict[str, Any]], cwd: str) -> Optional[Dict[str, Any]]:
-    matches = [item for item in agents if realpath(str(item.get("cwd", ""))) == realpath(cwd)]
+    matches = [item for item in agents if item.get("cwd") and realpath(str(item.get("cwd"))) == realpath(cwd)]
     if not matches:
         return None
     unnamed = [item for item in matches if str(item.get("name", "")).startswith("unnamed-")]
@@ -84,6 +166,7 @@ def choose_current_record(agents: Iterable[Dict[str, Any]], cwd: str) -> Optiona
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Register this Codex session with Agent Bus.")
+    parser.add_argument("--preflight", action="store_true", help="Print Agent Bus setup diagnostics and exit.")
     parser.add_argument("--name", required=True)
     parser.add_argument("--role", default=DEFAULT_ROLE)
     parser.add_argument("--session-id", default=os.environ.get("CODEX_SESSION_ID"))
@@ -92,13 +175,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--capability", action="append", default=[])
     parser.add_argument("--tag", action="append", default=[])
     parser.add_argument("--bus-home")
-    return parser.parse_args()
+    args = sys.argv[1:]
+    if "--preflight" in args and "--name" not in args:
+        args = ["--name", "preflight"] + args
+    return parser.parse_args(args)
 
 
 def main() -> int:
     args = parse_args()
     home = bus_home(args.bus_home)
     registry_path = home / "registry.json"
+    if args.preflight:
+        diag = diagnostics(home, registry_path, args.cwd)
+        print(json.dumps({"ok": True, "diagnostics": diag, "warnings": setup_warnings(diag)}, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
     lock_dir = home / "locks"
     lock_dir.mkdir(parents=True, exist_ok=True)
     lock_path = lock_dir / "registry.lock"
@@ -115,6 +205,14 @@ def main() -> int:
             current = choose_current_record(agents.values(), args.cwd)
             session_id = current.get("session_id") if current else None
         if not session_id:
+            diag = diagnostics(home, registry_path, args.cwd)
+            next_steps = [
+                "Provide --session-id from Codex /status and rerun this script.",
+            ]
+            if diag.get("install_command"):
+                next_steps.insert(0, "Install the global Agent Bus tool explicitly, then open a fresh Codex session: %s" % diag["install_command"])
+            else:
+                next_steps.insert(0, "Install/enable Codex Agent Bus globally, then open a fresh Codex session.")
             print(
                 json.dumps(
                     {
@@ -122,10 +220,9 @@ def main() -> int:
                         "error": "No current Agent Bus session record found for cwd.",
                         "cwd": str(Path(args.cwd).expanduser()),
                         "registry": str(registry_path),
-                        "next_steps": [
-                            "Install/enable Codex Agent Bus and open a fresh Codex session.",
-                            "Or rerun with --session-id from Codex /status.",
-                        ],
+                        "diagnostics": diag,
+                        "warnings": setup_warnings(diag),
+                        "next_steps": next_steps,
                     },
                     ensure_ascii=False,
                     indent=2,
@@ -158,7 +255,20 @@ def main() -> int:
         write_registry(registry_path, registry)
         if fcntl is not None:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
-    print(json.dumps({"ok": True, "agent": record, "registry": str(registry_path)}, ensure_ascii=False, indent=2, sort_keys=True))
+    diag = diagnostics(home, registry_path, args.cwd)
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "agent": record,
+                "registry": str(registry_path),
+                "warnings": setup_warnings(diag),
+            },
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+    )
     return 0
 
 

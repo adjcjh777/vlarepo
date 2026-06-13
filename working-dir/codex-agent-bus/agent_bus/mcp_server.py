@@ -23,10 +23,12 @@ from .transport import CodexResumeTransport
 
 SERVER_INSTRUCTIONS = (
     "This is a local Codex Agent Bus. Use list_agents to discover peers, "
-    "send_message(target, message, trigger='resume') to delegate work to another "
-    "Codex session, and reply_message after delegated work is complete. Do not put "
-    "secrets in messages. Do not create infinite ping-pong loops; correlation hop "
-    "count is capped."
+    "send_message(target, message, trigger='codex_app') to prepare a visible "
+    "Codex App user turn, then immediately call codex_app.send_message_to_thread "
+    "with the returned threadId and prompt. Use trigger='resume' only for "
+    "headless fallback. Do not put secrets in messages. agent_id is the Codex "
+    "session_id; name is only a human alias. Do not create infinite ping-pong loops; "
+    "correlation hop count is capped."
 )
 
 
@@ -61,7 +63,7 @@ TOOLS: List[Dict[str, Any]] = [
     },
     {
         "name": "update_agent",
-        "description": "Update an agent by agent_id, name, or session_id.",
+        "description": "Update an agent by agent_id/session_id or human-readable name.",
         "inputSchema": json_schema(
             {
                 "target": {"type": "string"},
@@ -87,18 +89,18 @@ TOOLS: List[Dict[str, Any]] = [
     },
     {
         "name": "resolve_agent",
-        "description": "Resolve agent_id, name, or session_id to one agent. Returns candidates when ambiguous.",
+        "description": "Resolve session_id/agent_id or human-readable name to one agent. Returns candidates when ambiguous.",
         "inputSchema": json_schema({"target": {"type": "string"}}, ["target"]),
     },
     {
         "name": "send_message",
-        "description": "Write a message and optionally resume the target Codex session.",
+        "description": "Write a message and prepare delivery to the target Codex session.",
         "inputSchema": json_schema(
             {
                 "target": {"type": "string"},
                 "message": {"type": "string"},
                 "from_agent": {"type": "string"},
-                "trigger": {"type": "string", "enum": ["queue", "resume"]},
+                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume"]},
                 "wait": {"type": "boolean"},
                 "timeout_sec": {"type": "number"},
                 "correlation_id": {"type": "string"},
@@ -115,7 +117,7 @@ TOOLS: List[Dict[str, Any]] = [
                 "message_id": {"type": "string"},
                 "result": {"type": "string"},
                 "from_agent": {"type": "string"},
-                "trigger": {"type": "string", "enum": ["queue", "resume"]},
+                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume"]},
             },
             ["message_id", "result"],
         ),
@@ -234,7 +236,7 @@ def send_message(
     hop_count = int(args.get("hop_count") or 0)
     if hop_count > MAX_HOP_COUNT:
         raise AgentBusError("Refusing to trigger resume: hop_count %s exceeds %s" % (hop_count, MAX_HOP_COUNT))
-    trigger = args.get("trigger") or "resume"
+    trigger = args.get("trigger") or "codex_app"
     correlation_id = args.get("correlation_id")
     message = store.append_message(
         {
@@ -251,8 +253,14 @@ def send_message(
         }
     )
     transport_result = None
-    if trigger == "resume":
-        prompt = build_request_prompt(from_agent, target, message)
+    prompt = build_request_prompt(from_agent, target, message)
+    if trigger == "codex_app":
+        transport_result = codex_app_delivery(target, prompt)
+        message = store.update_message(
+            message["message_id"],
+            {"status": "prepared", "prepared_at": utc_now()},
+        )
+    elif trigger == "resume":
         transport_result = transport.send(
             session_id=target["session_id"],
             cwd=target["cwd"],
@@ -270,7 +278,7 @@ def send_message(
                 {"status": transport_result.status, "error": transport_result.error},
             )
     reply = None
-    if bool(args.get("wait", False)):
+    if bool(args.get("wait", False)) and trigger != "codex_app":
         reply = store.wait_for_reply(
             correlation_id=message["correlation_id"],
             parent_message_id=message["message_id"],
@@ -281,7 +289,7 @@ def send_message(
         "correlation_id": message["correlation_id"],
         "target": target,
         "message": message,
-        "transport": transport_result.to_dict() if transport_result else {"status": "queued"},
+        "transport": transport_to_dict(transport_result),
         "reply": reply,
     }
 
@@ -292,12 +300,12 @@ def reply_message(
     args: Dict[str, Any],
 ) -> Dict[str, Any]:
     original = store.find_message(args["message_id"])
-    source_target = original.get("from_agent_id") or original.get("from_session_id")
+    source_target = original.get("from_session_id") or original.get("from_agent_id")
     if not source_target:
         raise AgentBusError("Original message has no source agent/session to reply to")
     source = store.resolve_agent(source_target, include_disabled=True)
     from_agent = resolve_from_agent(store, args.get("from_agent"))
-    trigger = args.get("trigger") or "resume"
+    trigger = args.get("trigger") or "codex_app"
     reply = store.append_message(
         {
             "correlation_id": original.get("correlation_id"),
@@ -316,10 +324,16 @@ def reply_message(
     )
     store.update_message(original["message_id"], {"status": "replied"})
     transport_result = None
-    if trigger == "resume":
+    prompt = build_reply_prompt(source, from_agent, original, reply)
+    if trigger == "codex_app":
+        transport_result = codex_app_delivery(source, prompt)
+        reply = store.update_message(
+            reply["message_id"],
+            {"status": "prepared", "prepared_at": utc_now()},
+        )
+    elif trigger == "resume":
         if int(reply.get("hop_count") or 0) > MAX_HOP_COUNT:
             raise AgentBusError("Refusing to resume reply: hop_count exceeds %s" % MAX_HOP_COUNT)
-        prompt = build_reply_prompt(source, from_agent, original, reply)
         transport_result = transport.send(
             session_id=source["session_id"],
             cwd=source["cwd"],
@@ -341,8 +355,31 @@ def reply_message(
         "correlation_id": reply["correlation_id"],
         "reply": reply,
         "source": source,
-        "transport": transport_result.to_dict() if transport_result else {"status": "queued"},
+        "transport": transport_to_dict(transport_result),
     }
+
+
+def codex_app_delivery(target: Dict[str, Any], prompt: str) -> Dict[str, Any]:
+    return {
+        "ok": False,
+        "status": "requires_codex_app_tool",
+        "surface": "codex_app.send_message_to_thread",
+        "threadId": target.get("session_id"),
+        "cwd": target.get("cwd"),
+        "prompt": prompt,
+        "next_step": (
+            "Call codex_app.send_message_to_thread(threadId=transport.threadId, "
+            "prompt=transport.prompt)."
+        ),
+    }
+
+
+def transport_to_dict(value: Any) -> Dict[str, Any]:
+    if value is None:
+        return {"status": "queued"}
+    if isinstance(value, dict):
+        return value
+    return value.to_dict()
 
 
 def resolve_from_agent(store: AgentStore, from_agent: Optional[str]) -> Dict[str, Any]:
@@ -369,21 +406,24 @@ def build_request_prompt(
 ) -> str:
     return "\n".join(
         [
-            "[Codex Agent Bus delegated task]",
-            "from_agent_id: %s" % (from_agent.get("agent_id") or "unknown"),
-            "from_agent_name: %s" % (from_agent.get("name") or "unknown"),
-            "from_session_id: %s" % (from_agent.get("session_id") or "unknown"),
-            "to_agent_id: %s" % target.get("agent_id"),
-            "to_agent_name: %s" % target.get("name"),
-            "message_id: %s" % message.get("message_id"),
-            "correlation_id: %s" % message.get("correlation_id"),
-            "hop_count: %s" % message.get("hop_count"),
+            "用户输入（来自 Codex Agent Bus / %s）" % (from_agent.get("name") or "unknown"),
             "",
-            "Task:",
+            "请把这条消息当作用户直接发给你的任务处理。完成后必须调用 Agent Bus 的 reply_message 回传结果。",
+            "",
+            "Agent Bus metadata:",
+            "- from_name: %s" % (from_agent.get("name") or "unknown"),
+            "- from_session_id: %s" % (from_agent.get("session_id") or "unknown"),
+            "- to_name: %s" % (target.get("name") or "unknown"),
+            "- to_session_id: %s" % target.get("session_id"),
+            "- message_id: %s" % message.get("message_id"),
+            "- correlation_id: %s" % message.get("correlation_id"),
+            "- hop_count: %s" % message.get("hop_count"),
+            "",
+            "用户任务：",
             str(message.get("body") or ""),
             "",
-            "When complete, call Agent Bus reply_message with message_id=%r and your result. "
-            "Do not include secrets. If you delegate further, preserve correlation_id and increment hop_count."
+            "完成后调用：reply_message(message_id=%r, result=\"...\")。"
+            "不要在消息里写入密钥或敏感凭据；如继续委派，保留 correlation_id 并递增 hop_count。"
             % message.get("message_id"),
         ]
     )
@@ -398,14 +438,18 @@ def build_reply_prompt(
     del source
     return "\n".join(
         [
-            "[Codex Agent Bus reply]",
-            "from_agent_id: %s" % (from_agent.get("agent_id") or "unknown"),
-            "from_agent_name: %s" % (from_agent.get("name") or "unknown"),
-            "original_message_id: %s" % original.get("message_id"),
-            "reply_message_id: %s" % reply.get("message_id"),
-            "correlation_id: %s" % reply.get("correlation_id"),
+            "用户输入（来自 Codex Agent Bus reply / %s）" % (from_agent.get("name") or "unknown"),
             "",
-            "Result:",
+            "这是某个委派任务的回传结果，请按用户可读信息处理。",
+            "",
+            "Agent Bus metadata:",
+            "- from_name: %s" % (from_agent.get("name") or "unknown"),
+            "- from_session_id: %s" % (from_agent.get("session_id") or "unknown"),
+            "- original_message_id: %s" % original.get("message_id"),
+            "- reply_message_id: %s" % reply.get("message_id"),
+            "- correlation_id: %s" % reply.get("correlation_id"),
+            "",
+            "回传结果：",
             str(reply.get("body") or ""),
         ]
     )

@@ -8,6 +8,7 @@ Local message bus for independent Codex sessions. It provides:
 - a minimal stdio MCP server
 - Codex hooks for automatic session registration
 - CLI commands for audit and manual operation
+- Codex App thread delivery (`codex_app.send_message_to_thread`) for visible user turns, with app-server / `codex exec resume` as headless fallback
 
 Install for all project folders:
 

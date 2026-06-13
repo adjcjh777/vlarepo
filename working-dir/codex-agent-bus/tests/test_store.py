@@ -21,6 +21,7 @@ class StoreTests(unittest.TestCase):
                 status="idle",
             )
             self.assertEqual(agent["cwd"], "/tmp/project-a")
+            self.assertEqual(agent["agent_id"], "session-a")
             self.assertTrue((Path(tmp) / "registry.json").exists())
             self.assertTrue((Path(tmp) / "messages.jsonl").exists())
             self.assertEqual(store.resolve_agent("executor")["session_id"], "session-a")
@@ -33,6 +34,40 @@ class StoreTests(unittest.TestCase):
             )
             self.assertEqual(updated["agent_id"], agent["agent_id"])
             self.assertEqual(updated["cwd"], "/tmp/project-b")
+
+    def test_legacy_name_derived_agent_id_migrates_to_session_id(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry = root / "registry.json"
+            registry.write_text(
+                """
+{
+  "version": "0.1.0",
+  "updated_at": "2026-06-13T00:00:00Z",
+  "agents": {
+    "bandofagents-planner-52fbc9fd": {
+      "agent_id": "bandofagents-planner-52fbc9fd",
+      "name": "bandofagents-planner",
+      "role": "Plans",
+      "session_id": "019ec041-0e14-7e23-9f27-be6890b12288",
+      "cwd": "/tmp/planner",
+      "last_seen": "2026-06-13T00:00:00Z",
+      "enabled": true
+    }
+  }
+}
+""",
+                encoding="utf-8",
+            )
+            store = AgentStore(root)
+            agents = store.list_agents()
+            self.assertEqual(len(agents), 1)
+            self.assertEqual(agents[0]["agent_id"], "019ec041-0e14-7e23-9f27-be6890b12288")
+            self.assertIn("bandofagents-planner-52fbc9fd", agents[0]["legacy_agent_ids"])
+            self.assertEqual(
+                store.resolve_agent("bandofagents-planner-52fbc9fd")["agent_id"],
+                "019ec041-0e14-7e23-9f27-be6890b12288",
+            )
 
     def test_ambiguous_name_returns_candidates(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

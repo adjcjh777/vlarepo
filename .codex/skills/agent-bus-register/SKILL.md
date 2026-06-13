@@ -39,6 +39,7 @@ python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
 ```
 
 4. Report the registered `agent_id`, `name`, `session_id`, and `cwd`. If the script returns `warnings`, include them because registration can succeed while the global Agent Bus CLI/hook installation is still missing.
+   - `agent_id` must equal the Codex `session_id`. Treat `name` as a human alias only.
 
 5. If registration fails because no current session record exists, do not invent a session id. Follow the script's `next_steps`. Usually either install/enable Agent Bus and open a fresh Codex session, or provide the session id from `/status`:
 
@@ -53,6 +54,7 @@ python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
 
 - Prefer the global bus home `CODEX_AGENT_BUS_HOME` when set.
 - Otherwise use `~/.codex/agent-bus`.
+- The canonical Agent Bus identity is the Codex session id. The script writes `agent_id == session_id` and keeps any older name-derived ids only in `legacy_agent_ids` for compatibility.
 - Match the current session by finding the newest registry record whose `cwd` equals the current working directory.
 - Prefer unnamed hook records when multiple records share the same `cwd`.
 - If `~/.codex/tools/codex-agent-bus/bin/agent-bus` is missing, explain that the global Agent Bus install has not been completed and show the install command, but do not run it automatically.

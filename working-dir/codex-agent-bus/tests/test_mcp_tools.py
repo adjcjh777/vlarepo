@@ -47,6 +47,7 @@ class McpToolTests(unittest.TestCase):
                 },
                 store=store,
             )["agent"]
+            self.assertEqual(planner["agent_id"], "planner-session")
             executor = call_tool(
                 "register_agent",
                 {
@@ -57,6 +58,7 @@ class McpToolTests(unittest.TestCase):
                 },
                 store=store,
             )["agent"]
+            self.assertEqual(executor["agent_id"], "executor-session")
             listed = call_tool("list_agents", {}, store=store)["agents"]
             self.assertEqual({item["name"] for item in listed}, {"planner", "executor"})
             sent = call_tool(
@@ -123,7 +125,51 @@ class McpToolTests(unittest.TestCase):
             )
             self.assertEqual(result["transport"]["cwd"], "/tmp/executor-project")
             self.assertEqual(transport.calls[0]["cwd"], "/tmp/executor-project")
+            self.assertEqual(transport.calls[0]["session_id"], "executor-session")
+            self.assertIn("用户输入（来自 Codex Agent Bus / planner）", transport.calls[0]["prompt"])
+            self.assertIn("用户任务：\ndo work", transport.calls[0]["prompt"])
             self.assertIn("reply_message", transport.calls[0]["prompt"])
+
+    def test_default_send_prepares_codex_app_thread_message(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            transport = FakeTransport()
+            call_tool(
+                "register_agent",
+                {
+                    "name": "planner",
+                    "role": "Plans",
+                    "session_id": "planner-session",
+                    "cwd": "/tmp/planner",
+                },
+                store=store,
+            )
+            call_tool(
+                "register_agent",
+                {
+                    "name": "executor",
+                    "role": "Executes",
+                    "session_id": "executor-session",
+                    "cwd": "/tmp/executor-project",
+                },
+                store=store,
+            )
+            result = call_tool(
+                "send_message",
+                {
+                    "target": "executor",
+                    "message": "visible work",
+                    "from_agent": "planner",
+                },
+                store=store,
+                transport=transport,
+            )
+            self.assertEqual(result["transport"]["surface"], "codex_app.send_message_to_thread")
+            self.assertEqual(result["transport"]["threadId"], "executor-session")
+            self.assertIn("用户任务：\nvisible work", result["transport"]["prompt"])
+            self.assertEqual(transport.calls, [])
+            message = store.find_message(result["message_id"])
+            self.assertEqual(message["status"], "prepared")
 
 
 if __name__ == "__main__":

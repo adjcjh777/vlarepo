@@ -51,6 +51,16 @@ export CODEX_AGENT_BUS_HOME=/some/absolute/path
 
 Each agent record stores its own `cwd`. When `send_message(..., trigger="resume")` wakes a target session, transport uses the target record's `cwd`, not the caller's cwd.
 
+## Identity Model
+
+The canonical Agent Bus identity is the Codex session id from `/status`.
+
+```text
+agent_id == session_id
+```
+
+`name` is only a human-readable alias, such as `planner`, `executor`, or `bandofagents-tester`. Older name-derived ids are migrated into `legacy_agent_ids` so existing messages and commands can still resolve them, but new records and `list_agents` display the session id as `agent_id`.
+
 ## Typical Flow
 
 In each Codex session, register a useful name:
@@ -68,8 +78,37 @@ list_agents()
 Delegate across projects:
 
 ```text
-send_message(target="executor", message="Run the focused tests and report failures.", trigger="resume")
+send_message(target="executor", message="Run the focused tests and report failures.")
 ```
+
+For interactive Codex app sessions, use the default `trigger="codex_app"`:
+
+```text
+send_message(target="executor", message="Run the focused tests and report failures.")
+```
+
+The tool writes the global log entry and returns:
+
+```text
+transport.surface = "codex_app.send_message_to_thread"
+transport.threadId = "<target session id>"
+transport.prompt = "<user-visible delegated task>"
+```
+
+The calling agent must then call the official Codex App tool:
+
+```text
+codex_app.send_message_to_thread(threadId=transport.threadId, prompt=transport.prompt)
+```
+
+This is the path intended to make the task visible as a user input in the target Codex thread.
+
+For headless CLI automation, use `trigger="resume"`. Agent Bus then tries:
+
+1. `codex app-server proxy` JSON-RPC, using `thread/resume` followed by `turn/start` with text input.
+2. `codex exec resume <SESSION_ID>` as non-interactive fallback.
+
+`exec_resume_noninteractive` may not appear in an already-open Codex UI.
 
 Finish delegated work:
 
@@ -87,7 +126,15 @@ The installed CLI mirrors the MCP tools:
 ~/.codex/tools/codex-agent-bus/bin/agent-bus send executor "Please run tests"
 ```
 
-Use `--trigger queue` to record a message without waking the target Codex session.
+Use `--trigger queue` to record a message without waking the target Codex session. Queue mode only proves that the global log/inbox path works; it does not make the target Codex UI show a new user message.
+
+You can force a transport while testing:
+
+```bash
+agent-bus send executor "Visible user-turn test"
+agent-bus send --trigger resume executor "Headless fallback test"
+CODEX_AGENT_BUS_TRANSPORT=exec agent-bus send --trigger resume executor "Non-interactive fallback test"
+```
 
 ## Loop Guard
 

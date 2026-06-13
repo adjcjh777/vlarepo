@@ -4,10 +4,8 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
-import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -116,15 +114,53 @@ def setup_warnings(diag: Dict[str, Any]) -> List[str]:
     return warnings
 
 
-def slugify(value: str) -> str:
-    value = value.strip().lower()
-    value = re.sub(r"[^a-z0-9]+", "-", value)
-    return value.strip("-") or "agent"
-
-
 def agent_id_for(name: str, session_id: str) -> str:
-    digest = hashlib.sha256(session_id.encode("utf-8")).hexdigest()[:8]
-    return "%s-%s" % (slugify(name), digest)
+    del name
+    return session_id
+
+
+def as_list(value: Any) -> List[str]:
+    if not value:
+        return []
+    if isinstance(value, list):
+        return [str(item) for item in value if str(item)]
+    return [str(value)]
+
+
+def normalize_agents(agents: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    normalized: Dict[str, Dict[str, Any]] = {}
+    for key, value in agents.items():
+        if not isinstance(value, dict):
+            continue
+        record = dict(value)
+        session_id = str(record.get("session_id") or "")
+        if not session_id:
+            agent_id = str(record.get("agent_id") or key)
+            record["agent_id"] = agent_id
+            normalized[agent_id] = record
+            continue
+        canonical_id = session_id
+        legacy_ids = set(as_list(record.get("legacy_agent_ids")))
+        for candidate in [str(key), str(record.get("agent_id") or "")]:
+            if candidate and candidate != canonical_id:
+                legacy_ids.add(candidate)
+        record["agent_id"] = canonical_id
+        if legacy_ids:
+            record["legacy_agent_ids"] = sorted(legacy_ids)
+        existing = normalized.get(canonical_id)
+        if existing and str(existing.get("last_seen", "")) > str(record.get("last_seen", "")):
+            merged = set(as_list(existing.get("legacy_agent_ids")))
+            merged.update(legacy_ids)
+            if merged:
+                existing["legacy_agent_ids"] = sorted(merged)
+            normalized[canonical_id] = existing
+        else:
+            if existing:
+                legacy_ids.update(as_list(existing.get("legacy_agent_ids")))
+                if legacy_ids:
+                    record["legacy_agent_ids"] = sorted(legacy_ids)
+            normalized[canonical_id] = record
+    return normalized
 
 
 def load_registry(path: Path) -> Dict[str, Any]:
@@ -139,7 +175,7 @@ def load_registry(path: Path) -> Dict[str, Any]:
         agents = {item["agent_id"]: item for item in agents if item.get("agent_id")}
     if not isinstance(agents, dict):
         agents = {}
-    data["agents"] = agents
+    data["agents"] = normalize_agents(agents)
     return data
 
 
@@ -231,7 +267,10 @@ def main() -> int:
             )
             return 2
         old_id = current.get("agent_id") if current else None
-        new_id = old_id or agent_id_for(args.name, session_id)
+        new_id = agent_id_for(args.name, session_id)
+        legacy_ids = set(as_list((current or {}).get("legacy_agent_ids")))
+        if old_id and old_id != new_id:
+            legacy_ids.add(str(old_id))
         record = dict(current or {})
         record.update(
             {
@@ -249,6 +288,8 @@ def main() -> int:
                 "enabled": record.get("enabled", True),
             }
         )
+        if legacy_ids:
+            record["legacy_agent_ids"] = sorted(legacy_ids)
         if old_id and old_id != new_id:
             agents.pop(old_id, None)
         agents[new_id] = record

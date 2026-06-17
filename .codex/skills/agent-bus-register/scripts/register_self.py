@@ -262,8 +262,10 @@ def assign_claimed_team_roles(home: Path, claimed: List[Dict[str, Any]], agent: 
             role.update(
                 {
                     "status": "active",
+                    "launch_status": "joined",
                     "agent_id": agent.get("agent_id"),
                     "session_id": agent.get("session_id"),
+                    "thread_id": agent.get("session_id"),
                     "agent_name": agent.get("name"),
                     "joined_at": role.get("joined_at") or now,
                     "updated_at": now,

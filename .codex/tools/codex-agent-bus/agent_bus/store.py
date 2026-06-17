@@ -259,8 +259,11 @@ class AgentStore:
                 "description": str(role.get("description") or ""),
                 "capabilities": as_list(role.get("capabilities")),
                 "status": "pending",
+                "launch_status": "pending_manual_launch",
+                "launch_mode": None,
                 "agent_id": None,
                 "session_id": None,
+                "thread_id": None,
                 "created_at": now,
                 "updated_at": now,
             }
@@ -354,6 +357,40 @@ class AgentStore:
             self._write_teams_unlocked(data)
             return team
 
+    def update_team_role_launch(
+        self,
+        team_id: str,
+        role_name: str,
+        updates: Dict[str, Any],
+        event: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        with self._locked("teams"):
+            data = self._read_teams_unlocked()
+            team = dict(data["teams"].get(team_id) or {})
+            if not team:
+                raise NotFoundError("No team found for id %r" % team_id)
+            roles = dict(team.get("roles") or {})
+            role = dict(roles.get(role_name) or {})
+            if not role:
+                raise NotFoundError("No role %r in team %r" % (role_name, team_id))
+            now = utc_now()
+            for key, value in updates.items():
+                if value is not None:
+                    role[key] = value
+            role["updated_at"] = now
+            if event:
+                events = list(role.get("launch_events") or [])
+                event_record = dict(event)
+                event_record.setdefault("created_at", now)
+                events.append(event_record)
+                role["launch_events"] = events[-20:]
+            roles[role_name] = role
+            team["roles"] = roles
+            team["updated_at"] = now
+            data["teams"][team_id] = team
+            self._write_teams_unlocked(data)
+            return team
+
     def assign_agent_to_team_role(
         self,
         team_id: str,
@@ -374,8 +411,10 @@ class AgentStore:
             role.update(
                 {
                     "status": "active",
+                    "launch_status": "joined",
                     "agent_id": agent.get("agent_id"),
                     "session_id": agent.get("session_id"),
+                    "thread_id": agent.get("session_id"),
                     "agent_name": agent.get("name"),
                     "joined_at": role.get("joined_at") or now,
                     "updated_at": now,

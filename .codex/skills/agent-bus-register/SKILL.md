@@ -136,17 +136,38 @@ Team commands:
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team list
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team show <team-id-or-name>
+~/.codex/tools/codex-agent-bus/bin/agent-bus team launch <team-id-or-name> --role tester
+~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread <team-id-or-name> --role tester --thread-id <existing-thread-id>
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team join <team-id> --role tester --agent <session-id-or-name>
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team dispatch <team-id> --role tester "<task>"
 ```
 
+Use `team launch` when a controller wants the current launch state and role prompts. It updates the
+role's `launch_status` and returns prompts that can be pasted into new Codex App conversations.
+
+Use `team attach-thread` when the role conversation already exists. It registers the role alias
+against the provided `thread_id` / session id, claims the pending bootstrap message, marks the role
+active, and returns a `codex_app.send_message_to_thread` payload for visible delivery.
+
+Experimental launcher:
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus team launch <team-id-or-name> \
+  --role tester \
+  --mode app-server-experimental
+```
+
+This tries the internal app-server `thread/start` protocol, records the returned thread id when it
+succeeds, and marks the role `thread_created_unverified_visibility`. Add `--deliver-bootstrap` only
+when you intentionally want Agent Bus to try app-server `thread/resume` + `turn/start` delivery.
+
 Thread creation boundary:
 
-- This team bootstrap creates durable Bus state and launch prompts; it does not yet prove that new
-  Codex App visible threads were automatically created.
-- Current stable exposed tooling can continue existing `threadId` sessions. If an experimental
-  create-thread adapter is added later, it must return real `threadId` values before claiming
-  visible delivery.
+- This team bootstrap creates durable Bus state and launch prompts; it does not by itself prove that
+  new Codex App visible threads were automatically created.
+- `team attach-thread` is the reliable path after a real `threadId` / session exists.
+- `team launch --mode app-server-experimental` may create an app-server thread, but visibility in
+  Codex App still requires a separate ACK or visible-delivery proof.
 - Until a real session exists, treat role tasks as pending Bus records only. After the session
   exists, use the normal visible-delivery workflow if the user needs to see the task in that thread.
 

@@ -7,7 +7,7 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from . import __version__
 from .store import (
@@ -18,12 +18,15 @@ from .store import (
     NotFoundError,
     utc_now,
 )
-from .transport import CodexResumeTransport
+from .transport import CodexResumeTransport, CodexThreadStartTransport
 
 
 SERVER_INSTRUCTIONS = (
     "This is a local Codex Agent Bus. Use list_agents to discover peers, "
     "create_team(project, goal, roles) to bootstrap a role-based project team, "
+    "launch_team(team, role, mode='prompt') to prepare or experimentally start "
+    "role sessions, attach_team_thread(team, role, thread_id) to bind an existing "
+    "Codex thread/session to a role, "
     "send_message(target, message, trigger='codex_app') to prepare a visible "
     "Codex App user turn, then immediately call codex_app.send_message_to_thread "
     "with the returned threadId and prompt. Use trigger='resume' only for "
@@ -171,6 +174,37 @@ TOOLS: List[Dict[str, Any]] = [
         ),
     },
     {
+        "name": "launch_team",
+        "description": "Prepare launch prompts for team roles, or experimentally create app-server threads for roles and attach them to the team.",
+        "inputSchema": json_schema(
+            {
+                "team": {"type": "string"},
+                "role": {"type": "string"},
+                "mode": {"type": "string", "enum": ["prompt", "app-server-experimental"]},
+                "from_agent": {"type": "string"},
+                "timeout_sec": {"type": "number"},
+                "deliver_bootstrap": {"type": "boolean"},
+            },
+            ["team"],
+        ),
+    },
+    {
+        "name": "attach_team_thread",
+        "description": "Bind an existing Codex thread/session id to a team role and prepare visible delivery of the role bootstrap prompt.",
+        "inputSchema": json_schema(
+            {
+                "team": {"type": "string"},
+                "role": {"type": "string"},
+                "thread_id": {"type": "string"},
+                "session_id": {"type": "string"},
+                "agent_name": {"type": "string"},
+                "cwd": {"type": "string"},
+                "from_agent": {"type": "string"},
+            },
+            ["team", "role"],
+        ),
+    },
+    {
         "name": "dispatch_team_task",
         "description": "Dispatch or rebalance a task to a team role. Uses the assigned agent when present, otherwise queues for the role alias.",
         "inputSchema": json_schema(
@@ -238,10 +272,12 @@ def call_tool(
     arguments: Optional[Dict[str, Any]] = None,
     store: Optional[AgentStore] = None,
     transport: Optional[CodexResumeTransport] = None,
+    thread_launcher: Optional[CodexThreadStartTransport] = None,
 ) -> Dict[str, Any]:
     args = arguments or {}
     store = store or AgentStore()
     transport = transport or CodexResumeTransport()
+    thread_launcher = thread_launcher or CodexThreadStartTransport()
     if name == "register_agent":
         session_id = args.get("session_id") or os.environ.get("CODEX_SESSION_ID")
         if not session_id:
@@ -284,6 +320,10 @@ def call_tool(
         return {"team": store.resolve_team(args["team"])}
     if name == "join_team":
         return join_team(store, args)
+    if name == "launch_team":
+        return launch_team(store, transport, thread_launcher, args)
+    if name == "attach_team_thread":
+        return attach_team_thread(store, args)
     if name == "dispatch_team_task":
         return dispatch_team_task(store, transport, args)
     if name == "reply_message":
@@ -450,10 +490,7 @@ def create_team(store: AgentStore, args: Dict[str, Any]) -> Dict[str, Any]:
         "team": team,
         "messages": messages,
         "launch_prompts": launch_prompts,
-        "thread_creation": {
-            "status": "manual_or_external_api_required",
-            "reason": "Current exposed Codex tools can continue an existing threadId but do not expose create-thread here.",
-        },
+        "thread_creation": manual_thread_creation_boundary(),
     }
 
 
@@ -469,6 +506,255 @@ def join_team(store: AgentStore, args: Dict[str, Any]) -> Dict[str, Any]:
         claimed_message = store.assign_message_to_agent(str(role["pending_message_id"]), agent)
     team = store.assign_agent_to_team_role(team["team_id"], role_name, agent, message_id=role.get("pending_message_id"))
     return {"team": team, "agent": agent, "claimed_message": claimed_message}
+
+
+def launch_team(
+    store: AgentStore,
+    transport: CodexResumeTransport,
+    thread_launcher: CodexThreadStartTransport,
+    args: Dict[str, Any],
+) -> Dict[str, Any]:
+    team = store.resolve_team(args["team"])
+    mode = args.get("mode") or "prompt"
+    from_agent = resolve_from_agent(store, args.get("from_agent"))
+    role_items = selected_team_roles(team, args.get("role"))
+    launches: List[Dict[str, Any]] = []
+    if mode == "prompt":
+        for role_name, role in role_items:
+            message = role_message_or_empty(role)
+            prompt = build_launch_prompt(team, role, message)
+            launch_status = "joined" if role.get("status") == "active" else "pending_manual_launch"
+            team = store.update_team_role_launch(
+                team["team_id"],
+                role_name,
+                {
+                    "launch_status": launch_status,
+                    "launch_mode": "prompt",
+                    "launch_prompt": prompt["prompt"],
+                    "last_launch_at": utc_now(),
+                },
+                event={"mode": "prompt", "status": launch_status},
+            )
+            launches.append(
+                {
+                    "role": role_name,
+                    "alias": role.get("alias"),
+                    "status": "prompt_ready",
+                    "launch_status": launch_status,
+                    "launch_prompt": prompt,
+                }
+            )
+        return {
+            "team": store.resolve_team(team["team_id"]),
+            "launches": launches,
+            "thread_creation": manual_thread_creation_boundary(),
+        }
+    if mode != "app-server-experimental":
+        raise AgentBusError("Unsupported launch mode %r" % mode)
+    for role_name, role in role_items:
+        if role.get("status") == "active" and (role.get("thread_id") or role.get("session_id")):
+            launches.append(
+                {
+                    "role": role_name,
+                    "alias": role.get("alias"),
+                    "status": "already_active",
+                    "thread_id": role.get("thread_id") or role.get("session_id"),
+                }
+            )
+            continue
+        start_result = thread_launcher.start_thread(
+            cwd=str(team.get("project") or os.getcwd()),
+            timeout_sec=float(args.get("timeout_sec") or 60),
+        )
+        if not start_result.get("ok") or not start_result.get("thread_id"):
+            team = store.update_team_role_launch(
+                team["team_id"],
+                role_name,
+                {
+                    "launch_status": "thread_creation_failed",
+                    "launch_mode": mode,
+                    "last_launch_at": utc_now(),
+                    "last_launch_error": start_result.get("error") or start_result.get("status"),
+                },
+                event={"mode": mode, "status": "thread_creation_failed", "result": scrub_transport_result(start_result)},
+            )
+            launches.append(
+                {
+                    "role": role_name,
+                    "alias": role.get("alias"),
+                    "status": "thread_creation_failed",
+                    "thread_start": start_result,
+                }
+            )
+            continue
+        attach = attach_role_to_thread(
+            store,
+            team,
+            role_name,
+            str(start_result["thread_id"]),
+            from_agent=from_agent,
+            launch_mode=mode,
+            launch_status="thread_created_unverified_visibility",
+            prepare_visible_delivery=not bool(args.get("deliver_bootstrap", False)),
+        )
+        delivery_result = None
+        if bool(args.get("deliver_bootstrap", False)) and attach.get("claimed_message"):
+            claimed_message = attach["claimed_message"]
+            prompt = build_request_prompt(from_agent, attach["agent"], claimed_message)
+            delivery_result = transport.send(
+                session_id=str(start_result["thread_id"]),
+                cwd=attach["agent"].get("cwd") or str(team.get("project") or os.getcwd()),
+                prompt=prompt,
+                timeout_sec=float(args.get("timeout_sec") or 60),
+            )
+            message_updates = (
+                {"status": "delivered", "delivered_at": utc_now()}
+                if delivery_result.ok
+                else {"status": delivery_result.status, "error": delivery_result.error}
+            )
+            attach["claimed_message"] = store.update_message(claimed_message["message_id"], message_updates)
+            launch_status = (
+                "bootstrap_delivered_unverified_visibility"
+                if delivery_result.ok
+                else "bootstrap_delivery_failed"
+            )
+            team = store.update_team_role_launch(
+                team["team_id"],
+                role_name,
+                {
+                    "launch_status": launch_status,
+                    "visible_delivery_status": delivery_result.status,
+                    "last_launch_at": utc_now(),
+                },
+                event={
+                    "mode": mode,
+                    "status": launch_status,
+                    "result": delivery_result.to_dict(),
+                },
+            )
+        launches.append(
+            {
+                "role": role_name,
+                "alias": role.get("alias"),
+                "status": "thread_created_unverified_visibility",
+                "thread_start": start_result,
+                "attach": attach,
+                "bootstrap_delivery": transport_to_dict(delivery_result),
+            }
+        )
+        team = store.resolve_team(team["team_id"])
+    return {
+        "team": store.resolve_team(team["team_id"]),
+        "launches": launches,
+        "thread_creation": {
+            "status": "experimental_thread_start_used",
+            "visibility": "unverified",
+            "reason": (
+                "app-server thread/start returned a thread id, but this tool cannot prove "
+                "the thread is visible in the Codex App without a separate visible-thread ACK."
+            ),
+        },
+    }
+
+
+def attach_team_thread(store: AgentStore, args: Dict[str, Any]) -> Dict[str, Any]:
+    team = store.resolve_team(args["team"])
+    role_name = normalize_role_name(args["role"])
+    thread_id = args.get("thread_id") or args.get("session_id")
+    if not thread_id:
+        raise AgentBusError("thread_id or session_id is required")
+    return attach_role_to_thread(
+        store,
+        team,
+        role_name,
+        str(thread_id),
+        agent_name=args.get("agent_name"),
+        cwd=args.get("cwd"),
+        from_agent=resolve_from_agent(store, args.get("from_agent")),
+        launch_mode="attach-thread",
+        launch_status="attached_existing_thread",
+        prepare_visible_delivery=True,
+    )
+
+
+def attach_role_to_thread(
+    store: AgentStore,
+    team: Dict[str, Any],
+    role_name: str,
+    thread_id: str,
+    agent_name: Optional[str] = None,
+    cwd: Optional[str] = None,
+    from_agent: Optional[Dict[str, Any]] = None,
+    launch_mode: str = "attach-thread",
+    launch_status: str = "attached_existing_thread",
+    prepare_visible_delivery: bool = True,
+) -> Dict[str, Any]:
+    role = team.get("roles", {}).get(role_name)
+    if not role:
+        raise NotFoundError("No role %r in team %r" % (role_name, team.get("team_id")))
+    agent = store.upsert_agent(
+        name=agent_name or role.get("alias") or role_name,
+        role=role.get("description") or ("Team role %s" % role_name),
+        session_id=thread_id,
+        cwd=cwd or team.get("project") or os.getcwd(),
+        status="idle",
+        capabilities=role.get("capabilities"),
+        tags=["agent-bus-team", str(team.get("team_id")), role_name],
+        metadata={
+            "team_id": team.get("team_id"),
+            "team_role": role_name,
+            "team_role_alias": role.get("alias"),
+            "thread_attached_by": "agent_bus",
+        },
+    )
+    claimed_message = None
+    delivery = None
+    if role.get("pending_message_id"):
+        claimed_message = store.assign_message_to_agent(str(role["pending_message_id"]), agent)
+    team = store.assign_agent_to_team_role(
+        str(team["team_id"]),
+        role_name,
+        agent,
+        message_id=role.get("pending_message_id"),
+    )
+    if prepare_visible_delivery and claimed_message:
+        prompt = build_request_prompt(from_agent or resolve_from_agent(store, None), agent, claimed_message)
+        delivery = codex_app_delivery(agent, prompt)
+        claimed_message = store.update_message(
+            claimed_message["message_id"],
+            {"status": "prepared", "prepared_at": utc_now()},
+        )
+    team = store.update_team_role_launch(
+        str(team["team_id"]),
+        role_name,
+        {
+            "launch_status": launch_status,
+            "launch_mode": launch_mode,
+            "thread_id": thread_id,
+            "last_launch_at": utc_now(),
+            "visible_delivery_status": (delivery or {}).get("status"),
+        },
+        event={
+            "mode": launch_mode,
+            "status": launch_status,
+            "thread_id": thread_id,
+            "visible_delivery_status": (delivery or {}).get("status"),
+        },
+    )
+    return {
+        "team": team,
+        "agent": agent,
+        "claimed_message": claimed_message,
+        "visible_delivery": delivery,
+        "thread_creation": (
+            manual_thread_creation_boundary()
+            if launch_mode == "attach-thread"
+            else {
+                "status": "experimental_thread_start_used",
+                "visibility": "unverified",
+            }
+        ),
+    }
 
 
 def dispatch_team_task(
@@ -523,6 +809,44 @@ def normalize_team_roles(value: Any) -> List[Dict[str, Any]]:
 def normalize_role_name(value: str) -> str:
     normalized = "-".join(str(value).lower().replace("_", "-").split())
     return normalized
+
+
+def selected_team_roles(
+    team: Dict[str, Any],
+    role_filter: Optional[str],
+) -> List[Tuple[str, Dict[str, Any]]]:
+    roles = team.get("roles") or {}
+    if role_filter:
+        role_name = normalize_role_name(role_filter)
+        role = roles.get(role_name)
+        if not role:
+            raise NotFoundError("No role %r in team %r" % (role_name, team.get("team_id")))
+        return [(role_name, role)]
+    return [(str(role_name), role) for role_name, role in roles.items()]
+
+
+def role_message_or_empty(role: Dict[str, Any]) -> Dict[str, Any]:
+    return {"message_id": role.get("pending_message_id")}
+
+
+def manual_thread_creation_boundary() -> Dict[str, Any]:
+    return {
+        "status": "manual_or_external_api_required",
+        "visibility": "not_created_by_agent_bus",
+        "reason": (
+            "Use the returned launch prompt in a new Codex App conversation, or provide an "
+            "existing thread/session id with attach_team_thread."
+        ),
+    }
+
+
+def scrub_transport_result(value: Dict[str, Any]) -> Dict[str, Any]:
+    scrubbed = dict(value)
+    if "stdout" in scrubbed and isinstance(scrubbed["stdout"], str):
+        scrubbed["stdout"] = scrubbed["stdout"][-1000:]
+    if "stderr" in scrubbed and isinstance(scrubbed["stderr"], str):
+        scrubbed["stderr"] = scrubbed["stderr"][-1000:]
+    return scrubbed
 
 
 def maybe_resolve_agent(store: AgentStore, target: str) -> Dict[str, Any]:

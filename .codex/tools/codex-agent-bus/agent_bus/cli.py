@@ -93,6 +93,23 @@ def main(argv: Optional[List[str]] = None) -> int:
     team_join.add_argument("--role", required=True)
     team_join.add_argument("--agent", required=True)
 
+    team_launch = team_sub.add_parser("launch", help="Prepare role launch prompts or experimentally create role threads")
+    team_launch.add_argument("team")
+    team_launch.add_argument("--role")
+    team_launch.add_argument("--mode", choices=["prompt", "app-server-experimental"], default="prompt")
+    team_launch.add_argument("--from-agent")
+    team_launch.add_argument("--timeout-sec", type=float, default=60)
+    team_launch.add_argument("--deliver-bootstrap", action="store_true")
+
+    team_attach = team_sub.add_parser("attach-thread", help="Attach an existing Codex thread/session to a team role")
+    team_attach.add_argument("team")
+    team_attach.add_argument("--role", required=True)
+    team_attach.add_argument("--thread-id")
+    team_attach.add_argument("--session-id")
+    team_attach.add_argument("--agent-name")
+    team_attach.add_argument("--cwd")
+    team_attach.add_argument("--from-agent")
+
     team_dispatch = team_sub.add_parser("dispatch", help="Dispatch or rebalance a task to a team role")
     team_dispatch.add_argument("team")
     team_dispatch.add_argument("--role", required=True)
@@ -213,6 +230,35 @@ def dispatch_team(args: argparse.Namespace) -> None:
         print_json(call_tool("show_team", {"team": args.team}))
     elif args.team_command == "join":
         print_json(call_tool("join_team", {"team": args.team, "role": args.role, "agent": args.agent}))
+    elif args.team_command == "launch":
+        print_json(
+            call_tool(
+                "launch_team",
+                {
+                    "team": args.team,
+                    "role": args.role,
+                    "mode": args.mode,
+                    "from_agent": args.from_agent,
+                    "timeout_sec": args.timeout_sec,
+                    "deliver_bootstrap": args.deliver_bootstrap,
+                },
+            )
+        )
+    elif args.team_command == "attach-thread":
+        print_json(
+            call_tool(
+                "attach_team_thread",
+                {
+                    "team": args.team,
+                    "role": args.role,
+                    "thread_id": args.thread_id,
+                    "session_id": args.session_id,
+                    "agent_name": args.agent_name,
+                    "cwd": args.cwd,
+                    "from_agent": args.from_agent,
+                },
+            )
+        )
     elif args.team_command == "dispatch":
         print_json(
             call_tool(

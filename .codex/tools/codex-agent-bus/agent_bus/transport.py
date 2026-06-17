@@ -281,6 +281,253 @@ class CodexAppServerTransport:
         return value[-limit:]
 
 
+class CodexThreadStartTransport:
+    """Experimentally create a Codex app-server thread and return its thread id."""
+
+    def __init__(self, codex_cmd: Optional[str] = None, auto_start_daemon: bool = True) -> None:
+        self.codex_cmd = codex_cmd or os.environ.get("CODEX_AGENT_BUS_CODEX", "codex")
+        self.auto_start_daemon = auto_start_daemon
+
+    def start_thread(
+        self,
+        cwd: str,
+        timeout_sec: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        target_cwd = str(Path(cwd).expanduser())
+        if not Path(target_cwd).exists():
+            return {
+                "ok": False,
+                "status": "failed",
+                "surface": "app_server_thread_start",
+                "cwd": target_cwd,
+                "error": "target cwd does not exist",
+            }
+        timeout = min(timeout_sec or 60, 120)
+        command = [self.codex_cmd, "app-server", "proxy"]
+        first = self._start_via_proxy(command, target_cwd, timeout)
+        if first.get("ok") or not self.auto_start_daemon:
+            return first
+        start = self._start_daemon(timeout=15)
+        if not start.get("ok"):
+            start["fallback_from"] = first.get("error") or first.get("stderr") or first.get("status")
+            return start
+        second = self._start_via_proxy(command, target_cwd, timeout)
+        if not second.get("ok"):
+            second["fallback_from"] = first.get("error") or first.get("stderr") or first.get("status")
+        return second
+
+    def _start_via_proxy(self, command: List[str], cwd: str, timeout: float) -> Dict[str, Any]:
+        messages = self._build_messages(cwd)
+        started = time.monotonic()
+        try:
+            proc = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                cwd=cwd,
+                env=self._safe_env(),
+            )
+        except FileNotFoundError as exc:
+            return {
+                "ok": False,
+                "status": "failed",
+                "command": command,
+                "cwd": cwd,
+                "surface": "app_server_thread_start",
+                "error": "codex command not found: %s" % exc,
+            }
+        assert proc.stdin is not None
+        assert proc.stdout is not None
+        try:
+            for message in messages:
+                proc.stdin.write(json.dumps(message, ensure_ascii=False, separators=(",", ":")) + "\n")
+            proc.stdin.flush()
+            responses: List[Dict[str, Any]] = []
+            while time.monotonic() - started < timeout:
+                ready, _, _ = select.select([proc.stdout], [], [], 0.1)
+                if not ready:
+                    if proc.poll() is not None:
+                        break
+                    continue
+                line = proc.stdout.readline()
+                if not line:
+                    if proc.poll() is not None:
+                        break
+                    time.sleep(0.05)
+                    continue
+                try:
+                    response = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                responses.append(response)
+                if response.get("id") != 1:
+                    continue
+                if "error" in response:
+                    self._terminate(proc)
+                    return {
+                        "ok": False,
+                        "status": "failed",
+                        "command": command,
+                        "cwd": cwd,
+                        "surface": "app_server_thread_start",
+                        "returncode": proc.returncode,
+                        "stdout": self._tail(
+                            "\n".join(json.dumps(item, ensure_ascii=False) for item in responses)
+                        ),
+                        "stderr": self._read_stderr_tail(proc),
+                        "error": str(response.get("error")),
+                    }
+                result = response.get("result") or {}
+                thread = result.get("thread") or {}
+                thread_id = thread.get("id")
+                self._terminate(proc)
+                return {
+                    "ok": bool(thread_id),
+                    "status": "thread_created" if thread_id else "failed",
+                    "command": command,
+                    "cwd": cwd,
+                    "surface": "app_server_thread_start",
+                    "thread_id": thread_id,
+                    "thread": thread,
+                    "returncode": proc.returncode,
+                    "stdout": self._tail(
+                        "\n".join(json.dumps(item, ensure_ascii=False) for item in responses)
+                    ),
+                    "stderr": self._read_stderr_tail(proc),
+                    "error": None if thread_id else "thread/start response did not include thread.id",
+                }
+            self._terminate(proc)
+            return {
+                "ok": False,
+                "status": "failed",
+                "command": command,
+                "cwd": cwd,
+                "surface": "app_server_thread_start",
+                "returncode": proc.returncode,
+                "stderr": self._read_stderr_tail(proc),
+                "error": "app-server proxy did not acknowledge thread/start",
+            }
+        except BrokenPipeError as exc:
+            self._terminate(proc)
+            return {
+                "ok": False,
+                "status": "failed",
+                "command": command,
+                "cwd": cwd,
+                "surface": "app_server_thread_start",
+                "returncode": proc.returncode,
+                "stderr": self._read_stderr_tail(proc),
+                "error": "app-server proxy pipe closed: %s" % exc,
+            }
+
+    def _build_messages(self, cwd: str) -> List[Dict[str, Any]]:
+        return [
+            {
+                "method": "initialize",
+                "id": 0,
+                "params": {
+                    "clientInfo": {
+                        "name": "codex_agent_bus",
+                        "title": "Codex Agent Bus",
+                        "version": "0.1.0",
+                    },
+                    "capabilities": {
+                        "experimentalApi": True,
+                        "requestAttestation": False,
+                    },
+                },
+            },
+            {"method": "initialized", "params": {}},
+            {
+                "method": "thread/start",
+                "id": 1,
+                "params": {
+                    "cwd": cwd,
+                    "serviceName": "codex_agent_bus",
+                    "threadSource": "subagent",
+                    "sessionStartSource": "startup",
+                    "ephemeral": False,
+                },
+            },
+        ]
+
+    def _start_daemon(self, timeout: float) -> Dict[str, Any]:
+        command = [self.codex_cmd, "app-server", "daemon", "start"]
+        try:
+            completed = subprocess.run(
+                command,
+                text=True,
+                capture_output=True,
+                timeout=timeout,
+                shell=False,
+                env=self._safe_env(),
+            )
+        except FileNotFoundError as exc:
+            return {
+                "ok": False,
+                "status": "failed",
+                "command": command,
+                "cwd": os.getcwd(),
+                "surface": "app_server_daemon",
+                "error": str(exc),
+            }
+        except subprocess.TimeoutExpired as exc:
+            return {
+                "ok": False,
+                "status": "failed",
+                "command": command,
+                "cwd": os.getcwd(),
+                "surface": "app_server_daemon",
+                "stdout": (exc.stdout or "") if isinstance(exc.stdout, str) else "",
+                "stderr": (exc.stderr or "") if isinstance(exc.stderr, str) else "",
+                "error": "codex app-server daemon start timed out",
+            }
+        return {
+            "ok": completed.returncode == 0,
+            "status": "started" if completed.returncode == 0 else "failed",
+            "command": command,
+            "cwd": os.getcwd(),
+            "surface": "app_server_daemon",
+            "returncode": completed.returncode,
+            "stdout": self._tail(completed.stdout),
+            "stderr": self._tail(completed.stderr),
+            "error": None if completed.returncode == 0 else self._tail(completed.stderr or completed.stdout),
+        }
+
+    def _read_stderr_tail(self, proc: subprocess.Popen[str]) -> str:
+        if proc.stderr is None:
+            return ""
+        try:
+            return self._tail(proc.stderr.read() or "")
+        except Exception:
+            return ""
+        finally:
+            with contextlib.suppress(Exception):
+                proc.stderr.close()
+
+    def _terminate(self, proc: subprocess.Popen[str]) -> None:
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        for stream in (proc.stdin, proc.stdout):
+            if stream is not None:
+                with contextlib.suppress(Exception):
+                    stream.close()
+
+    def _safe_env(self) -> Dict[str, str]:
+        return os.environ.copy()
+
+    def _tail(self, value: str, limit: int = 4000) -> str:
+        if not value:
+            return ""
+        return value[-limit:]
+
+
 class CodexExecResumeTransport:
     """Resume a Codex session through non-interactive codex exec."""
 

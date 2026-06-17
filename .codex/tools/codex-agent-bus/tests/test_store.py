@@ -141,7 +141,9 @@ class StoreTests(unittest.TestCase):
             self.assertEqual([item["message_id"] for item in claimed], [message["message_id"]])
             updated = store.resolve_team(team["team_id"])
             self.assertEqual(updated["roles"]["tester"]["status"], "active")
+            self.assertEqual(updated["roles"]["tester"]["launch_status"], "joined")
             self.assertEqual(updated["roles"]["tester"]["session_id"], "tester-session")
+            self.assertEqual(updated["roles"]["tester"]["thread_id"], "tester-session")
 
 
 if __name__ == "__main__":

@@ -183,15 +183,49 @@ Useful commands:
 ```bash
 agent-bus team list
 agent-bus team show dreamqa
+agent-bus team launch dreamqa --role tester
+agent-bus team attach-thread dreamqa --role tester --thread-id <existing-thread-id>
 agent-bus team join <team-id> --role tester --agent <existing-session-id-or-name>
 agent-bus team dispatch <team-id> --role tester "Run the smoke suite and report PASS/BLOCKED"
 ```
 
+`team launch` updates each role's launch state and returns the current launch prompt. It is safe to
+run repeatedly:
+
+```bash
+agent-bus team launch dreamqa
+agent-bus team launch dreamqa --role executor --mode prompt
+```
+
+If a Codex App conversation already exists, attach it to the role:
+
+```bash
+agent-bus team attach-thread dreamqa --role executor --thread-id <thread-or-session-id>
+```
+
+This registers the role alias against that `thread_id`, claims the pending bootstrap message, marks
+the role `active`, and returns a `codex_app.send_message_to_thread` payload so the controller can
+make the bootstrap task visible in that conversation.
+
+There is also an experimental app-server thread launcher:
+
+```bash
+agent-bus team launch dreamqa --role tester --mode app-server-experimental
+```
+
+This calls the internal app-server `thread/start` protocol and, when it returns a thread id, attaches
+that id to the role. The role status becomes `thread_created_unverified_visibility`, because the Bus
+can verify that app-server returned a thread id but cannot by itself prove the thread appeared in the
+Codex App UI. Add `--deliver-bootstrap` to also try `thread/resume` + `turn/start` delivery to the
+new thread.
+
 Thread creation boundary:
 
 - Team creation does not claim that Codex App visible conversations were automatically created.
-- Current stable exposed surfaces can continue an existing `threadId`/session, but do not provide a
-  verified create-thread API in this tool.
+- `team launch --mode prompt` is a durable launch plan, not automatic UI creation.
+- `team attach-thread` is the reliable path when a real `threadId`/session already exists.
+- `team launch --mode app-server-experimental` can return a thread id from internal app-server
+  `thread/start`, but visibility still needs a separate App-side ACK or successful visible delivery.
 - Until a real `threadId` exists, team work is represented as pending Bus records plus launch
   prompts. Once a session exists, use the normal visible-delivery path and preserve `message_id`,
   `correlation_id`, `team_id`, and role alias.

@@ -33,6 +33,24 @@ class FakeTransport:
         return Result()
 
 
+class FakeThreadLauncher:
+    def __init__(self) -> None:
+        self.calls = []
+        self.count = 0
+
+    def start_thread(self, cwd, timeout_sec=None):
+        self.count += 1
+        thread_id = "launched-thread-%s" % self.count
+        self.calls.append({"cwd": cwd, "timeout_sec": timeout_sec, "thread_id": thread_id})
+        return {
+            "ok": True,
+            "status": "thread_created",
+            "surface": "fake_thread_start",
+            "cwd": cwd,
+            "thread_id": thread_id,
+        }
+
+
 class McpToolTests(unittest.TestCase):
     def test_register_list_send_queue_and_reply_queue(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -268,6 +286,94 @@ class McpToolTests(unittest.TestCase):
             self.assertIn("Run smoke tests", dispatched["dispatch"]["message"]["body"])
             self.assertEqual(dispatched["dispatch"]["message"]["team_id"], team["team_id"])
             self.assertEqual(dispatched["dispatch"]["message"]["team_role"], "tester")
+
+    def test_team_launch_prompt_records_launch_status(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            team_result = call_tool(
+                "create_team",
+                {
+                    "name": "Dream QA",
+                    "project": "/tmp/dreamqa",
+                    "goal": "Improve demo quality",
+                    "roles": [{"name": "tester", "description": "Runs QA"}],
+                },
+                store=store,
+            )
+            launched = call_tool(
+                "launch_team",
+                {"team": team_result["team"]["team_id"], "role": "tester", "mode": "prompt"},
+                store=store,
+            )
+            self.assertEqual(launched["launches"][0]["status"], "prompt_ready")
+            self.assertIn("register_self.py", launched["launches"][0]["launch_prompt"]["prompt"])
+            role = launched["team"]["roles"]["tester"]
+            self.assertEqual(role["launch_status"], "pending_manual_launch")
+            self.assertEqual(role["launch_mode"], "prompt")
+            self.assertIn("launch_prompt", role)
+
+    def test_attach_team_thread_claims_bootstrap_and_prepares_visible_delivery(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            team_result = call_tool(
+                "create_team",
+                {
+                    "name": "Dream QA",
+                    "project": "/tmp/dreamqa",
+                    "goal": "Improve demo quality",
+                    "roles": [{"name": "tester", "description": "Runs QA"}],
+                },
+                store=store,
+            )
+            attached = call_tool(
+                "attach_team_thread",
+                {
+                    "team": team_result["team"]["team_id"],
+                    "role": "tester",
+                    "thread_id": "existing-thread-1",
+                },
+                store=store,
+            )
+            self.assertEqual(attached["agent"]["session_id"], "existing-thread-1")
+            self.assertEqual(attached["claimed_message"]["to_session_id"], "existing-thread-1")
+            self.assertEqual(attached["claimed_message"]["status"], "prepared")
+            self.assertEqual(attached["visible_delivery"]["threadId"], "existing-thread-1")
+            role = attached["team"]["roles"]["tester"]
+            self.assertEqual(role["status"], "active")
+            self.assertEqual(role["launch_status"], "attached_existing_thread")
+            self.assertEqual(role["thread_id"], "existing-thread-1")
+
+    def test_experimental_team_launch_starts_thread_and_attaches_role(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            launcher = FakeThreadLauncher()
+            team_result = call_tool(
+                "create_team",
+                {
+                    "name": "Dream QA",
+                    "project": "/tmp/dreamqa",
+                    "goal": "Improve demo quality",
+                    "roles": [{"name": "tester", "description": "Runs QA"}],
+                },
+                store=store,
+            )
+            launched = call_tool(
+                "launch_team",
+                {
+                    "team": team_result["team"]["team_id"],
+                    "role": "tester",
+                    "mode": "app-server-experimental",
+                },
+                store=store,
+                thread_launcher=launcher,
+            )
+            self.assertEqual(launcher.calls[0]["cwd"], "/tmp/dreamqa")
+            self.assertEqual(launched["launches"][0]["thread_start"]["thread_id"], "launched-thread-1")
+            role = launched["team"]["roles"]["tester"]
+            self.assertEqual(role["status"], "active")
+            self.assertEqual(role["session_id"], "launched-thread-1")
+            self.assertEqual(role["launch_status"], "thread_created_unverified_visibility")
+            self.assertEqual(launched["thread_creation"]["visibility"], "unverified")
 
 
 if __name__ == "__main__":

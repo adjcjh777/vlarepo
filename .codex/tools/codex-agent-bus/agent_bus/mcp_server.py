@@ -31,9 +31,11 @@ SERVER_INSTRUCTIONS = (
     "returned Codex agent/thread id to a role, "
     "send_message(target, message, trigger='codex_app') to prepare a visible "
     "Codex App user turn, then immediately call codex_app.send_message_to_thread "
-    "with the returned threadId and prompt. Use trigger='resume' only for "
-    "headless fallback. Use allow_pending=true to queue work for a future agent "
-    "name before that session has registered; it will be claimed on registration. "
+    "with the returned threadId and prompt. Use trigger='subagent_tool' for "
+    "spawned multi_agent_v1 agents and then call multi_agent_v1.send_input. "
+    "Use trigger='resume' only for headless fallback. Use allow_pending=true "
+    "to queue work for a future agent name before that session has registered; "
+    "it will be claimed on registration. "
     "Do not put secrets in messages. agent_id is the Codex "
     "session_id; name is only a human alias. Do not create infinite ping-pong loops; "
     "correlation hop count is capped."
@@ -116,7 +118,7 @@ TOOLS: List[Dict[str, Any]] = [
                 "target": {"type": "string"},
                 "message": {"type": "string"},
                 "from_agent": {"type": "string"},
-                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume"]},
+                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume", "subagent_tool"]},
                 "wait": {"type": "boolean"},
                 "timeout_sec": {"type": "number"},
                 "correlation_id": {"type": "string"},
@@ -215,7 +217,7 @@ TOOLS: List[Dict[str, Any]] = [
                 "role": {"type": "string"},
                 "message": {"type": "string"},
                 "from_agent": {"type": "string"},
-                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume"]},
+                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume", "subagent_tool"]},
             },
             ["team", "role", "message"],
         ),
@@ -228,7 +230,7 @@ TOOLS: List[Dict[str, Any]] = [
                 "message_id": {"type": "string"},
                 "result": {"type": "string"},
                 "from_agent": {"type": "string"},
-                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume"]},
+                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume", "subagent_tool"]},
             },
             ["message_id", "result"],
         ),
@@ -408,6 +410,12 @@ def send_message(
     prompt = build_request_prompt(from_agent, target, message)
     if trigger == "codex_app":
         transport_result = codex_app_delivery(target, prompt)
+        message = store.update_message(
+            message["message_id"],
+            {"status": "prepared", "prepared_at": utc_now()},
+        )
+    elif trigger == "subagent_tool":
+        transport_result = subagent_tool_delivery(target, prompt)
         message = store.update_message(
             message["message_id"],
             {"status": "prepared", "prepared_at": utc_now()},
@@ -1070,6 +1078,12 @@ def reply_message(
             reply["message_id"],
             {"status": "prepared", "prepared_at": utc_now()},
         )
+    elif trigger == "subagent_tool":
+        transport_result = subagent_tool_delivery(source, prompt)
+        reply = store.update_message(
+            reply["message_id"],
+            {"status": "prepared", "prepared_at": utc_now()},
+        )
     elif trigger == "resume":
         if int(reply.get("hop_count") or 0) > MAX_HOP_COUNT:
             raise AgentBusError("Refusing to resume reply: hop_count exceeds %s" % MAX_HOP_COUNT)
@@ -1109,6 +1123,24 @@ def codex_app_delivery(target: Dict[str, Any], prompt: str) -> Dict[str, Any]:
         "next_step": (
             "Call codex_app.send_message_to_thread(threadId=transport.threadId, "
             "prompt=transport.prompt)."
+        ),
+    }
+
+
+def subagent_tool_delivery(target: Dict[str, Any], prompt: str) -> Dict[str, Any]:
+    return {
+        "ok": False,
+        "status": "requires_multi_agent_tool",
+        "surface": "multi_agent_v1.send_input",
+        "target": target.get("session_id") or target.get("agent_id"),
+        "prompt": prompt,
+        "tool_request": {
+            "target": target.get("session_id") or target.get("agent_id"),
+            "message": prompt,
+        },
+        "next_step": (
+            "Call multi_agent_v1.send_input(target=transport.target, "
+            "message=transport.prompt)."
         ),
     }
 

@@ -213,6 +213,24 @@ agent-bus team attach-thread dreamqa --role tester --thread-id <spawn_agent.agen
 This keeps the role name (`tester`) separate from the spawned thread/session id and records the
 mapping in `teams.json`.
 
+For later visible tasks to a spawned subagent, dispatch with the subagent trigger and then call the
+returned tool payload:
+
+```bash
+agent-bus team dispatch dreamqa --role tester --trigger subagent_tool "Run focused tests"
+```
+
+The response contains:
+
+```text
+transport.surface = "multi_agent_v1.send_input"
+transport.target = "<spawn_agent.agent_id>"
+transport.prompt = "<delegated task prompt>"
+```
+
+The controller must call `multi_agent_v1.send_input(target=transport.target,
+message=transport.prompt)` for visible delivery to the spawned agent.
+
 `team launch` updates each role's launch state and returns the current launch prompt. It is safe to
 run repeatedly:
 

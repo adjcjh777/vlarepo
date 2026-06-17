@@ -235,6 +235,44 @@ class McpToolTests(unittest.TestCase):
             self.assertEqual([item["message_id"] for item in inbox], [sent["message_id"]])
             self.assertEqual(inbox[0]["to_session_id"], "executor-session")
 
+    def test_send_subagent_tool_prepares_send_input_payload(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            call_tool(
+                "register_agent",
+                {
+                    "name": "planner",
+                    "role": "Plans",
+                    "session_id": "planner-session",
+                    "cwd": "/tmp/planner",
+                },
+                store=store,
+            )
+            call_tool(
+                "register_agent",
+                {
+                    "name": "tester",
+                    "role": "Tests",
+                    "session_id": "spawned-agent-1",
+                    "cwd": "/tmp/project",
+                },
+                store=store,
+            )
+            sent = call_tool(
+                "send_message",
+                {
+                    "target": "tester",
+                    "message": "run subagent smoke",
+                    "from_agent": "planner",
+                    "trigger": "subagent_tool",
+                },
+                store=store,
+            )
+            self.assertEqual(sent["transport"]["surface"], "multi_agent_v1.send_input")
+            self.assertEqual(sent["transport"]["target"], "spawned-agent-1")
+            self.assertIn("run subagent smoke", sent["transport"]["prompt"])
+            self.assertEqual(store.find_message(sent["message_id"])["status"], "prepared")
+
     def test_create_team_hot_join_and_dispatch(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             store = AgentStore(Path(tmp))
@@ -286,6 +324,43 @@ class McpToolTests(unittest.TestCase):
             self.assertIn("Run smoke tests", dispatched["dispatch"]["message"]["body"])
             self.assertEqual(dispatched["dispatch"]["message"]["team_id"], team["team_id"])
             self.assertEqual(dispatched["dispatch"]["message"]["team_role"], "tester")
+
+    def test_team_dispatch_subagent_tool_targets_attached_role(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            team_result = call_tool(
+                "create_team",
+                {
+                    "name": "Dream QA",
+                    "project": "/tmp/dreamqa",
+                    "goal": "Improve demo quality",
+                    "roles": [{"name": "tester", "description": "Runs QA"}],
+                },
+                store=store,
+            )
+            call_tool(
+                "attach_team_thread",
+                {
+                    "team": team_result["team"]["team_id"],
+                    "role": "tester",
+                    "thread_id": "spawned-agent-1",
+                },
+                store=store,
+            )
+            dispatched = call_tool(
+                "dispatch_team_task",
+                {
+                    "team": team_result["team"]["team_id"],
+                    "role": "tester",
+                    "message": "Run smoke tests",
+                    "trigger": "subagent_tool",
+                },
+                store=store,
+            )
+            transport = dispatched["dispatch"]["transport"]
+            self.assertEqual(transport["surface"], "multi_agent_v1.send_input")
+            self.assertEqual(transport["target"], "spawned-agent-1")
+            self.assertIn("Run smoke tests", transport["prompt"])
 
     def test_team_launch_prompt_records_launch_status(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

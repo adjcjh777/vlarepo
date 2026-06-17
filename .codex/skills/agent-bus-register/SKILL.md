@@ -137,6 +137,19 @@ Preferred one-dialogue workflow when the `multi_agent_v1.spawn_agent` tool is av
 Do not ask the spawned agent to guess its own id. The controller must attach the id returned by
 `spawn_agent`.
 
+For visible follow-up work to a spawned subagent, use:
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus team dispatch <team-id-or-name> \
+  --role tester \
+  --trigger subagent_tool \
+  "<task>"
+```
+
+Then call `multi_agent_v1.send_input` with the returned `transport.target` and
+`transport.prompt`. The Bus record is durable, but the spawned agent sees the task only after this
+tool call.
+
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team create <team-name> \
   --project /absolute/project/path \
@@ -160,7 +173,7 @@ Team commands:
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team launch <team-id-or-name> --role tester
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread <team-id-or-name> --role tester --thread-id <existing-thread-id>
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team join <team-id> --role tester --agent <session-id-or-name>
-~/.codex/tools/codex-agent-bus/bin/agent-bus team dispatch <team-id> --role tester "<task>"
+~/.codex/tools/codex-agent-bus/bin/agent-bus team dispatch <team-id> --role tester --trigger subagent_tool "<task>"
 ```
 
 Use `team launch --mode subagent-tool` when the controller Codex has `multi_agent_v1.spawn_agent`.

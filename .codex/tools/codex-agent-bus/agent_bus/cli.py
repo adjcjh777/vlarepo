@@ -47,7 +47,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     send.add_argument("target")
     send.add_argument("message")
     send.add_argument("--from-agent")
-    send.add_argument("--trigger", choices=["queue", "codex_app", "resume"], default="codex_app")
+    send.add_argument("--trigger", choices=["queue", "codex_app", "resume", "subagent_tool"], default="codex_app")
     send.add_argument("--wait", action="store_true")
     send.add_argument("--timeout-sec", type=float, default=600)
     send.add_argument("--correlation-id")
@@ -58,7 +58,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     reply.add_argument("message_id")
     reply.add_argument("result")
     reply.add_argument("--from-agent")
-    reply.add_argument("--trigger", choices=["queue", "codex_app", "resume"], default="codex_app")
+    reply.add_argument("--trigger", choices=["queue", "codex_app", "resume", "subagent_tool"], default="codex_app")
 
     inbox = sub.add_parser("inbox", help="Read inbox")
     inbox.add_argument("--target")
@@ -115,7 +115,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     team_dispatch.add_argument("--role", required=True)
     team_dispatch.add_argument("message")
     team_dispatch.add_argument("--from-agent")
-    team_dispatch.add_argument("--trigger", choices=["queue", "codex_app", "resume"], default="queue")
+    team_dispatch.add_argument("--trigger", choices=["queue", "codex_app", "resume", "subagent_tool"], default="queue")
 
     sub.add_parser("health", help="Show bus health")
 

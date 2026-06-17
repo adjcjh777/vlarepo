@@ -217,6 +217,58 @@ class McpToolTests(unittest.TestCase):
             self.assertEqual([item["message_id"] for item in inbox], [sent["message_id"]])
             self.assertEqual(inbox[0]["to_session_id"], "executor-session")
 
+    def test_create_team_hot_join_and_dispatch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            team_result = call_tool(
+                "create_team",
+                {
+                    "name": "Dream QA",
+                    "project": "/tmp/dreamqa",
+                    "goal": "Improve demo quality",
+                    "roles": [
+                        {"name": "planner", "description": "Plans work"},
+                        {"name": "tester", "description": "Runs QA"},
+                    ],
+                },
+                store=store,
+            )
+            team = team_result["team"]
+            self.assertEqual(team["project"], "/tmp/dreamqa")
+            self.assertIn("planner", team["roles"])
+            self.assertIn("tester", team["roles"])
+            self.assertEqual(len(team_result["messages"]), 2)
+            self.assertEqual(len(team_result["launch_prompts"]), 2)
+            tester_alias = team["roles"]["tester"]["alias"]
+            registered = call_tool(
+                "register_agent",
+                {
+                    "name": tester_alias,
+                    "role": "Runs QA",
+                    "session_id": "tester-session",
+                    "cwd": "/tmp/dreamqa",
+                },
+                store=store,
+            )
+            self.assertEqual(registered["claimed_count"], 1)
+            joined_team = call_tool("show_team", {"team": team["team_id"]}, store=store)["team"]
+            self.assertEqual(joined_team["roles"]["tester"]["status"], "active")
+            self.assertEqual(joined_team["roles"]["tester"]["session_id"], "tester-session")
+            dispatched = call_tool(
+                "dispatch_team_task",
+                {
+                    "team": team["team_id"],
+                    "role": "tester",
+                    "message": "Run smoke tests",
+                    "trigger": "queue",
+                },
+                store=store,
+            )
+            self.assertEqual(dispatched["dispatch"]["target"]["session_id"], "tester-session")
+            self.assertIn("Run smoke tests", dispatched["dispatch"]["message"]["body"])
+            self.assertEqual(dispatched["dispatch"]["message"]["team_id"], team["team_id"])
+            self.assertEqual(dispatched["dispatch"]["message"]["team_role"], "tester")
+
 
 if __name__ == "__main__":
     unittest.main()

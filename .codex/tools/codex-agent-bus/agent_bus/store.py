@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import json
 import os
+import re
 import shutil
 import time
 import uuid
@@ -86,11 +87,17 @@ def safe_json_dumps(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
+def slugify(value: str, fallback: str = "team") -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug or fallback
+
+
 class AgentStore:
     def __init__(self, home: Optional[Path] = None) -> None:
         self.home = Path(home).expanduser() if home else default_bus_home()
         self.registry_path = self.home / "registry.json"
         self.messages_path = self.home / "messages.jsonl"
+        self.teams_path = self.home / "teams.json"
         self.locks_dir = self.home / "locks"
         self.logs_dir = self.home / "logs"
         self.log_path = self.logs_dir / "agent-bus.log"
@@ -107,6 +114,11 @@ class AgentStore:
             )
         if not self.messages_path.exists():
             self.messages_path.touch()
+        if not self.teams_path.exists():
+            self._write_json_atomic(
+                self.teams_path,
+                {"version": __version__, "updated_at": utc_now(), "teams": {}},
+            )
 
     def log_error(self, message: str, data: Optional[Dict[str, Any]] = None) -> None:
         entry = {"created_at": utc_now(), "level": "error", "message": message}
@@ -204,6 +216,179 @@ class AgentStore:
     def _write_registry_unlocked(self, registry: Dict[str, Any]) -> None:
         registry["updated_at"] = utc_now()
         self._write_json_atomic(self.registry_path, registry)
+
+    def _read_teams_unlocked(self) -> Dict[str, Any]:
+        teams = self._read_json(
+            self.teams_path,
+            {"version": __version__, "updated_at": utc_now(), "teams": {}},
+        )
+        if not isinstance(teams.get("teams"), dict):
+            teams["teams"] = {}
+        teams.setdefault("version", __version__)
+        teams.setdefault("updated_at", utc_now())
+        return teams
+
+    def _write_teams_unlocked(self, teams: Dict[str, Any]) -> None:
+        teams["updated_at"] = utc_now()
+        self._write_json_atomic(self.teams_path, teams)
+
+    def create_team(
+        self,
+        name: str,
+        project: str,
+        goal: str,
+        roles: List[Dict[str, Any]],
+        created_by: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        if not name:
+            raise AgentBusError("team name is required")
+        if not roles:
+            raise AgentBusError("at least one team role is required")
+        now = utc_now()
+        base = slugify(name)
+        team_id = "%s-%s" % (base, uuid.uuid4().hex[:8])
+        role_records: Dict[str, Dict[str, Any]] = {}
+        for role in roles:
+            role_name = slugify(str(role.get("name") or ""), fallback="")
+            if not role_name:
+                raise AgentBusError("team role name is required")
+            alias = str(role.get("alias") or "%s-%s" % (base, role_name))
+            role_records[role_name] = {
+                "name": role_name,
+                "alias": alias,
+                "description": str(role.get("description") or ""),
+                "capabilities": as_list(role.get("capabilities")),
+                "status": "pending",
+                "agent_id": None,
+                "session_id": None,
+                "created_at": now,
+                "updated_at": now,
+            }
+        team = {
+            "team_id": team_id,
+            "name": name,
+            "slug": base,
+            "project": str(Path(project).expanduser()) if project else os.getcwd(),
+            "goal": goal,
+            "status": "active",
+            "created_at": now,
+            "updated_at": now,
+            "created_by_agent_id": (created_by or {}).get("agent_id"),
+            "created_by_session_id": (created_by or {}).get("session_id"),
+            "allow_late_join": True,
+            "roles": role_records,
+            "assignments": [],
+            "launch_prompts": [],
+        }
+        with self._locked("teams"):
+            data = self._read_teams_unlocked()
+            data["teams"][team_id] = team
+            self._write_teams_unlocked(data)
+        return team
+
+    def list_teams(self) -> List[Dict[str, Any]]:
+        with self._locked("teams"):
+            teams = list(self._read_teams_unlocked()["teams"].values())
+        return sorted(teams, key=lambda item: item.get("updated_at", ""), reverse=True)
+
+    def resolve_team(self, target: str) -> Dict[str, Any]:
+        teams = self.list_teams()
+        exact = [team for team in teams if team.get("team_id") == target]
+        if exact:
+            return exact[0]
+        by_name = [team for team in teams if team.get("name") == target or team.get("slug") == target]
+        if len(by_name) == 1:
+            return by_name[0]
+        if len(by_name) > 1:
+            raise AmbiguousTargetError(target, by_name)
+        raise NotFoundError("No team found for target %r" % target)
+
+    def update_team(self, team: Dict[str, Any]) -> Dict[str, Any]:
+        team_id = str(team.get("team_id") or "")
+        if not team_id:
+            raise AgentBusError("team_id is required")
+        updated = dict(team)
+        updated["updated_at"] = utc_now()
+        with self._locked("teams"):
+            data = self._read_teams_unlocked()
+            if team_id not in data["teams"]:
+                raise NotFoundError("No team found for id %r" % team_id)
+            data["teams"][team_id] = updated
+            self._write_teams_unlocked(data)
+        return updated
+
+    def attach_team_role_message(
+        self,
+        team_id: str,
+        role_name: str,
+        message_id: str,
+        assignment_type: str = "bootstrap",
+    ) -> Dict[str, Any]:
+        with self._locked("teams"):
+            data = self._read_teams_unlocked()
+            team = dict(data["teams"].get(team_id) or {})
+            if not team:
+                raise NotFoundError("No team found for id %r" % team_id)
+            roles = dict(team.get("roles") or {})
+            role = dict(roles.get(role_name) or {})
+            if not role:
+                raise NotFoundError("No role %r in team %r" % (role_name, team_id))
+            now = utc_now()
+            role["pending_message_id"] = message_id
+            role["status"] = role.get("status") or "pending"
+            role["updated_at"] = now
+            roles[role_name] = role
+            assignments = list(team.get("assignments") or [])
+            assignments.append(
+                {
+                    "assignment_type": assignment_type,
+                    "role": role_name,
+                    "message_id": message_id,
+                    "created_at": now,
+                }
+            )
+            team["roles"] = roles
+            team["assignments"] = assignments
+            team["updated_at"] = now
+            data["teams"][team_id] = team
+            self._write_teams_unlocked(data)
+            return team
+
+    def assign_agent_to_team_role(
+        self,
+        team_id: str,
+        role_name: str,
+        agent: Dict[str, Any],
+        message_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        with self._locked("teams"):
+            data = self._read_teams_unlocked()
+            team = dict(data["teams"].get(team_id) or {})
+            if not team:
+                raise NotFoundError("No team found for id %r" % team_id)
+            roles = dict(team.get("roles") or {})
+            role = dict(roles.get(role_name) or {})
+            if not role:
+                raise NotFoundError("No role %r in team %r" % (role_name, team_id))
+            now = utc_now()
+            role.update(
+                {
+                    "status": "active",
+                    "agent_id": agent.get("agent_id"),
+                    "session_id": agent.get("session_id"),
+                    "agent_name": agent.get("name"),
+                    "joined_at": role.get("joined_at") or now,
+                    "updated_at": now,
+                }
+            )
+            if message_id:
+                role["claimed_message_id"] = message_id
+            roles[role_name] = role
+            team["roles"] = roles
+            team["updated_at"] = now
+            data["teams"][team_id] = team
+            self._write_teams_unlocked(data)
+            return team
 
     def list_agents(
         self,
@@ -396,6 +581,7 @@ class AgentStore:
 
     def claim_pending_messages(self, agent: Dict[str, Any]) -> List[Dict[str, Any]]:
         claimed: List[Dict[str, Any]] = []
+        team_claims: List[Tuple[str, str, str]] = []
         with self._locked("messages"):
             messages = self._read_messages_unlocked()
             changed = False
@@ -422,9 +608,25 @@ class AgentStore:
                     updated["status"] = "queued"
                 messages[index] = updated
                 claimed.append(updated)
+                if updated.get("team_id") and updated.get("team_role"):
+                    team_claims.append(
+                        (
+                            str(updated.get("team_id")),
+                            str(updated.get("team_role")),
+                            str(updated.get("message_id")),
+                        )
+                    )
                 changed = True
             if changed:
                 self._write_messages_unlocked(messages)
+        for team_id, role_name, message_id in team_claims:
+            try:
+                self.assign_agent_to_team_role(team_id, role_name, agent, message_id=message_id)
+            except AgentBusError as exc:
+                self.log_error(
+                    "Failed to assign claimed team role",
+                    {"team_id": team_id, "role": role_name, "message_id": message_id, "error": str(exc)},
+                )
         return claimed
 
     def read_messages(self) -> List[Dict[str, Any]]:
@@ -470,6 +672,29 @@ class AgentStore:
                     self._write_messages_unlocked(messages)
                     return updated
         raise NotFoundError("No message found for id %r" % message_id)
+
+    def assign_message_to_agent(self, message_id: str, agent: Dict[str, Any]) -> Dict[str, Any]:
+        message = self.update_message(
+            message_id,
+            {
+                "to_agent_id": agent.get("agent_id"),
+                "to_session_id": agent.get("session_id"),
+                "to_name": agent.get("name"),
+                "pending_target": False,
+                "claimed_at": utc_now(),
+                "claimed_by_agent_id": agent.get("agent_id"),
+                "claimed_by_session_id": agent.get("session_id"),
+                "status": "queued",
+            },
+        )
+        if message.get("team_id") and message.get("team_role"):
+            self.assign_agent_to_team_role(
+                str(message.get("team_id")),
+                str(message.get("team_role")),
+                agent,
+                message_id=message_id,
+            )
+        return message
 
     def find_message(self, message_id: str) -> Dict[str, Any]:
         for message in self.read_messages():
@@ -527,6 +752,7 @@ class AgentStore:
             "home": str(self.home),
             "registry_path": str(self.registry_path),
             "messages_path": str(self.messages_path),
+            "teams_path": str(self.teams_path),
             "log_path": str(self.log_path),
             "version": __version__,
             "codex_command": shutil.which("codex"),
@@ -534,6 +760,8 @@ class AgentStore:
             "registry_writable": os.access(str(self.registry_path), os.W_OK),
             "messages_readable": os.access(str(self.messages_path), os.R_OK),
             "messages_writable": os.access(str(self.messages_path), os.W_OK),
+            "teams_readable": os.access(str(self.teams_path), os.R_OK),
+            "teams_writable": os.access(str(self.teams_path), os.W_OK),
             "recent_errors": self._recent_errors(),
         }
         checks["ok"] = all(
@@ -542,6 +770,8 @@ class AgentStore:
                 checks["registry_writable"],
                 checks["messages_readable"],
                 checks["messages_writable"],
+                checks["teams_readable"],
+                checks["teams_writable"],
             ]
         )
         return checks

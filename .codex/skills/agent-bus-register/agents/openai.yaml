@@ -1,4 +1,4 @@
 interface:
   display_name: "Agent Bus Register"
-  short_description: "Register and claim queued Agent Bus tasks"
-  default_prompt: "Use $agent-bus-register to register this Codex session and claim any queued Agent Bus tasks."
+  short_description: "Register, join teams, and claim Bus tasks"
+  default_prompt: "Use $agent-bus-register to register this Codex session, join Agent Bus teams, and claim queued tasks."

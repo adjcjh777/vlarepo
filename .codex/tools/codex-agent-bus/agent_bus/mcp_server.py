@@ -23,6 +23,7 @@ from .transport import CodexResumeTransport
 
 SERVER_INSTRUCTIONS = (
     "This is a local Codex Agent Bus. Use list_agents to discover peers, "
+    "create_team(project, goal, roles) to bootstrap a role-based project team, "
     "send_message(target, message, trigger='codex_app') to prepare a visible "
     "Codex App user turn, then immediately call codex_app.send_message_to_thread "
     "with the returned threadId and prompt. Use trigger='resume' only for "
@@ -32,6 +33,14 @@ SERVER_INSTRUCTIONS = (
     "session_id; name is only a human alias. Do not create infinite ping-pong loops; "
     "correlation hop count is capped."
 )
+
+
+DEFAULT_TEAM_ROLES: List[Dict[str, str]] = [
+    {"name": "planner", "description": "Reads project context, maintains the task ledger, and coordinates role assignments."},
+    {"name": "executor", "description": "Implements bounded code changes inside explicit file locks and reports changed paths."},
+    {"name": "tester", "description": "Runs read-only verification, tests, browser/live smoke when applicable, and reports PASS/FAIL/BLOCKED."},
+    {"name": "reviewer", "description": "Audits final claims, scope boundaries, secrets, and release readiness before integration."},
+]
 
 
 def json_schema(
@@ -110,6 +119,69 @@ TOOLS: List[Dict[str, Any]] = [
                 "allow_pending": {"type": "boolean"},
             },
             ["target", "message"],
+        ),
+    },
+    {
+        "name": "create_team",
+        "description": "Create a project Agent Bus team with role aliases and pending bootstrap tasks for current or future Codex sessions.",
+        "inputSchema": json_schema(
+            {
+                "name": {"type": "string"},
+                "project": {"type": "string"},
+                "goal": {"type": "string"},
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {"type": "string"},
+                            "description": {"type": "string"},
+                            "alias": {"type": "string"},
+                            "capabilities": {"type": "array", "items": {"type": "string"}},
+                        },
+                        "required": ["name"],
+                        "additionalProperties": False,
+                    },
+                },
+                "from_agent": {"type": "string"},
+            },
+            ["name", "project", "goal"],
+        ),
+    },
+    {
+        "name": "list_teams",
+        "description": "List Agent Bus teams.",
+        "inputSchema": json_schema({}),
+    },
+    {
+        "name": "show_team",
+        "description": "Show one Agent Bus team by id, name, or slug.",
+        "inputSchema": json_schema({"team": {"type": "string"}}, ["team"]),
+    },
+    {
+        "name": "join_team",
+        "description": "Attach an existing registered agent to a team role and claim that role's pending bootstrap message if present.",
+        "inputSchema": json_schema(
+            {
+                "team": {"type": "string"},
+                "role": {"type": "string"},
+                "agent": {"type": "string"},
+            },
+            ["team", "role", "agent"],
+        ),
+    },
+    {
+        "name": "dispatch_team_task",
+        "description": "Dispatch or rebalance a task to a team role. Uses the assigned agent when present, otherwise queues for the role alias.",
+        "inputSchema": json_schema(
+            {
+                "team": {"type": "string"},
+                "role": {"type": "string"},
+                "message": {"type": "string"},
+                "from_agent": {"type": "string"},
+                "trigger": {"type": "string", "enum": ["queue", "codex_app", "resume"]},
+            },
+            ["team", "role", "message"],
         ),
     },
     {
@@ -204,6 +276,16 @@ def call_tool(
             return {"ambiguous": True, "candidates": exc.candidates}
     if name == "send_message":
         return send_message(store, transport, args)
+    if name == "create_team":
+        return create_team(store, args)
+    if name == "list_teams":
+        return {"teams": store.list_teams()}
+    if name == "show_team":
+        return {"team": store.resolve_team(args["team"])}
+    if name == "join_team":
+        return join_team(store, args)
+    if name == "dispatch_team_task":
+        return dispatch_team_task(store, transport, args)
     if name == "reply_message":
         return reply_message(store, transport, args)
     if name == "get_inbox":
@@ -319,6 +401,205 @@ def send_message(
         "message": message,
         "transport": transport_to_dict(transport_result),
         "reply": reply,
+    }
+
+
+def create_team(store: AgentStore, args: Dict[str, Any]) -> Dict[str, Any]:
+    from_agent = resolve_from_agent(store, args.get("from_agent"))
+    roles = normalize_team_roles(args.get("roles"))
+    team = store.create_team(
+        name=args["name"],
+        project=args["project"],
+        goal=args["goal"],
+        roles=roles,
+        created_by=from_agent,
+    )
+    messages: List[Dict[str, Any]] = []
+    launch_prompts: List[Dict[str, Any]] = []
+    for role_name, role in team["roles"].items():
+        target = maybe_resolve_agent(store, role["alias"])
+        prompt = build_team_role_prompt(team, role, from_agent)
+        message = store.append_message(
+            {
+                "correlation_id": team["team_id"],
+                "from_agent_id": from_agent.get("agent_id"),
+                "from_session_id": from_agent.get("session_id"),
+                "to_agent_id": target.get("agent_id"),
+                "to_session_id": target.get("session_id"),
+                "to_name": target.get("name") or role["alias"],
+                "target_query": role["alias"],
+                "pending_target": not bool(target.get("session_id")),
+                "trigger": "queue",
+                "hop_count": 0,
+                "body": prompt,
+                "status": "queued" if target.get("session_id") else "pending_target",
+                "message_type": "request",
+                "team_id": team["team_id"],
+                "team_role": role_name,
+                "team_role_alias": role["alias"],
+            }
+        )
+        team = store.attach_team_role_message(team["team_id"], role_name, message["message_id"])
+        if target.get("session_id"):
+            team = store.assign_agent_to_team_role(team["team_id"], role_name, target, message_id=message["message_id"])
+        messages.append(message)
+        launch_prompts.append(build_launch_prompt(team, role, message))
+    team["launch_prompts"] = launch_prompts
+    team = store.update_team(team)
+    return {
+        "team": team,
+        "messages": messages,
+        "launch_prompts": launch_prompts,
+        "thread_creation": {
+            "status": "manual_or_external_api_required",
+            "reason": "Current exposed Codex tools can continue an existing threadId but do not expose create-thread here.",
+        },
+    }
+
+
+def join_team(store: AgentStore, args: Dict[str, Any]) -> Dict[str, Any]:
+    team = store.resolve_team(args["team"])
+    role_name = normalize_role_name(args["role"])
+    role = team.get("roles", {}).get(role_name)
+    if not role:
+        raise NotFoundError("No role %r in team %r" % (role_name, team.get("team_id")))
+    agent = store.resolve_agent(args["agent"], include_disabled=True)
+    claimed_message = None
+    if role.get("pending_message_id"):
+        claimed_message = store.assign_message_to_agent(str(role["pending_message_id"]), agent)
+    team = store.assign_agent_to_team_role(team["team_id"], role_name, agent, message_id=role.get("pending_message_id"))
+    return {"team": team, "agent": agent, "claimed_message": claimed_message}
+
+
+def dispatch_team_task(
+    store: AgentStore,
+    transport: CodexResumeTransport,
+    args: Dict[str, Any],
+) -> Dict[str, Any]:
+    team = store.resolve_team(args["team"])
+    role_name = normalize_role_name(args["role"])
+    role = team.get("roles", {}).get(role_name)
+    if not role:
+        raise NotFoundError("No role %r in team %r" % (role_name, team.get("team_id")))
+    target = role.get("session_id") or role.get("agent_id") or role.get("alias")
+    result = send_message(
+        store,
+        transport,
+        {
+            "target": target,
+            "message": build_team_task_prompt(team, role, args["message"]),
+            "from_agent": args.get("from_agent"),
+            "trigger": args.get("trigger") or "queue",
+            "allow_pending": True,
+            "correlation_id": team["team_id"],
+        },
+    )
+    result["message"] = store.update_message(
+        result["message_id"],
+        {
+            "team_id": team["team_id"],
+            "team_role": role_name,
+            "team_role_alias": role.get("alias"),
+        },
+    )
+    store.attach_team_role_message(team["team_id"], role_name, result["message_id"], assignment_type="dispatch")
+    return {"team": store.resolve_team(team["team_id"]), "dispatch": result}
+
+
+def normalize_team_roles(value: Any) -> List[Dict[str, Any]]:
+    roles = value or DEFAULT_TEAM_ROLES
+    normalized: List[Dict[str, Any]] = []
+    for role in roles:
+        if isinstance(role, str):
+            name, _, description = role.partition(":")
+            normalized.append({"name": name.strip(), "description": description.strip()})
+        elif isinstance(role, dict):
+            normalized.append(dict(role))
+        else:
+            raise AgentBusError("Invalid team role %r" % (role,))
+    return normalized
+
+
+def normalize_role_name(value: str) -> str:
+    normalized = "-".join(str(value).lower().replace("_", "-").split())
+    return normalized
+
+
+def maybe_resolve_agent(store: AgentStore, target: str) -> Dict[str, Any]:
+    try:
+        return store.resolve_agent(target, include_disabled=True)
+    except AgentBusError:
+        return {"agent_id": None, "session_id": None, "name": target, "cwd": None}
+
+
+def build_team_role_prompt(team: Dict[str, Any], role: Dict[str, Any], from_agent: Dict[str, Any]) -> str:
+    del from_agent
+    return "\n".join(
+        [
+            "你是 Agent Bus 团队成员：%s" % role.get("alias"),
+            "",
+            "团队信息：",
+            "- team_id: %s" % team.get("team_id"),
+            "- project: %s" % team.get("project"),
+            "- goal: %s" % team.get("goal"),
+            "- role: %s" % role.get("name"),
+            "- role_description: %s" % (role.get("description") or ""),
+            "",
+            "启动步骤：",
+            "1. 确认 cwd 与 git status，不要覆盖其它人的改动。",
+            "2. 读取项目 AGENTS.md / README / docs 中和任务相关的规则。",
+            "3. 只在你的角色边界内工作；需要跨边界时通过 Agent Bus 回报 NEEDS_CONTEXT。",
+            "4. 完成后 reply_message(message_id=<原消息>, result=<JSON/摘要>)。",
+            "",
+            "团队目标：",
+            str(team.get("goal") or ""),
+        ]
+    )
+
+
+def build_team_task_prompt(team: Dict[str, Any], role: Dict[str, Any], body: str) -> str:
+    return "\n".join(
+        [
+            "Agent Bus team task",
+            "",
+            "team_id: %s" % team.get("team_id"),
+            "project: %s" % team.get("project"),
+            "role: %s" % role.get("name"),
+            "role_alias: %s" % role.get("alias"),
+            "",
+            "任务：",
+            str(body),
+            "",
+            "完成后用 reply_message 回传 status / files_changed / checks / risks。",
+        ]
+    )
+
+
+def build_launch_prompt(team: Dict[str, Any], role: Dict[str, Any], message: Dict[str, Any]) -> Dict[str, Any]:
+    text = "\n".join(
+        [
+            "请在这个 Codex 会话中加入 Agent Bus 团队。",
+            "",
+            "执行：",
+            "python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \\",
+            "  --name %s \\" % role.get("alias"),
+            "  --role %r \\" % (role.get("description") or ("Team role %s" % role.get("name"))),
+            "  --tag agent-bus-team \\",
+            "  --tag %s" % team.get("team_id"),
+            "",
+            "然后读取：",
+            "~/.codex/tools/codex-agent-bus/bin/agent-bus inbox --target <你的 session_id> --unread-only --limit 10",
+            "",
+            "你应该会领取 message_id: %s" % message.get("message_id"),
+            "team_id: %s" % team.get("team_id"),
+            "role_alias: %s" % role.get("alias"),
+        ]
+    )
+    return {
+        "role": role.get("name"),
+        "alias": role.get("alias"),
+        "message_id": message.get("message_id"),
+        "prompt": text,
     }
 
 

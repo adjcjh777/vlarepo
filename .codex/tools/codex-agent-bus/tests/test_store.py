@@ -112,6 +112,37 @@ class StoreTests(unittest.TestCase):
             inbox = store.get_inbox(target="session-executor", unread_only=True)
             self.assertEqual([item["message_id"] for item in inbox], [message["message_id"]])
 
+    def test_team_role_becomes_active_when_pending_message_is_claimed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            team = store.create_team(
+                name="Dream QA",
+                project="/tmp/dream",
+                goal="Ship a demo",
+                roles=[{"name": "tester", "description": "Runs QA"}],
+            )
+            role = team["roles"]["tester"]
+            message = store.append_message(
+                {
+                    "body": "test the app",
+                    "target_query": role["alias"],
+                    "to_name": role["alias"],
+                    "pending_target": True,
+                    "status": "pending_target",
+                    "message_type": "request",
+                    "team_id": team["team_id"],
+                    "team_role": "tester",
+                    "team_role_alias": role["alias"],
+                }
+            )
+            store.attach_team_role_message(team["team_id"], "tester", message["message_id"])
+            agent = store.upsert_agent(role["alias"], "Runs QA", "tester-session", cwd="/tmp/dream")
+            claimed = store.claim_pending_messages(agent)
+            self.assertEqual([item["message_id"] for item in claimed], [message["message_id"]])
+            updated = store.resolve_team(team["team_id"])
+            self.assertEqual(updated["roles"]["tester"]["status"], "active")
+            self.assertEqual(updated["roles"]["tester"]["session_id"], "tester-session")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -213,6 +213,74 @@ def write_messages(path: Path, messages: List[Dict[str, Any]]) -> None:
     os.replace(str(tmp), str(path))
 
 
+def read_teams(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {"version": "0.1.0", "updated_at": utc_now(), "teams": {}}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"version": "0.1.0", "updated_at": utc_now(), "teams": {}}
+    if not isinstance(data.get("teams"), dict):
+        data["teams"] = {}
+    return data
+
+
+def write_teams(path: Path, data: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data["updated_at"] = utc_now()
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    os.replace(str(tmp), str(path))
+
+
+def assign_claimed_team_roles(home: Path, claimed: List[Dict[str, Any]], agent: Dict[str, Any]) -> None:
+    team_claims = [
+        (str(item.get("team_id")), str(item.get("team_role")), str(item.get("message_id")))
+        for item in claimed
+        if item.get("team_id") and item.get("team_role")
+    ]
+    if not team_claims:
+        return
+    teams_path = home / "teams.json"
+    lock_dir = home / "locks"
+    lock_dir.mkdir(parents=True, exist_ok=True)
+    lock_path = lock_dir / "teams.lock"
+    with lock_path.open("a+", encoding="utf-8") as lock:
+        if fcntl is not None:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        data = read_teams(teams_path)
+        changed = False
+        for team_id, role_name, message_id in team_claims:
+            team = data.get("teams", {}).get(team_id)
+            if not isinstance(team, dict):
+                continue
+            roles = team.get("roles")
+            if not isinstance(roles, dict) or role_name not in roles:
+                continue
+            role = dict(roles[role_name])
+            now = utc_now()
+            role.update(
+                {
+                    "status": "active",
+                    "agent_id": agent.get("agent_id"),
+                    "session_id": agent.get("session_id"),
+                    "agent_name": agent.get("name"),
+                    "joined_at": role.get("joined_at") or now,
+                    "updated_at": now,
+                    "claimed_message_id": message_id,
+                }
+            )
+            roles[role_name] = role
+            team["roles"] = roles
+            team["updated_at"] = now
+            data["teams"][team_id] = team
+            changed = True
+        if changed:
+            write_teams(teams_path, data)
+        if fcntl is not None:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
 def message_matches_agent(message: Dict[str, Any], agent: Dict[str, Any]) -> bool:
     if message.get("to_agent_id") and message.get("to_agent_id") == agent.get("agent_id"):
         return True
@@ -276,6 +344,7 @@ def claim_pending_messages(home: Path, agent: Dict[str, Any]) -> List[Dict[str, 
             write_messages(messages_path, messages)
         if fcntl is not None:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+    assign_claimed_team_roles(home, claimed, agent)
     return claimed
 
 

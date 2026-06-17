@@ -73,6 +73,33 @@ def main(argv: Optional[List[str]] = None) -> int:
     status.add_argument("status")
     status.add_argument("--note")
 
+    team = sub.add_parser("team", help="Manage Agent Bus teams")
+    team_sub = team.add_subparsers(dest="team_command", required=True)
+
+    team_create = team_sub.add_parser("create", help="Create a project team")
+    team_create.add_argument("name")
+    team_create.add_argument("--project", required=True)
+    team_create.add_argument("--goal", required=True)
+    team_create.add_argument("--role", action="append", default=[], help="Role spec: name:description or name")
+    team_create.add_argument("--from-agent")
+
+    team_sub.add_parser("list", help="List teams")
+
+    team_show = team_sub.add_parser("show", help="Show a team")
+    team_show.add_argument("team")
+
+    team_join = team_sub.add_parser("join", help="Join an existing agent to a team role")
+    team_join.add_argument("team")
+    team_join.add_argument("--role", required=True)
+    team_join.add_argument("--agent", required=True)
+
+    team_dispatch = team_sub.add_parser("dispatch", help="Dispatch or rebalance a task to a team role")
+    team_dispatch.add_argument("team")
+    team_dispatch.add_argument("--role", required=True)
+    team_dispatch.add_argument("message")
+    team_dispatch.add_argument("--from-agent")
+    team_dispatch.add_argument("--trigger", choices=["queue", "codex_app", "resume"], default="queue")
+
     sub.add_parser("health", help="Show bus health")
 
     args = parser.parse_args(argv)
@@ -160,8 +187,56 @@ def dispatch(args: argparse.Namespace) -> None:
         print_json(call_tool("mark_read", {"message_id": args.message_id}))
     elif args.command == "status":
         print_json(call_tool("update_status", {"target": args.target, "status": args.status, "note": args.note}))
+    elif args.command == "team":
+        dispatch_team(args)
     elif args.command == "health":
         print_json(call_tool("bus_health", {}))
+
+
+def dispatch_team(args: argparse.Namespace) -> None:
+    if args.team_command == "create":
+        print_json(
+            call_tool(
+                "create_team",
+                {
+                    "name": args.name,
+                    "project": args.project,
+                    "goal": args.goal,
+                    "roles": parse_role_specs(args.role),
+                    "from_agent": args.from_agent,
+                },
+            )
+        )
+    elif args.team_command == "list":
+        print_json(call_tool("list_teams", {}))
+    elif args.team_command == "show":
+        print_json(call_tool("show_team", {"team": args.team}))
+    elif args.team_command == "join":
+        print_json(call_tool("join_team", {"team": args.team, "role": args.role, "agent": args.agent}))
+    elif args.team_command == "dispatch":
+        print_json(
+            call_tool(
+                "dispatch_team_task",
+                {
+                    "team": args.team,
+                    "role": args.role,
+                    "message": args.message,
+                    "from_agent": args.from_agent,
+                    "trigger": args.trigger,
+                },
+            )
+        )
+
+
+def parse_role_specs(values: List[str]) -> List[Dict[str, str]]:
+    roles: List[Dict[str, str]] = []
+    for value in values:
+        name, separator, description = value.partition(":")
+        role: Dict[str, str] = {"name": name.strip()}
+        if separator:
+            role["description"] = description.strip()
+        roles.append(role)
+    return roles
 
 
 if __name__ == "__main__":

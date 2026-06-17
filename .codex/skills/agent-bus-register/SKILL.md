@@ -1,6 +1,6 @@
 ---
 name: agent-bus-register
-description: Register the current Codex session with the local Codex Agent Bus and claim queued tasks for this session. Use when the user asks to join/register/identify this agent, set this session as planner/executor/tester/reviewer, enable cross-project agent communication, hot-load messages for newly opened agent sessions, or quickly prepare the current Codex session for Agent Bus list_agents/send_message/reply_message workflows.
+description: Register the current Codex session with the local Codex Agent Bus and claim queued tasks for this session. Use when the user asks to join/register/identify this agent, set this session as planner/executor/tester/reviewer, create or join an Agent Bus project team, enable cross-project agent communication, hot-load messages for newly opened agent sessions, or quickly prepare the current Codex session for Agent Bus list_agents/send_message/reply_message workflows.
 ---
 
 # Agent Bus Register
@@ -110,6 +110,45 @@ Rules:
   preserving the original `message_id` and `correlation_id`.
 - After claiming, the target agent should read inbox, do the task, then reply to the original
   message id with `reply_message(message_id=..., result=...)`.
+
+## Project Team Bootstrap
+
+Use teams when the user wants to say one thing like "为这个项目构建一个 Agent Bus 团队" and have
+Codex define stable roles, queue tasks for future sessions, and keep later joins/rebalancing
+organized.
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus team create <team-name> \
+  --project /absolute/project/path \
+  --goal "<team goal>" \
+  --role planner:"Plans tasks and maintains the ledger" \
+  --role executor:"Implements bounded changes" \
+  --role tester:"Runs read-only verification"
+```
+
+The command creates `~/.codex/agent-bus/teams.json`, role-scoped aliases such as
+`<team-name>-executor`, pending bootstrap messages, and launch prompts. A later Codex session joins
+by registering with the exact alias from `launch_prompts`; registration claims the role message and
+marks that team role active.
+
+Team commands:
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus team list
+~/.codex/tools/codex-agent-bus/bin/agent-bus team show <team-id-or-name>
+~/.codex/tools/codex-agent-bus/bin/agent-bus team join <team-id> --role tester --agent <session-id-or-name>
+~/.codex/tools/codex-agent-bus/bin/agent-bus team dispatch <team-id> --role tester "<task>"
+```
+
+Thread creation boundary:
+
+- This team bootstrap creates durable Bus state and launch prompts; it does not yet prove that new
+  Codex App visible threads were automatically created.
+- Current stable exposed tooling can continue existing `threadId` sessions. If an experimental
+  create-thread adapter is added later, it must return real `threadId` values before claiming
+  visible delivery.
+- Until a real session exists, treat role tasks as pending Bus records only. After the session
+  exists, use the normal visible-delivery workflow if the user needs to see the task in that thread.
 
 ## Reliable Message Delivery
 

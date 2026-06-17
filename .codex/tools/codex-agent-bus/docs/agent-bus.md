@@ -39,6 +39,7 @@ By default all projects share:
 ```text
 ~/.codex/agent-bus/registry.json
 ~/.codex/agent-bus/messages.jsonl
+~/.codex/agent-bus/teams.json
 ~/.codex/agent-bus/locks/
 ~/.codex/agent-bus/logs/agent-bus.log
 ```
@@ -155,6 +156,45 @@ agent-bus inbox --target <new-session-id> --unread-only
 Pending-target messages are durable Bus records, not visible Codex turns. If the task must appear as
 a user-visible prompt, resend visibly after the target session exists, preserving the original
 `message_id` and `correlation_id`.
+
+## Project Teams
+
+Create a role-based project team from one controller conversation:
+
+```bash
+agent-bus team create dreamqa \
+  --project /path/to/project \
+  --goal "Improve Dream QA with implementation, testing, and release review" \
+  --role planner:"Plans tasks and maintains the ledger" \
+  --role executor:"Implements bounded code changes" \
+  --role tester:"Runs read-only verification"
+```
+
+The command writes a `teams.json` record and creates one pending bootstrap message per role. Role
+targets are team-scoped aliases such as `dreamqa-planner`, `dreamqa-executor`, and
+`dreamqa-tester`, so roles do not collide with generic agent names in other projects.
+
+The response includes `launch_prompts`. Paste one launch prompt into a new Codex App conversation,
+or otherwise open a new Codex session and register with the specified alias. When that new session
+registers, it claims the pending role message and the team role becomes `active`.
+
+Useful commands:
+
+```bash
+agent-bus team list
+agent-bus team show dreamqa
+agent-bus team join <team-id> --role tester --agent <existing-session-id-or-name>
+agent-bus team dispatch <team-id> --role tester "Run the smoke suite and report PASS/BLOCKED"
+```
+
+Thread creation boundary:
+
+- Team creation does not claim that Codex App visible conversations were automatically created.
+- Current stable exposed surfaces can continue an existing `threadId`/session, but do not provide a
+  verified create-thread API in this tool.
+- Until a real `threadId` exists, team work is represented as pending Bus records plus launch
+  prompts. Once a session exists, use the normal visible-delivery path and preserve `message_id`,
+  `correlation_id`, `team_id`, and role alias.
 
 You can force a transport while testing:
 

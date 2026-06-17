@@ -96,7 +96,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     team_launch = team_sub.add_parser("launch", help="Prepare role launch prompts or experimentally create role threads")
     team_launch.add_argument("team")
     team_launch.add_argument("--role")
-    team_launch.add_argument("--mode", choices=["prompt", "app-server-experimental"], default="prompt")
+    team_launch.add_argument("--mode", choices=["subagent-tool", "prompt", "app-server-experimental"], default="prompt")
     team_launch.add_argument("--from-agent")
     team_launch.add_argument("--timeout-sec", type=float, default=60)
     team_launch.add_argument("--deliver-bootstrap", action="store_true")

@@ -343,6 +343,42 @@ class McpToolTests(unittest.TestCase):
             self.assertEqual(role["launch_status"], "attached_existing_thread")
             self.assertEqual(role["thread_id"], "existing-thread-1")
 
+    def test_team_launch_subagent_tool_returns_spawn_request(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            team_result = call_tool(
+                "create_team",
+                {
+                    "name": "Dream QA",
+                    "project": "/tmp/dreamqa",
+                    "goal": "Improve demo quality",
+                    "roles": [{"name": "tester", "description": "Runs QA"}],
+                },
+                store=store,
+            )
+            launched = call_tool(
+                "launch_team",
+                {
+                    "team": team_result["team"]["team_id"],
+                    "role": "tester",
+                    "mode": "subagent-tool",
+                },
+                store=store,
+            )
+            launch = launched["launches"][0]
+            self.assertEqual(launch["status"], "spawn_tool_required")
+            self.assertEqual(launch["spawn_request"]["tool"], "multi_agent_v1.spawn_agent")
+            self.assertEqual(launch["spawn_request"]["agent_type"], "worker")
+            self.assertEqual(
+                launch["spawn_request"]["attach_after_spawn"]["thread_id_source"],
+                "spawn_agent.agent_id",
+            )
+            self.assertIn("不要臆造自己的 id", launch["spawn_request"]["message"])
+            role = launched["team"]["roles"]["tester"]
+            self.assertEqual(role["launch_status"], "spawn_tool_required")
+            self.assertEqual(role["launch_mode"], "subagent-tool")
+            self.assertEqual(role["spawn_request"]["tool"], "multi_agent_v1.spawn_agent")
+
     def test_experimental_team_launch_starts_thread_and_attaches_role(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             store = AgentStore(Path(tmp))

@@ -24,9 +24,11 @@ from .transport import CodexResumeTransport, CodexThreadStartTransport
 SERVER_INSTRUCTIONS = (
     "This is a local Codex Agent Bus. Use list_agents to discover peers, "
     "create_team(project, goal, roles) to bootstrap a role-based project team, "
-    "launch_team(team, role, mode='prompt') to prepare or experimentally start "
-    "role sessions, attach_team_thread(team, role, thread_id) to bind an existing "
-    "Codex thread/session to a role, "
+    "launch_team(team, role, mode='subagent-tool') to prepare subagent spawn "
+    "requests, launch_team(..., mode='prompt') for manual launch prompts, or "
+    "launch_team(..., mode='app-server-experimental') for experimental app-server "
+    "threads. After spawning, attach_team_thread(team, role, thread_id) binds the "
+    "returned Codex agent/thread id to a role, "
     "send_message(target, message, trigger='codex_app') to prepare a visible "
     "Codex App user turn, then immediately call codex_app.send_message_to_thread "
     "with the returned threadId and prompt. Use trigger='resume' only for "
@@ -175,12 +177,12 @@ TOOLS: List[Dict[str, Any]] = [
     },
     {
         "name": "launch_team",
-        "description": "Prepare launch prompts for team roles, or experimentally create app-server threads for roles and attach them to the team.",
+        "description": "Prepare subagent spawn requests or launch prompts for team roles, or experimentally create app-server threads for roles and attach them to the team.",
         "inputSchema": json_schema(
             {
                 "team": {"type": "string"},
                 "role": {"type": "string"},
-                "mode": {"type": "string", "enum": ["prompt", "app-server-experimental"]},
+                "mode": {"type": "string", "enum": ["subagent-tool", "prompt", "app-server-experimental"]},
                 "from_agent": {"type": "string"},
                 "timeout_sec": {"type": "number"},
                 "deliver_bootstrap": {"type": "boolean"},
@@ -549,6 +551,47 @@ def launch_team(
             "launches": launches,
             "thread_creation": manual_thread_creation_boundary(),
         }
+    if mode == "subagent-tool":
+        for role_name, role in role_items:
+            prompt = build_subagent_spawn_prompt(team, role)
+            spawn_request = build_subagent_spawn_request(team, role, prompt)
+            team = store.update_team_role_launch(
+                team["team_id"],
+                role_name,
+                {
+                    "launch_status": "spawn_tool_required",
+                    "launch_mode": "subagent-tool",
+                    "launch_prompt": prompt,
+                    "last_launch_at": utc_now(),
+                    "spawn_request": spawn_request,
+                },
+                event={"mode": "subagent-tool", "status": "spawn_tool_required"},
+            )
+            launches.append(
+                {
+                    "role": role_name,
+                    "alias": role.get("alias"),
+                    "status": "spawn_tool_required",
+                    "spawn_request": spawn_request,
+                    "next_step": (
+                        "Call multi_agent_v1.spawn_agent with spawn_request, then call "
+                        "attach_team_thread using the returned agent_id as thread_id."
+                    ),
+                }
+            )
+        return {
+            "team": store.resolve_team(team["team_id"]),
+            "launches": launches,
+            "thread_creation": {
+                "status": "subagent_tool_required",
+                "visibility": "created_after_spawn_agent",
+                "reason": (
+                    "The local Agent Bus CLI cannot call Codex tools by itself. A Codex controller "
+                    "should execute each returned multi_agent_v1.spawn_agent request and attach "
+                    "the returned agent_id to the role."
+                ),
+            },
+        }
     if mode != "app-server-experimental":
         raise AgentBusError("Unsupported launch mode %r" % mode)
     for role_name, role in role_items:
@@ -897,6 +940,54 @@ def build_team_task_prompt(team: Dict[str, Any], role: Dict[str, Any], body: str
             "完成后用 reply_message 回传 status / files_changed / checks / risks。",
         ]
     )
+
+
+def build_subagent_spawn_prompt(team: Dict[str, Any], role: Dict[str, Any]) -> str:
+    return "\n".join(
+        [
+            "你是 Agent Bus 团队里的 %s。" % role.get("name"),
+            "",
+            "团队绑定信息：",
+            "- team_id: %s" % team.get("team_id"),
+            "- project: %s" % team.get("project"),
+            "- role: %s" % role.get("name"),
+            "- role_alias: %s" % role.get("alias"),
+            "- role_description: %s" % (role.get("description") or ""),
+            "",
+            "启动规则：",
+            "1. 你不是单独行动；父对话会把 spawn_agent 返回的 agent_id 作为 thread/session id 写入 Agent Bus。",
+            "2. 如果你要读 Bus 任务，等待父对话 attach-thread 后再查 inbox；不要臆造自己的 id。",
+            "3. 先确认 cwd / git status / AGENTS.md，再按角色边界工作。",
+            "4. 完成任务时用 Agent Bus reply_message 回传 status / files_changed / checks / risks。",
+            "",
+            "团队目标：",
+            str(team.get("goal") or ""),
+        ]
+    )
+
+
+def build_subagent_spawn_request(
+    team: Dict[str, Any],
+    role: Dict[str, Any],
+    prompt: str,
+) -> Dict[str, Any]:
+    role_name = str(role.get("name") or "")
+    agent_type = "worker" if role_name in {"executor", "tester", "reviewer"} else "default"
+    return {
+        "tool": "multi_agent_v1.spawn_agent",
+        "agent_type": agent_type,
+        "fork_context": False,
+        "message": prompt,
+        "attach_after_spawn": {
+            "team": team.get("team_id"),
+            "role": role_name,
+            "thread_id_source": "spawn_agent.agent_id",
+            "command": (
+                "agent-bus team attach-thread %s --role %s --thread-id <spawn_agent.agent_id>"
+                % (team.get("team_id"), role_name)
+            ),
+        },
+    }
 
 
 def build_launch_prompt(team: Dict[str, Any], role: Dict[str, Any], message: Dict[str, Any]) -> Dict[str, Any]:

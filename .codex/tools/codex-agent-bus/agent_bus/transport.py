@@ -51,7 +51,7 @@ class CodexAppServerTransport:
         if not Path(target_cwd).exists():
             return TransportResult(False, "failed", [], target_cwd, "app_server", error="target cwd does not exist")
         timeout = min(timeout_sec or 60, 120)
-        command = [self.codex_cmd, "app-server", "proxy"]
+        command = [self.codex_cmd, "app-server", "--stdio"]
         first = self._send_via_proxy(command, session_id, target_cwd, prompt, timeout)
         if first.ok or not self.auto_start_daemon:
             return first
@@ -90,7 +90,7 @@ class CodexAppServerTransport:
                 "failed",
                 command,
                 cwd,
-                "app_server",
+                "app_server_stdio",
                 error="codex command not found: %s" % exc,
             )
         assert proc.stdin is not None
@@ -126,7 +126,7 @@ class CodexAppServerTransport:
                             "failed",
                             command,
                             cwd,
-                            "app_server",
+                            "app_server_stdio",
                             returncode=proc.returncode,
                             stdout=self._tail("\n".join(json.dumps(item, ensure_ascii=False) for item in responses)),
                             stderr=stderr,
@@ -138,7 +138,7 @@ class CodexAppServerTransport:
                         "delivered",
                         command,
                         cwd,
-                        "app_server_turn_start",
+                        "app_server_stdio_turn_start",
                         returncode=proc.returncode,
                         stdout=self._tail("\n".join(json.dumps(item, ensure_ascii=False) for item in responses)),
                         stderr=self._read_stderr_tail(proc),
@@ -150,10 +150,10 @@ class CodexAppServerTransport:
                 "failed",
                 command,
                 cwd,
-                "app_server",
+                "app_server_stdio",
                 returncode=proc.returncode,
                 stderr=stderr,
-                error=stderr or "app-server proxy did not acknowledge turn/start",
+                error=stderr or "app-server --stdio did not acknowledge turn/start",
             )
         except BrokenPipeError as exc:
             self._terminate(proc)
@@ -163,10 +163,10 @@ class CodexAppServerTransport:
                 "failed",
                 command,
                 cwd,
-                "app_server",
+                "app_server_stdio",
                 returncode=proc.returncode,
                 stderr=stderr,
-                error="app-server proxy pipe closed: %s" % exc,
+                error="app-server --stdio pipe closed: %s" % exc,
             )
 
     def _build_messages(self, session_id: str, cwd: str, prompt: str) -> List[Dict[str, Any]]:
@@ -298,12 +298,12 @@ class CodexThreadStartTransport:
             return {
                 "ok": False,
                 "status": "failed",
-                "surface": "app_server_thread_start",
+                "surface": "app_server_stdio_thread_start",
                 "cwd": target_cwd,
                 "error": "target cwd does not exist",
             }
         timeout = min(timeout_sec or 60, 120)
-        command = [self.codex_cmd, "app-server", "proxy"]
+        command = [self.codex_cmd, "app-server", "--stdio"]
         first = self._start_via_proxy(command, target_cwd, timeout)
         if first.get("ok") or not self.auto_start_daemon:
             return first
@@ -335,7 +335,7 @@ class CodexThreadStartTransport:
                 "status": "failed",
                 "command": command,
                 "cwd": cwd,
-                "surface": "app_server_thread_start",
+                "surface": "app_server_stdio_thread_start",
                 "error": "codex command not found: %s" % exc,
             }
         assert proc.stdin is not None
@@ -371,7 +371,7 @@ class CodexThreadStartTransport:
                         "status": "failed",
                         "command": command,
                         "cwd": cwd,
-                        "surface": "app_server_thread_start",
+                        "surface": "app_server_stdio_thread_start",
                         "returncode": proc.returncode,
                         "stdout": self._tail(
                             "\n".join(json.dumps(item, ensure_ascii=False) for item in responses)
@@ -388,7 +388,7 @@ class CodexThreadStartTransport:
                     "status": "thread_created" if thread_id else "failed",
                     "command": command,
                     "cwd": cwd,
-                    "surface": "app_server_thread_start",
+                    "surface": "app_server_stdio_thread_start",
                     "thread_id": thread_id,
                     "thread": thread,
                     "returncode": proc.returncode,
@@ -404,10 +404,10 @@ class CodexThreadStartTransport:
                 "status": "failed",
                 "command": command,
                 "cwd": cwd,
-                "surface": "app_server_thread_start",
+                "surface": "app_server_stdio_thread_start",
                 "returncode": proc.returncode,
                 "stderr": self._read_stderr_tail(proc),
-                "error": "app-server proxy did not acknowledge thread/start",
+                "error": "app-server --stdio did not acknowledge thread/start",
             }
         except BrokenPipeError as exc:
             self._terminate(proc)
@@ -416,10 +416,10 @@ class CodexThreadStartTransport:
                 "status": "failed",
                 "command": command,
                 "cwd": cwd,
-                "surface": "app_server_thread_start",
+                "surface": "app_server_stdio_thread_start",
                 "returncode": proc.returncode,
                 "stderr": self._read_stderr_tail(proc),
-                "error": "app-server proxy pipe closed: %s" % exc,
+                "error": "app-server --stdio pipe closed: %s" % exc,
             }
 
     def _build_messages(self, cwd: str) -> List[Dict[str, Any]]:

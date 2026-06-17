@@ -178,16 +178,40 @@ The response includes `launch_prompts`. Paste one launch prompt into a new Codex
 or otherwise open a new Codex session and register with the specified alias. When that new session
 registers, it claims the pending role message and the team role becomes `active`.
 
+For a one-dialogue Codex controller flow:
+
+1. Create the team.
+2. Run `agent-bus team launch <team> --mode subagent-tool`.
+3. Call `multi_agent_v1.spawn_agent` once per returned `spawn_request`.
+4. Attach each returned `agent_id` with `agent-bus team attach-thread`.
+5. Use `team dispatch` for subsequent role tasks and rebalancing.
+
+The spawned agent does not need to know its own id; the controller records the mapping.
+
 Useful commands:
 
 ```bash
 agent-bus team list
 agent-bus team show dreamqa
+agent-bus team launch dreamqa --mode subagent-tool
 agent-bus team launch dreamqa --role tester
 agent-bus team attach-thread dreamqa --role tester --thread-id <existing-thread-id>
 agent-bus team join <team-id> --role tester --agent <existing-session-id-or-name>
 agent-bus team dispatch <team-id> --role tester "Run the smoke suite and report PASS/BLOCKED"
 ```
+
+`team launch --mode subagent-tool` is the preferred one-dialogue controller path when Codex has the
+`multi_agent_v1.spawn_agent` tool. It returns one `spawn_request` per role. The controller should
+call `multi_agent_v1.spawn_agent` with that request, then immediately attach the returned
+`agent_id`:
+
+```bash
+agent-bus team launch dreamqa --role tester --mode subagent-tool
+agent-bus team attach-thread dreamqa --role tester --thread-id <spawn_agent.agent_id>
+```
+
+This keeps the role name (`tester`) separate from the spawned thread/session id and records the
+mapping in `teams.json`.
 
 `team launch` updates each role's launch state and returns the current launch prompt. It is safe to
 run repeatedly:
@@ -222,6 +246,8 @@ new thread.
 Thread creation boundary:
 
 - Team creation does not claim that Codex App visible conversations were automatically created.
+- `team launch --mode subagent-tool` is the preferred Codex-controller path: Agent Bus returns
+  spawn payloads, the controller calls `multi_agent_v1.spawn_agent`, then attaches the returned id.
 - `team launch --mode prompt` is a durable launch plan, not automatic UI creation.
 - `team attach-thread` is the reliable path when a real `threadId`/session already exists.
 - `team launch --mode app-server-experimental` can return a thread id from internal app-server

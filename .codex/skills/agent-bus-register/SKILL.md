@@ -117,6 +117,26 @@ Use teams when the user wants to say one thing like "为这个项目构建一个
 Codex define stable roles, queue tasks for future sessions, and keep later joins/rebalancing
 organized.
 
+Preferred one-dialogue workflow when the `multi_agent_v1.spawn_agent` tool is available:
+
+1. Create the team with inferred roles. Use the defaults unless the user names different roles.
+2. Run `team launch --mode subagent-tool` for the whole team or selected roles.
+3. For each returned `spawn_request`, call `multi_agent_v1.spawn_agent` from the controller
+   conversation.
+4. Immediately attach each returned `agent_id`:
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread <team-id-or-name> \
+  --role <role> \
+  --thread-id <spawn_agent.agent_id>
+```
+
+5. Report the mapping as `<role> -> <alias> -> <spawn_agent.agent_id>`, then dispatch follow-up
+   work through `team dispatch`.
+
+Do not ask the spawned agent to guess its own id. The controller must attach the id returned by
+`spawn_agent`.
+
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team create <team-name> \
   --project /absolute/project/path \
@@ -136,14 +156,30 @@ Team commands:
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team list
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team show <team-id-or-name>
+~/.codex/tools/codex-agent-bus/bin/agent-bus team launch <team-id-or-name> --mode subagent-tool
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team launch <team-id-or-name> --role tester
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread <team-id-or-name> --role tester --thread-id <existing-thread-id>
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team join <team-id> --role tester --agent <session-id-or-name>
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team dispatch <team-id> --role tester "<task>"
 ```
 
-Use `team launch` when a controller wants the current launch state and role prompts. It updates the
-role's `launch_status` and returns prompts that can be pasted into new Codex App conversations.
+Use `team launch --mode subagent-tool` when the controller Codex has `multi_agent_v1.spawn_agent`.
+It returns one `spawn_request` per role. The controller should call `multi_agent_v1.spawn_agent`,
+then attach the returned `agent_id`:
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread <team-id-or-name> \
+  --role tester \
+  --thread-id <spawn_agent.agent_id>
+```
+
+This is the preferred one-dialogue bootstrap path because the actual Codex controller creates the
+subagent thread, while Agent Bus records `spawn_id -> role -> team` and keeps future dispatches
+organized.
+
+Use `team launch --mode prompt` when a controller wants the current launch state and role prompts
+without spawning. It updates the role's `launch_status` and returns prompts that can be pasted into
+new Codex App conversations.
 
 Use `team attach-thread` when the role conversation already exists. It registers the role alias
 against the provided `thread_id` / session id, claims the pending bootstrap message, marks the role
@@ -165,6 +201,8 @@ Thread creation boundary:
 
 - This team bootstrap creates durable Bus state and launch prompts; it does not by itself prove that
   new Codex App visible threads were automatically created.
+- `team launch --mode subagent-tool` is the preferred path when `multi_agent_v1.spawn_agent` is
+  available; attach the returned `agent_id` as the role thread/session id.
 - `team attach-thread` is the reliable path after a real `threadId` / session exists.
 - `team launch --mode app-server-experimental` may create an app-server thread, but visibility in
   Codex App still requires a separate ACK or visible-delivery proof.

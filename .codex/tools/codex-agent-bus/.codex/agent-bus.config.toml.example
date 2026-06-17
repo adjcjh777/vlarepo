@@ -1,0 +1,34 @@
+[features]
+hooks = true
+multi_agent = true
+
+[mcp_servers.agent_bus]
+command = "<ABSOLUTE_PATH_TO_CODEX_AGENT_BUS>/bin/agent-bus-mcp"
+args = []
+enabled = true
+startup_timeout_sec = 10
+tool_timeout_sec = 600
+enabled_tools = [
+  "register_agent",
+  "update_agent",
+  "list_agents",
+  "resolve_agent",
+  "send_message",
+  "reply_message",
+  "get_inbox",
+  "mark_read",
+  "update_status",
+  "bus_health",
+]
+
+[[hooks.SessionStart]]
+matcher = ".*"
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "<ABSOLUTE_PATH_TO_CODEX_AGENT_BUS>/bin/agent-bus-hook"
+
+[[hooks.Stop]]
+matcher = ".*"
+[[hooks.Stop.hooks]]
+type = "command"
+command = "<ABSOLUTE_PATH_TO_CODEX_AGENT_BUS>/bin/agent-bus-hook"

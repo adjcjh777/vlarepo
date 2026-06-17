@@ -187,6 +187,98 @@ def write_registry(path: Path, data: Dict[str, Any]) -> None:
     os.replace(str(tmp), str(path))
 
 
+def read_messages(path: Path) -> List[Dict[str, Any]]:
+    if not path.exists():
+        return []
+    messages: List[Dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict):
+            messages.append(value)
+    return messages
+
+
+def write_messages(path: Path, messages: List[Dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".jsonl.tmp")
+    tmp.write_text(
+        "".join(json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n" for item in messages),
+        encoding="utf-8",
+    )
+    os.replace(str(tmp), str(path))
+
+
+def message_matches_agent(message: Dict[str, Any], agent: Dict[str, Any]) -> bool:
+    if message.get("to_agent_id") and message.get("to_agent_id") == agent.get("agent_id"):
+        return True
+    if message.get("to_session_id") and message.get("to_session_id") == agent.get("session_id"):
+        return True
+    identities = {
+        str(value)
+        for value in [agent.get("agent_id"), agent.get("session_id"), agent.get("name")]
+        if value
+    }
+    identities.update(as_list(agent.get("legacy_agent_ids")))
+    for key in ("target_query", "to_name"):
+        value = str(message.get(key) or "")
+        if value and value in identities:
+            return True
+    target_tags = set(as_list(message.get("target_tags")))
+    if target_tags and not target_tags.issubset(set(as_list(agent.get("tags")))):
+        return False
+    cwd_prefix = message.get("target_cwd_prefix")
+    if cwd_prefix and not str(agent.get("cwd") or "").startswith(str(Path(str(cwd_prefix)).expanduser())):
+        return False
+    return bool(message.get("pending_target") and (target_tags or cwd_prefix))
+
+
+def claim_pending_messages(home: Path, agent: Dict[str, Any]) -> List[Dict[str, Any]]:
+    messages_path = home / "messages.jsonl"
+    lock_dir = home / "locks"
+    lock_dir.mkdir(parents=True, exist_ok=True)
+    lock_path = lock_dir / "messages.lock"
+    claimed: List[Dict[str, Any]] = []
+    with lock_path.open("a+", encoding="utf-8") as lock:
+        if fcntl is not None:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        messages = read_messages(messages_path)
+        changed = False
+        for index, message in enumerate(messages):
+            if message.get("to_agent_id") or message.get("to_session_id"):
+                continue
+            if not message.get("pending_target"):
+                continue
+            if not message_matches_agent(message, agent):
+                continue
+            updated = dict(message)
+            updated.update(
+                {
+                    "to_agent_id": agent.get("agent_id"),
+                    "to_session_id": agent.get("session_id"),
+                    "to_name": agent.get("name") or message.get("to_name"),
+                    "pending_target": False,
+                    "claimed_at": utc_now(),
+                    "claimed_by_agent_id": agent.get("agent_id"),
+                    "claimed_by_session_id": agent.get("session_id"),
+                }
+            )
+            if updated.get("status") == "pending_target":
+                updated["status"] = "queued"
+            messages[index] = updated
+            claimed.append(updated)
+            changed = True
+        if changed:
+            write_messages(messages_path, messages)
+        if fcntl is not None:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+    return claimed
+
+
 def realpath(value: str) -> str:
     return os.path.realpath(str(Path(value).expanduser()))
 
@@ -296,12 +388,15 @@ def main() -> int:
         write_registry(registry_path, registry)
         if fcntl is not None:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+    claimed = claim_pending_messages(home, record)
     diag = diagnostics(home, registry_path, args.cwd)
     print(
         json.dumps(
             {
                 "ok": True,
                 "agent": record,
+                "claimed_count": len(claimed),
+                "claimed_messages": claimed,
                 "registry": str(registry_path),
                 "warnings": setup_warnings(diag),
             },

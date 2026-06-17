@@ -41,7 +41,8 @@ python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
 4. Report the registered `agent_id`, `name`, `session_id`, `cwd`, and any `claimed_count` /
    `claimed_messages`. If the script returns `warnings`, include them because registration can
    succeed while the global Agent Bus CLI/hook installation is still missing.
-   - `agent_id` must equal the Codex `session_id`. Treat `name` as a human alias only.
+   - `session_id` is the unique routing identity. Treat `agent_id` as a non-unique hint such as
+     `planner`, `executor`, or `tester`.
    - If `claimed_count > 0`, immediately inspect the inbox before starting unrelated work.
 
 5. If registration fails because no current session record exists, do not invent a session id. Follow the script's `next_steps`. Usually either install/enable Agent Bus and open a fresh Codex session, or provide the session id from `/status`:
@@ -57,7 +58,9 @@ python3 ~/.codex/skills/agent-bus-register/scripts/register_self.py \
 
 - Prefer the global bus home `CODEX_AGENT_BUS_HOME` when set.
 - Otherwise use `~/.codex/agent-bus`.
-- The canonical Agent Bus identity is the Codex session id. The script writes `agent_id == session_id` and keeps any older name-derived ids only in `legacy_agent_ids` for compatibility.
+- The canonical Agent Bus identity is the Codex `session_id`; registry records are keyed by
+  `session_id`. The script writes `agent_id` as a hint, defaulting to `--name`, and keeps older
+  hints in `legacy_agent_ids` for compatibility.
 - Match the current session by finding the newest registry record whose `cwd` equals the current working directory.
 - Prefer unnamed hook records when multiple records share the same `cwd`.
 - Registration claims pending-target messages addressed to this `name`, `session_id`, `agent_id`, or
@@ -98,8 +101,8 @@ planner wants to publish tasks for an executor/tester/scout before those Codex s
 
 This records a durable `pending_target` message keyed by `target_query=executor`. It does not wake a
 Codex UI because there is no session id yet. When a later session runs this skill with
-`--name executor`, registration claims the message, fills in `to_agent_id == to_session_id ==
-<new session_id>`, and reports `claimed_count`.
+`--name executor`, registration claims the message, fills in `to_agent_id=<hint>` and
+`to_session_id=<new session_id>`, and reports `claimed_count`.
 
 Rules:
 
@@ -123,7 +126,7 @@ Preferred one-dialogue workflow when the `multi_agent_v1.spawn_agent` tool is av
 2. Run `team launch --mode subagent-tool` for the whole team or selected roles.
 3. For each returned `spawn_request`, call `multi_agent_v1.spawn_agent` from the controller
    conversation.
-4. Immediately attach each returned `agent_id`:
+4. Immediately attach each returned `spawn_agent.agent_id` as the role session/thread handle:
 
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread <team-id-or-name> \
@@ -131,8 +134,8 @@ Preferred one-dialogue workflow when the `multi_agent_v1.spawn_agent` tool is av
   --thread-id <spawn_agent.agent_id>
 ```
 
-5. Report the mapping as `<role> -> <alias> -> <spawn_agent.agent_id>`, then dispatch follow-up
-   work through `team dispatch`.
+5. Report the mapping as `<role> -> <alias> -> session <spawn_agent.agent_id>`, then dispatch
+   follow-up work through `team dispatch`.
 
 Do not ask the spawned agent to guess its own id. The controller must attach the id returned by
 `spawn_agent`.
@@ -178,7 +181,7 @@ Team commands:
 
 Use `team launch --mode subagent-tool` when the controller Codex has `multi_agent_v1.spawn_agent`.
 It returns one `spawn_request` per role. The controller should call `multi_agent_v1.spawn_agent`,
-then attach the returned `agent_id`:
+then attach the returned `spawn_agent.agent_id` as the session/thread handle:
 
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread <team-id-or-name> \
@@ -215,7 +218,8 @@ Thread creation boundary:
 - This team bootstrap creates durable Bus state and launch prompts; it does not by itself prove that
   new Codex App visible threads were automatically created.
 - `team launch --mode subagent-tool` is the preferred path when `multi_agent_v1.spawn_agent` is
-  available; attach the returned `agent_id` as the role thread/session id.
+  available; attach the returned `spawn_agent.agent_id` as the role thread/session id, not as the
+  Agent Bus hint `agent_id`.
 - `team attach-thread` is the reliable path after a real `threadId` / session exists.
 - `team launch --mode app-server-experimental` may create an app-server thread, but visibility in
   Codex App still requires a separate ACK or visible-delivery proof.

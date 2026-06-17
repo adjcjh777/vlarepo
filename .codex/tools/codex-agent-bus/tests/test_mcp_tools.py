@@ -65,7 +65,8 @@ class McpToolTests(unittest.TestCase):
                 },
                 store=store,
             )["agent"]
-            self.assertEqual(planner["agent_id"], "planner-session")
+            self.assertEqual(planner["agent_id"], "planner")
+            self.assertEqual(planner["session_id"], "planner-session")
             executor = call_tool(
                 "register_agent",
                 {
@@ -76,7 +77,8 @@ class McpToolTests(unittest.TestCase):
                 },
                 store=store,
             )["agent"]
-            self.assertEqual(executor["agent_id"], "executor-session")
+            self.assertEqual(executor["agent_id"], "executor")
+            self.assertEqual(executor["session_id"], "executor-session")
             listed = call_tool("list_agents", {}, store=store)["agents"]
             self.assertEqual({item["name"] for item in listed}, {"planner", "executor"})
             sent = call_tool(
@@ -361,6 +363,9 @@ class McpToolTests(unittest.TestCase):
             self.assertEqual(transport["surface"], "multi_agent_v1.send_input")
             self.assertEqual(transport["target"], "spawned-agent-1")
             self.assertIn("Run smoke tests", transport["prompt"])
+            role = dispatched["team"]["roles"]["tester"]
+            self.assertEqual(role["agent_id"], team_result["team"]["roles"]["tester"]["alias"])
+            self.assertEqual(role["session_id"], "spawned-agent-1")
 
     def test_team_launch_prompt_records_launch_status(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

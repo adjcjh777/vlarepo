@@ -79,8 +79,8 @@ def as_list(value: Optional[Iterable[Any]]) -> List[str]:
 
 
 def make_agent_id(name: str, session_id: str) -> str:
-    del name
-    return session_id
+    hint = str(name or "").strip()
+    return hint or ("session-%s" % session_id[:8])
 
 
 def safe_json_dumps(value: Any) -> str:
@@ -169,7 +169,11 @@ class AgentStore:
         )
         agents = registry.get("agents", {})
         if isinstance(agents, list):
-            agents = {str(agent.get("agent_id")): agent for agent in agents if agent.get("agent_id")}
+            agents = {
+                str(agent.get("session_id") or agent.get("agent_id")): agent
+                for agent in agents
+                if agent.get("session_id") or agent.get("agent_id")
+            }
         if not isinstance(agents, dict):
             agents = {}
         agents = self._normalize_agents(agents)
@@ -190,27 +194,41 @@ class AgentStore:
                 record["agent_id"] = agent_id
                 normalized[agent_id] = record
                 continue
-            canonical_id = session_id
+            previous_key = str(key or "")
+            previous_agent_id = str(record.get("agent_id") or "")
+            hint_id = (
+                previous_agent_id
+                if previous_agent_id and previous_agent_id != session_id
+                else make_agent_id(str(record.get("name") or ""), session_id)
+            )
             legacy_ids = set(as_list(record.get("legacy_agent_ids")))
-            for candidate in [str(key), str(record.get("agent_id") or "")]:
-                if candidate and candidate != canonical_id:
+            for candidate in [previous_key, previous_agent_id]:
+                if candidate and candidate not in {session_id, hint_id}:
                     legacy_ids.add(candidate)
-            record["agent_id"] = canonical_id
+            record["session_id"] = session_id
+            record["agent_id"] = hint_id
             if legacy_ids:
                 record["legacy_agent_ids"] = sorted(legacy_ids)
-            existing = normalized.get(canonical_id)
+            elif "legacy_agent_ids" in record:
+                record.pop("legacy_agent_ids", None)
+            existing = normalized.get(session_id)
             if existing and str(existing.get("last_seen", "")) > str(record.get("last_seen", "")):
                 existing_legacy = set(as_list(existing.get("legacy_agent_ids")))
                 existing_legacy.update(legacy_ids)
+                if hint_id and hint_id not in {str(existing.get("agent_id") or ""), session_id}:
+                    existing_legacy.add(hint_id)
                 if existing_legacy:
                     existing["legacy_agent_ids"] = sorted(existing_legacy)
-                normalized[canonical_id] = existing
+                normalized[session_id] = existing
             else:
                 if existing:
                     legacy_ids.update(as_list(existing.get("legacy_agent_ids")))
+                    existing_hint = str(existing.get("agent_id") or "")
+                    if existing_hint and existing_hint not in {hint_id, session_id}:
+                        legacy_ids.add(existing_hint)
                     if legacy_ids:
                         record["legacy_agent_ids"] = sorted(legacy_ids)
-                normalized[canonical_id] = record
+                normalized[session_id] = record
         return normalized
 
     def _write_registry_unlocked(self, registry: Dict[str, Any]) -> None:
@@ -456,19 +474,21 @@ class AgentStore:
     def _resolve_agent_from_list(self, target: str, agents: List[Dict[str, Any]]) -> Dict[str, Any]:
         if not target:
             raise NotFoundError("Target is required")
-        exact = [agent for agent in agents if agent.get("agent_id") == target]
-        if exact:
-            return exact[0]
-        by_legacy = [agent for agent in agents if target in agent.get("legacy_agent_ids", [])]
-        if len(by_legacy) == 1:
-            return by_legacy[0]
-        if len(by_legacy) > 1:
-            raise AmbiguousTargetError(target, by_legacy)
         by_session = [agent for agent in agents if agent.get("session_id") == target]
         if len(by_session) == 1:
             return by_session[0]
         if len(by_session) > 1:
             raise AmbiguousTargetError(target, by_session)
+        exact = [agent for agent in agents if agent.get("agent_id") == target]
+        if len(exact) == 1:
+            return exact[0]
+        if len(exact) > 1:
+            raise AmbiguousTargetError(target, exact)
+        by_legacy = [agent for agent in agents if target in agent.get("legacy_agent_ids", [])]
+        if len(by_legacy) == 1:
+            return by_legacy[0]
+        if len(by_legacy) > 1:
+            raise AmbiguousTargetError(target, by_legacy)
         by_name = [agent for agent in agents if agent.get("name") == target]
         if len(by_name) == 1:
             return by_name[0]
@@ -504,13 +524,15 @@ class AgentStore:
             agents = registry["agents"]
             existing_id = session_id
             existing = agents.get(existing_id, {})
+            hint_id = agent_id or existing.get("agent_id") or make_agent_id(name, session_id)
             legacy_ids = set(as_list(existing.get("legacy_agent_ids")))
-            if agent_id and agent_id != session_id:
-                legacy_ids.add(agent_id)
+            previous_hint = str(existing.get("agent_id") or "")
+            if previous_hint and previous_hint not in {str(hint_id), session_id}:
+                legacy_ids.add(previous_hint)
             record = dict(existing)
             record.update(
                 {
-                    "agent_id": existing_id,
+                    "agent_id": hint_id,
                     "name": name or existing.get("name") or ("unnamed-%s" % session_id[:8]),
                     "role": role or existing.get("role") or "",
                     "session_id": session_id,
@@ -532,26 +554,29 @@ class AgentStore:
             )
             if legacy_ids:
                 record["legacy_agent_ids"] = sorted(legacy_ids)
+            elif "legacy_agent_ids" in record:
+                record.pop("legacy_agent_ids", None)
             agents[existing_id] = record
             self._write_registry_unlocked(registry)
             return dict(record)
 
     def update_agent(self, target: str, updates: Dict[str, Any]) -> Dict[str, Any]:
-        allowed = {"name", "role", "status", "capabilities", "tags", "metadata", "enabled"}
+        allowed = {"agent_id", "name", "role", "status", "capabilities", "tags", "metadata", "enabled"}
         filtered = {key: value for key, value in updates.items() if key in allowed and value is not None}
         if "status" in filtered and filtered["status"] not in VALID_STATUSES:
             raise AgentBusError("Invalid status %r" % filtered["status"])
         with self._locked("registry"):
             registry = self._read_registry_unlocked()
             agent = self._resolve_agent_from_list(target, list(registry["agents"].values()))
-            record = dict(registry["agents"][agent["agent_id"]])
+            record_key = agent.get("session_id") or agent.get("agent_id")
+            record = dict(registry["agents"][record_key])
             if "capabilities" in filtered:
                 filtered["capabilities"] = as_list(filtered["capabilities"])
             if "tags" in filtered:
                 filtered["tags"] = as_list(filtered["tags"])
             record.update(filtered)
             record["last_seen"] = utc_now()
-            registry["agents"][record["agent_id"]] = record
+            registry["agents"][record_key] = record
             self._write_registry_unlocked(registry)
             return dict(record)
 
@@ -584,8 +609,6 @@ class AgentStore:
         return record
 
     def _message_matches_agent(self, message: Dict[str, Any], agent: Dict[str, Any]) -> bool:
-        if message.get("to_agent_id") and message.get("to_agent_id") == agent.get("agent_id"):
-            return True
         if message.get("to_session_id") and message.get("to_session_id") == agent.get("session_id"):
             return True
         identity_values = {
@@ -598,6 +621,8 @@ class AgentStore:
             if value
         }
         identity_values.update(as_list(agent.get("legacy_agent_ids")))
+        if message.get("to_agent_id") and str(message.get("to_agent_id")) in identity_values:
+            return True
         for key in ("target_query", "to_name"):
             value = str(message.get(key) or "")
             if value and value in identity_values:

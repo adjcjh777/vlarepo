@@ -54,13 +54,17 @@ Each agent record stores its own `cwd`. When `send_message(..., trigger="resume"
 
 ## Identity Model
 
-The canonical Agent Bus identity is the Codex session id from `/status`.
+The canonical Agent Bus routing identity is the Codex session id from `/status`.
 
 ```text
-agent_id == session_id
+session_id = unique session/thread handle
+agent_id = optional, non-unique hint such as planner/executor/tester
+name = human-readable alias
 ```
 
-`name` is only a human-readable alias, such as `planner`, `executor`, or `bandofagents-tester`. Older name-derived ids are migrated into `legacy_agent_ids` so existing messages and commands can still resolve them, but new records and `list_agents` display the session id as `agent_id`.
+Agent records are keyed by `session_id`; resolve by `session_id` first, then by `agent_id` hint,
+then by `name`. Older name-derived ids remain in `legacy_agent_ids` so existing messages and
+commands can still resolve them.
 
 ## Typical Flow
 
@@ -90,7 +94,7 @@ send_message(target="executor", message="Run the focused tests.", trigger="queue
 
 This writes a `pending_target` message keyed by the future agent name. When a later Codex session
 registers with `name="executor"`, registration claims the queued message, fills in
-`to_agent_id == to_session_id == <new session id>`, and returns `claimed_count` plus
+`to_agent_id=<hint>` and `to_session_id=<new session id>`, and returns `claimed_count` plus
 `claimed_messages`. The new agent can then run:
 
 ```text
@@ -121,7 +125,7 @@ This is the path intended to make the task visible as a user input in the target
 
 For headless CLI automation, use `trigger="resume"`. Agent Bus then tries:
 
-1. `codex app-server proxy` JSON-RPC, using `thread/resume` followed by `turn/start` with text input.
+1. `codex app-server --stdio` JSON-RPC, using `thread/resume` followed by `turn/start` with text input.
 2. `codex exec resume <SESSION_ID>` as non-interactive fallback.
 
 `exec_resume_noninteractive` may not appear in an already-open Codex UI.
@@ -183,7 +187,7 @@ For a one-dialogue Codex controller flow:
 1. Create the team.
 2. Run `agent-bus team launch <team> --mode subagent-tool`.
 3. Call `multi_agent_v1.spawn_agent` once per returned `spawn_request`.
-4. Attach each returned `agent_id` with `agent-bus team attach-thread`.
+4. Attach each returned `spawn_agent.agent_id` as the role `session_id` with `agent-bus team attach-thread`.
 5. Use `team dispatch` for subsequent role tasks and rebalancing.
 
 The spawned agent does not need to know its own id; the controller records the mapping.
@@ -203,7 +207,7 @@ agent-bus team dispatch <team-id> --role tester "Run the smoke suite and report 
 `team launch --mode subagent-tool` is the preferred one-dialogue controller path when Codex has the
 `multi_agent_v1.spawn_agent` tool. It returns one `spawn_request` per role. The controller should
 call `multi_agent_v1.spawn_agent` with that request, then immediately attach the returned
-`agent_id`:
+`spawn_agent.agent_id` as the session/thread handle:
 
 ```bash
 agent-bus team launch dreamqa --role tester --mode subagent-tool

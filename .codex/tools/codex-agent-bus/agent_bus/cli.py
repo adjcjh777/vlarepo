@@ -20,6 +20,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     register = sub.add_parser("register", help="Register an agent")
     register.add_argument("--name", required=True)
+    register.add_argument("--agent-id", help="Optional hint identifier. Defaults to --name; --session-id is the unique key.")
     register.add_argument("--role", required=True)
     register.add_argument("--session-id", required=True)
     register.add_argument("--cwd")
@@ -29,6 +30,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     update = sub.add_parser("update", help="Update an agent")
     update.add_argument("target")
+    update.add_argument("--agent-id")
     update.add_argument("--name")
     update.add_argument("--role")
     update.add_argument("--status")
@@ -133,6 +135,7 @@ def dispatch(args: argparse.Namespace) -> None:
     if args.command == "register":
         payload = {
             "name": args.name,
+            "agent_id": args.agent_id,
             "role": args.role,
             "session_id": args.session_id,
             "cwd": args.cwd,
@@ -144,6 +147,7 @@ def dispatch(args: argparse.Namespace) -> None:
     elif args.command == "update":
         payload = {
             "target": args.target,
+            "agent_id": args.agent_id,
             "name": args.name,
             "role": args.role,
             "status": args.status,

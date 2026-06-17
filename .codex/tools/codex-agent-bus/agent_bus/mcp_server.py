@@ -28,7 +28,7 @@ SERVER_INSTRUCTIONS = (
     "requests, launch_team(..., mode='prompt') for manual launch prompts, or "
     "launch_team(..., mode='app-server-experimental') for experimental app-server "
     "threads. After spawning, attach_team_thread(team, role, thread_id) binds the "
-    "returned Codex agent/thread id to a role, "
+    "returned Codex thread/session handle to a role, "
     "send_message(target, message, trigger='codex_app') to prepare a visible "
     "Codex App user turn, then immediately call codex_app.send_message_to_thread "
     "with the returned threadId and prompt. Use trigger='subagent_tool' for "
@@ -36,8 +36,9 @@ SERVER_INSTRUCTIONS = (
     "Use trigger='resume' only for headless fallback. Use allow_pending=true "
     "to queue work for a future agent name before that session has registered; "
     "it will be claimed on registration. "
-    "Do not put secrets in messages. agent_id is the Codex "
-    "session_id; name is only a human alias. Do not create infinite ping-pong loops; "
+    "Do not put secrets in messages. session_id is the unique routing identity; "
+    "agent_id is a non-unique hint such as planner/executor/tester. "
+    "Do not create infinite ping-pong loops; "
     "correlation hop count is capped."
 )
 
@@ -69,6 +70,7 @@ TOOLS: List[Dict[str, Any]] = [
         "inputSchema": json_schema(
             {
                 "name": {"type": "string"},
+                "agent_id": {"type": "string"},
                 "role": {"type": "string"},
                 "session_id": {"type": "string"},
                 "cwd": {"type": "string"},
@@ -81,10 +83,11 @@ TOOLS: List[Dict[str, Any]] = [
     },
     {
         "name": "update_agent",
-        "description": "Update an agent by agent_id/session_id or human-readable name.",
+        "description": "Update an agent by session_id, agent_id hint, or human-readable name.",
         "inputSchema": json_schema(
             {
                 "target": {"type": "string"},
+                "agent_id": {"type": "string"},
                 "name": {"type": "string"},
                 "role": {"type": "string"},
                 "status": {"type": "string"},
@@ -107,7 +110,7 @@ TOOLS: List[Dict[str, Any]] = [
     },
     {
         "name": "resolve_agent",
-        "description": "Resolve session_id/agent_id or human-readable name to one agent. Returns candidates when ambiguous.",
+        "description": "Resolve session_id, agent_id hint, or human-readable name to one agent. Returns candidates when ambiguous.",
         "inputSchema": json_schema({"target": {"type": "string"}}, ["target"]),
     },
     {
@@ -296,6 +299,7 @@ def call_tool(
             status=args.get("status") or "idle",
             capabilities=args.get("capabilities"),
             tags=args.get("tags"),
+            agent_id=args.get("agent_id"),
         )
         claimed = store.claim_pending_messages(agent)
         return {"agent": agent, "claimed_messages": claimed, "claimed_count": len(claimed)}
@@ -963,7 +967,7 @@ def build_subagent_spawn_prompt(team: Dict[str, Any], role: Dict[str, Any]) -> s
             "- role_description: %s" % (role.get("description") or ""),
             "",
             "启动规则：",
-            "1. 你不是单独行动；父对话会把 spawn_agent 返回的 agent_id 作为 thread/session id 写入 Agent Bus。",
+            "1. 你不是单独行动；父对话会把 spawn_agent 返回的 agent_id 当作底层 session/thread handle 写入 Agent Bus。",
             "2. 如果你要读 Bus 任务，等待父对话 attach-thread 后再查 inbox；不要臆造自己的 id。",
             "3. 先确认 cwd / git status / AGENTS.md，再按角色边界工作。",
             "4. 完成任务时用 Agent Bus reply_message 回传 status / files_changed / checks / risks。",

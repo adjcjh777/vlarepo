@@ -21,10 +21,12 @@ class StoreTests(unittest.TestCase):
                 status="idle",
             )
             self.assertEqual(agent["cwd"], "/tmp/project-a")
-            self.assertEqual(agent["agent_id"], "session-a")
+            self.assertEqual(agent["agent_id"], "executor")
+            self.assertEqual(agent["session_id"], "session-a")
             self.assertTrue((Path(tmp) / "registry.json").exists())
             self.assertTrue((Path(tmp) / "messages.jsonl").exists())
             self.assertEqual(store.resolve_agent("executor")["session_id"], "session-a")
+            self.assertEqual(store.resolve_agent("session-a")["agent_id"], "executor")
             updated = store.upsert_agent(
                 name="executor",
                 role="Runs focused tests",
@@ -62,12 +64,13 @@ class StoreTests(unittest.TestCase):
             store = AgentStore(root)
             agents = store.list_agents()
             self.assertEqual(len(agents), 1)
-            self.assertEqual(agents[0]["agent_id"], "019ec041-0e14-7e23-9f27-be6890b12288")
-            self.assertIn("bandofagents-planner-52fbc9fd", agents[0]["legacy_agent_ids"])
+            self.assertEqual(agents[0]["session_id"], "019ec041-0e14-7e23-9f27-be6890b12288")
+            self.assertEqual(agents[0]["agent_id"], "bandofagents-planner-52fbc9fd")
             self.assertEqual(
-                store.resolve_agent("bandofagents-planner-52fbc9fd")["agent_id"],
+                store.resolve_agent("bandofagents-planner-52fbc9fd")["session_id"],
                 "019ec041-0e14-7e23-9f27-be6890b12288",
             )
+            self.assertIn("019ec041-0e14-7e23-9f27-be6890b12288", store._read_registry_unlocked()["agents"])
 
     def test_ambiguous_name_returns_candidates(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -77,6 +80,23 @@ class StoreTests(unittest.TestCase):
             with self.assertRaises(AmbiguousTargetError) as ctx:
                 store.resolve_agent("executor")
             self.assertEqual(len(ctx.exception.candidates), 2)
+
+    def test_agent_id_is_hint_and_session_id_is_registry_key(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            agent = store.upsert_agent(
+                name="friendly tester",
+                agent_id="tester-hint",
+                role="Tests",
+                session_id="session-primary",
+                cwd="/tmp/project",
+            )
+            self.assertEqual(agent["agent_id"], "tester-hint")
+            self.assertEqual(agent["session_id"], "session-primary")
+            self.assertEqual(store.resolve_agent("session-primary")["agent_id"], "tester-hint")
+            self.assertEqual(store.resolve_agent("tester-hint")["session_id"], "session-primary")
+            self.assertIn("session-primary", store._read_registry_unlocked()["agents"])
+            self.assertNotIn("tester-hint", store._read_registry_unlocked()["agents"])
 
     def test_message_lifecycle(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -106,7 +126,7 @@ class StoreTests(unittest.TestCase):
             self.assertEqual([item["message_id"] for item in claimed], [message["message_id"]])
             updated = store.find_message(message["message_id"])
             self.assertFalse(updated["pending_target"])
-            self.assertEqual(updated["to_agent_id"], "session-executor")
+            self.assertEqual(updated["to_agent_id"], "executor")
             self.assertEqual(updated["to_session_id"], "session-executor")
             self.assertEqual(updated["status"], "queued")
             inbox = store.get_inbox(target="session-executor", unread_only=True)

@@ -115,8 +115,8 @@ def setup_warnings(diag: Dict[str, Any]) -> List[str]:
 
 
 def agent_id_for(name: str, session_id: str) -> str:
-    del name
-    return session_id
+    hint = str(name or "").strip()
+    return hint or ("session-%s" % session_id[:8])
 
 
 def as_list(value: Any) -> List[str]:
@@ -139,27 +139,41 @@ def normalize_agents(agents: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             record["agent_id"] = agent_id
             normalized[agent_id] = record
             continue
-        canonical_id = session_id
+        previous_key = str(key or "")
+        previous_agent_id = str(record.get("agent_id") or "")
+        hint_id = (
+            previous_agent_id
+            if previous_agent_id and previous_agent_id != session_id
+            else agent_id_for(str(record.get("name") or ""), session_id)
+        )
         legacy_ids = set(as_list(record.get("legacy_agent_ids")))
-        for candidate in [str(key), str(record.get("agent_id") or "")]:
-            if candidate and candidate != canonical_id:
+        for candidate in [previous_key, previous_agent_id]:
+            if candidate and candidate not in {session_id, hint_id}:
                 legacy_ids.add(candidate)
-        record["agent_id"] = canonical_id
+        record["session_id"] = session_id
+        record["agent_id"] = hint_id
         if legacy_ids:
             record["legacy_agent_ids"] = sorted(legacy_ids)
-        existing = normalized.get(canonical_id)
+        elif "legacy_agent_ids" in record:
+            record.pop("legacy_agent_ids", None)
+        existing = normalized.get(session_id)
         if existing and str(existing.get("last_seen", "")) > str(record.get("last_seen", "")):
             merged = set(as_list(existing.get("legacy_agent_ids")))
             merged.update(legacy_ids)
+            if hint_id and hint_id not in {str(existing.get("agent_id") or ""), session_id}:
+                merged.add(hint_id)
             if merged:
                 existing["legacy_agent_ids"] = sorted(merged)
-            normalized[canonical_id] = existing
+            normalized[session_id] = existing
         else:
             if existing:
                 legacy_ids.update(as_list(existing.get("legacy_agent_ids")))
+                existing_hint = str(existing.get("agent_id") or "")
+                if existing_hint and existing_hint not in {hint_id, session_id}:
+                    legacy_ids.add(existing_hint)
                 if legacy_ids:
                     record["legacy_agent_ids"] = sorted(legacy_ids)
-            normalized[canonical_id] = record
+            normalized[session_id] = record
     return normalized
 
 
@@ -172,7 +186,11 @@ def load_registry(path: Path) -> Dict[str, Any]:
         raise SystemExit("Invalid Agent Bus registry JSON: %s" % exc)
     agents = data.get("agents", {})
     if isinstance(agents, list):
-        agents = {item["agent_id"]: item for item in agents if item.get("agent_id")}
+        agents = {
+            str(item.get("session_id") or item.get("agent_id")): item
+            for item in agents
+            if item.get("session_id") or item.get("agent_id")
+        }
     if not isinstance(agents, dict):
         agents = {}
     data["agents"] = normalize_agents(agents)
@@ -284,8 +302,6 @@ def assign_claimed_team_roles(home: Path, claimed: List[Dict[str, Any]], agent: 
 
 
 def message_matches_agent(message: Dict[str, Any], agent: Dict[str, Any]) -> bool:
-    if message.get("to_agent_id") and message.get("to_agent_id") == agent.get("agent_id"):
-        return True
     if message.get("to_session_id") and message.get("to_session_id") == agent.get("session_id"):
         return True
     identities = {
@@ -294,6 +310,8 @@ def message_matches_agent(message: Dict[str, Any], agent: Dict[str, Any]) -> boo
         if value
     }
     identities.update(as_list(agent.get("legacy_agent_ids")))
+    if message.get("to_agent_id") and str(message.get("to_agent_id")) in identities:
+        return True
     for key in ("target_query", "to_name"):
         value = str(message.get(key) or "")
         if value and value in identities:
@@ -369,6 +387,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--name", required=True)
     parser.add_argument("--role", default=DEFAULT_ROLE)
     parser.add_argument("--session-id", default=os.environ.get("CODEX_SESSION_ID"))
+    parser.add_argument("--agent-id", help="Optional hint identifier. Defaults to --name; --session-id remains the unique key.")
     parser.add_argument("--cwd", default=os.getcwd())
     parser.add_argument("--status", default="idle")
     parser.add_argument("--capability", action="append", default=[])
@@ -430,9 +449,10 @@ def main() -> int:
             )
             return 2
         old_id = current.get("agent_id") if current else None
-        new_id = agent_id_for(args.name, session_id)
+        registry_key = session_id
+        new_id = args.agent_id or agent_id_for(args.name, session_id)
         legacy_ids = set(as_list((current or {}).get("legacy_agent_ids")))
-        if old_id and old_id != new_id:
+        if old_id and old_id not in {new_id, session_id}:
             legacy_ids.add(str(old_id))
         record = dict(current or {})
         record.update(
@@ -453,9 +473,9 @@ def main() -> int:
         )
         if legacy_ids:
             record["legacy_agent_ids"] = sorted(legacy_ids)
-        if old_id and old_id != new_id:
-            agents.pop(old_id, None)
-        agents[new_id] = record
+        elif "legacy_agent_ids" in record:
+            record.pop("legacy_agent_ids", None)
+        agents[registry_key] = record
         write_registry(registry_path, registry)
         if fcntl is not None:
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)

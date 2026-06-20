@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Bus Team"
+  short_description: "Create and dispatch Agent Bus teams"
+  default_prompt: "Use $agent-bus-team to create an Agent Bus project team and dispatch role-scoped work."

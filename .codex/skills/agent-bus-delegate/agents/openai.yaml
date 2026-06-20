@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Bus Delegate"
+  short_description: "Send, deliver, acknowledge Bus tasks"
+  default_prompt: "Use $agent-bus-delegate to send this task to another Agent Bus agent and verify delivery."

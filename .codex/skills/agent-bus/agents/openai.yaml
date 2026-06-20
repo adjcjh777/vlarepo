@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Bus"
+  short_description: "Route Agent Bus coordination workflows"
+  default_prompt: "Use $agent-bus to choose the right Agent Bus workflow for this multi-agent task."

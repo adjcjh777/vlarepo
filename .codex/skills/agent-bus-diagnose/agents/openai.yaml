@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Bus Diagnose"
+  short_description: "Debug Agent Bus setup and delivery"
+  default_prompt: "Use $agent-bus-diagnose to inspect Agent Bus health and explain why delivery is stuck."

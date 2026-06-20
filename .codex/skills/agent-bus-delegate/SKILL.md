@@ -19,19 +19,34 @@ Never claim visible delivery from Bus storage alone.
 ## Send Workflow
 
 1. Resolve the target.
-   - Existing agent/session: target the `session_id` when available.
+   - Existing Codex App thread/session: target the `session_id` and plan to use Codex App visible delivery.
+   - Existing spawned subagent: use the returned subagent id and the subagent transport.
    - Future agent/role alias: use a stable alias such as `executor`, `tester`, `scout`, or a team role alias.
 
 2. Create the canonical Bus message and capture `message_id`.
 
+For existing Codex App threads that should see the task now, prefer one `codex_app` send. This creates the Bus record and prepares or performs visible delivery:
+
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus send <target> "<task>" \
+  --from-agent <sender_session_id_or_name> \
+  --trigger codex_app \
+  --timeout-sec 15 \
+  --correlation-id <uuid>
+```
+
+If this returns a `codex_app.send_message_to_thread` payload instead of delivering by itself, immediately call that Codex App tool with the returned thread id and prompt.
+
+If using a direct Codex App thread tool without the Agent Bus `codex_app` transport, first create a queue record, then send the visible prompt with the same `message_id` and `correlation_id`:
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus send <target_session_id> "<task>" \
   --from-agent <sender_session_id_or_name> \
   --trigger queue \
   --correlation-id <uuid>
 ```
 
-For future sessions, add `--allow-pending`:
+For future sessions without a real thread, add `--allow-pending`:
 
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus send executor "<task>" \
@@ -41,11 +56,13 @@ For future sessions, add `--allow-pending`:
   --correlation-id <uuid>
 ```
 
-3. If the task must visibly wake a real Codex thread, send a matching visible prompt with the available Codex thread tool. Include:
+3. For every visible prompt, include:
    - original `message_id`
    - `correlation_id`
    - sender and target names
    - exact reply instruction
+
+Direct visible prompt shape:
 
 ```text
 After finishing, reply through Agent Bus:
@@ -84,6 +101,8 @@ After processing a reply message, mark it read:
 ## Trigger Cautions
 
 - Prefer `--trigger queue` for durable records and pending targets.
+- Prefer `--trigger codex_app` or the direct Codex App thread tool for existing Codex App threads that should see the task now.
+- Prefer `--trigger subagent_tool` for spawned subagents.
 - Use `--allow-pending` only for intentional stable names or role aliases.
 - Avoid sending multiple `--trigger resume` or `--trigger codex_app` commands in parallel.
 - If using `resume` or `codex_app`, send one message at a time and add a small timeout such as `--timeout-sec 15`.

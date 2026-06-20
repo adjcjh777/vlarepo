@@ -54,7 +54,8 @@ Filter the result mentally or with safe text tools to the relevant `message_id`,
 - No current session record: rerun `$agent-bus-register` with a real `/status` session id or open a fresh Codex session after enabling hooks.
 - Pending target not claimed: ensure the later session registers with the intended role alias, tag, or compatible cwd.
 - Message queued but not visible: Bus storage worked, but Codex-side visible delivery is unconfirmed.
-- `resume` or `codex_app` hung: stop parallel retries, prefer queue, then use visible thread delivery through `$agent-bus-delegate`.
+- `codex_app` missing or returned only a transport payload: call the available Codex App thread tool with the returned thread id and prompt, then require ACK/reply for proof.
+- `resume` or `codex_app` hung: stop parallel retries, preserve the canonical `message_id`, and route recovery through `$agent-bus-delegate`.
 - Ambiguous agent name: resolve by `session_id`; treat `agent_id` as a role hint only.
 
 ## Recovery Guidance

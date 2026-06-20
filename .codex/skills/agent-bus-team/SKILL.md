@@ -69,14 +69,20 @@ Use attach when a real role conversation already exists:
 
 ## Dispatch Role Work
 
+Choose the dispatch transport from the role's real target:
+
+- Attached Codex App thread/session: prefer `--trigger codex_app`.
+- Spawned subagent controlled by the current conversation: use `--trigger subagent_tool`.
+- Future role with no real thread: use `--trigger queue` or pending bootstrap flow.
+
 ```bash
 ~/.codex/tools/codex-agent-bus/bin/agent-bus team dispatch <team-id-or-name> \
   --role tester \
-  --trigger subagent_tool \
+  --trigger <codex_app|subagent_tool|queue> \
   "<task>"
 ```
 
-If the command returns a transport payload for a visible subagent or Codex thread tool, call that tool with the returned target and prompt. The Bus record is durable, but the target sees the task only after the visible transport succeeds.
+If the command returns a transport payload for a visible subagent or Codex App thread tool, call that tool with the returned target and prompt. The Bus record is durable, but the target sees the task only after the visible transport succeeds.
 
 ## Team Commands
 

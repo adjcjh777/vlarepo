@@ -27,9 +27,11 @@ If a request spans multiple areas, use this order:
 - `agent_id` is a non-unique role or name hint.
 - Durable Bus storage and visible Codex thread delivery are separate proof layers.
 - A queued message, pending message, or `last_seen` update does not prove the target saw the task.
+- When the target is an existing Codex App thread/session and the task should be seen now, prefer Codex App visible delivery after creating the canonical Bus record.
+- Use pending Bus records for future sessions or stable role aliases that do not have a real thread yet.
 - Do not read Codex auth files, API keys, transcripts, or unrelated private state.
 - Do not edit `~/.codex/config.toml` unless the user explicitly asks for installation/configuration work.
-- Avoid `resume` and `codex_app` triggers unless the user needs visible wake-up and the narrow skill's timeout rules are followed.
+- Avoid repeated `resume` or `codex_app` wake attempts; use the narrow skill's timeout and verification rules.
 
 ## Reporting Standard
 

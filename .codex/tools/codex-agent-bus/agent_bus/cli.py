@@ -98,10 +98,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     team_launch = team_sub.add_parser("launch", help="Prepare role launch prompts or experimentally create role threads")
     team_launch.add_argument("team")
     team_launch.add_argument("--role")
-    team_launch.add_argument("--mode", choices=["subagent-tool", "prompt", "app-server-experimental"], default="prompt")
+    team_launch.add_argument("--mode", choices=["subagent-tool", "prompt", "codex-app", "app-server-experimental"], default="prompt")
     team_launch.add_argument("--from-agent")
     team_launch.add_argument("--timeout-sec", type=float, default=60)
     team_launch.add_argument("--deliver-bootstrap", action="store_true")
+    team_launch.add_argument("--codex-project-id", help="Project id returned by codex_app.list_projects for codex-app mode")
 
     team_attach = team_sub.add_parser("attach-thread", help="Attach an existing Codex thread/session to a team role")
     team_attach.add_argument("team")
@@ -245,6 +246,7 @@ def dispatch_team(args: argparse.Namespace) -> None:
                     "from_agent": args.from_agent,
                     "timeout_sec": args.timeout_sec,
                     "deliver_bootstrap": args.deliver_bootstrap,
+                    "codex_project_id": args.codex_project_id,
                 },
             )
         )

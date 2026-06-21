@@ -33,7 +33,23 @@ This creates durable team state, role aliases, pending bootstrap messages, and l
 
 ## Launch and Attach
 
-Preferred path when a controller has a subagent tool:
+Preferred path for visible Codex App role threads:
+
+1. Run:
+
+```bash
+~/.codex/tools/codex-agent-bus/bin/agent-bus team launch <team-id-or-name> --mode codex-app
+```
+
+2. If the launch result includes `project_resolution.status=project_lookup_required`, call `codex_app.list_projects`, choose the deepest saved project path that contains the team project path, then rerun launch with `--codex-project-id <projectId>` or fill the returned `create_thread_request.target.projectId`.
+
+3. For each returned `create_thread_request`, call `codex_app.create_thread`. This creates the left-sidebar-visible Codex App thread.
+
+4. Immediately call the returned `attach_after_create` command using `create_thread.threadId`.
+
+5. If attach returns `visible_delivery`, call `codex_app.send_message_to_thread` with the created thread id and `visible_delivery.prompt` so the role receives the canonical Agent Bus bootstrap message.
+
+Use subagent launch when the controller wants in-turn worker agents instead of persistent Codex App threads:
 
 1. Run:
 
@@ -97,5 +113,6 @@ If the command returns a transport payload for a visible subagent or Codex App t
 - Use `$agent-bus-register` when a role session needs to register and claim its pending bootstrap message.
 - Use `$agent-bus-delegate` for ACK/reply handling and visible delivery verification.
 - Use `$agent-bus-diagnose` when team dispatch is queued but not visible.
-- Treat `team launch --mode app-server-experimental` as experimental. It may create an app-server thread, but Codex App visibility still needs ACK or visible-delivery proof.
+- Prefer `team launch --mode codex-app` for native Codex App thread creation.
+- Treat `team launch --mode app-server-experimental` as legacy experimental fallback. It may create an app-server thread id, but Codex App visibility still needs ACK or visible-delivery proof.
 - Until a real session exists, role tasks are pending Bus records only.

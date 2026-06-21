@@ -149,6 +149,9 @@ class McpToolTests(unittest.TestCase):
             self.assertIn("用户输入（来自 Codex Agent Bus / planner）", transport.calls[0]["prompt"])
             self.assertIn("用户任务：\ndo work", transport.calls[0]["prompt"])
             self.assertIn("reply_message", transport.calls[0]["prompt"])
+            self.assertIn("CLI fallback", transport.calls[0]["prompt"])
+            self.assertIn("agent-bus reply", transport.calls[0]["prompt"])
+            self.assertIn("--from-agent executor-session --trigger queue", transport.calls[0]["prompt"])
 
     def test_default_send_prepares_codex_app_thread_message(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -454,10 +457,62 @@ class McpToolTests(unittest.TestCase):
                 "spawn_agent.agent_id",
             )
             self.assertIn("不要臆造自己的 id", launch["spawn_request"]["message"])
+            self.assertIn("reply_message", launch["spawn_request"]["message"])
+            self.assertIn("agent-bus reply", launch["spawn_request"]["message"])
+            self.assertIn("--from-agent dream-qa-tester --trigger queue", launch["spawn_request"]["message"])
             role = launched["team"]["roles"]["tester"]
             self.assertEqual(role["launch_status"], "spawn_tool_required")
             self.assertEqual(role["launch_mode"], "subagent-tool")
             self.assertEqual(role["spawn_request"]["tool"], "multi_agent_v1.spawn_agent")
+
+    def test_team_launch_codex_app_returns_create_thread_request(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AgentStore(Path(tmp))
+            team_result = call_tool(
+                "create_team",
+                {
+                    "name": "Dream QA",
+                    "project": "/tmp/dreamqa",
+                    "goal": "Improve demo quality",
+                    "roles": [{"name": "tester", "description": "Runs QA"}],
+                },
+                store=store,
+            )
+            launched = call_tool(
+                "launch_team",
+                {
+                    "team": team_result["team"]["team_id"],
+                    "role": "tester",
+                    "mode": "codex-app",
+                    "codex_projects": [
+                        {"projectId": "/tmp", "path": "/tmp", "label": "tmp"},
+                        {"projectId": "/tmp/other", "path": "/tmp/other", "label": "other"},
+                    ],
+                },
+                store=store,
+            )
+            launch = launched["launches"][0]
+            self.assertEqual(launch["status"], "codex_app_create_thread_required")
+            self.assertEqual(launch["create_thread_request"]["tool"], "codex_app.create_thread")
+            self.assertEqual(launch["create_thread_request"]["target"]["projectId"], "/tmp")
+            self.assertEqual(
+                launch["create_thread_request"]["target"]["environment"],
+                {"type": "local"},
+            )
+            self.assertEqual(launch["project_resolution"]["status"], "deepest_parent")
+            self.assertEqual(launch["project_resolution"]["matched_project_path"], "/tmp")
+            self.assertIn("ACK_CODEX_APP_THREAD_CREATED_VISIBLE", launch["create_thread_request"]["prompt"])
+            self.assertEqual(launch["attach_after_create"]["thread_id_source"], "create_thread.threadId")
+            self.assertIn("team attach-thread", launch["attach_after_create"]["command"])
+            self.assertEqual(launch["deliver_after_attach"]["tool"], "codex_app.send_message_to_thread")
+            self.assertEqual(
+                launch["deliver_after_attach"]["prompt_source"],
+                "attach_team_thread.visible_delivery.prompt",
+            )
+            role = launched["team"]["roles"]["tester"]
+            self.assertEqual(role["launch_status"], "codex_app_create_thread_required")
+            self.assertEqual(role["launch_mode"], "codex-app")
+            self.assertEqual(role["codex_app_create_thread"]["target"]["projectId"], "/tmp")
 
     def test_experimental_team_launch_starts_thread_and_attaches_role(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

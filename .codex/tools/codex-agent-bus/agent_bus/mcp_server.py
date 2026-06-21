@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shlex
 import sys
 from datetime import datetime, timezone
 from typing import Any, Dict, Iterable, List, Optional, Tuple
@@ -26,6 +27,8 @@ SERVER_INSTRUCTIONS = (
     "create_team(project, goal, roles) to bootstrap a role-based project team, "
     "launch_team(team, role, mode='subagent-tool') to prepare subagent spawn "
     "requests, launch_team(..., mode='prompt') for manual launch prompts, or "
+    "launch_team(..., mode='codex-app') to prepare native Codex App "
+    "create_thread requests for visible role threads, or "
     "launch_team(..., mode='app-server-experimental') for experimental app-server "
     "threads. After spawning, attach_team_thread(team, role, thread_id) binds the "
     "returned Codex thread/session handle to a role, "
@@ -187,10 +190,25 @@ TOOLS: List[Dict[str, Any]] = [
             {
                 "team": {"type": "string"},
                 "role": {"type": "string"},
-                "mode": {"type": "string", "enum": ["subagent-tool", "prompt", "app-server-experimental"]},
+                "mode": {"type": "string", "enum": ["subagent-tool", "prompt", "codex-app", "app-server-experimental"]},
                 "from_agent": {"type": "string"},
                 "timeout_sec": {"type": "number"},
                 "deliver_bootstrap": {"type": "boolean"},
+                "codex_project_id": {"type": "string"},
+                "codex_projects": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "projectId": {"type": "string"},
+                            "path": {"type": "string"},
+                            "label": {"type": "string"},
+                            "projectKind": {"type": "string"},
+                            "hostId": {"type": "string"},
+                        },
+                        "additionalProperties": True,
+                    },
+                },
             },
             ["team"],
         ),
@@ -604,6 +622,73 @@ def launch_team(
                 ),
             },
         }
+    if mode == "codex-app":
+        project_resolution = resolve_codex_app_project(
+            str(team.get("project") or os.getcwd()),
+            explicit_project_id=args.get("codex_project_id"),
+            codex_projects=args.get("codex_projects"),
+        )
+        for role_name, role in role_items:
+            if role.get("status") == "active" and (role.get("thread_id") or role.get("session_id")):
+                launches.append(
+                    {
+                        "role": role_name,
+                        "alias": role.get("alias"),
+                        "status": "already_active",
+                        "thread_id": role.get("thread_id") or role.get("session_id"),
+                    }
+                )
+                continue
+            prompt = build_codex_app_thread_prompt(team, role)
+            create_thread_request = build_codex_app_create_thread_request(prompt, project_resolution)
+            attach_after_create = build_codex_app_attach_after_create(team, role_name)
+            deliver_after_attach = build_codex_app_deliver_after_attach()
+            team = store.update_team_role_launch(
+                team["team_id"],
+                role_name,
+                {
+                    "launch_status": "codex_app_create_thread_required",
+                    "launch_mode": "codex-app",
+                    "launch_prompt": prompt,
+                    "last_launch_at": utc_now(),
+                    "codex_app_create_thread": create_thread_request,
+                    "codex_app_project_resolution": project_resolution,
+                },
+                event={
+                    "mode": "codex-app",
+                    "status": "codex_app_create_thread_required",
+                    "project_resolution": project_resolution,
+                },
+            )
+            launches.append(
+                {
+                    "role": role_name,
+                    "alias": role.get("alias"),
+                    "status": "codex_app_create_thread_required",
+                    "project_resolution": project_resolution,
+                    "create_thread_request": create_thread_request,
+                    "attach_after_create": attach_after_create,
+                    "deliver_after_attach": deliver_after_attach,
+                    "next_step": (
+                        "Call codex_app.create_thread with create_thread_request. Then call "
+                        "attach_after_create using the returned threadId, and deliver the "
+                        "attached bootstrap prompt with codex_app.send_message_to_thread."
+                    ),
+                }
+            )
+        return {
+            "team": store.resolve_team(team["team_id"]),
+            "launches": launches,
+            "thread_creation": {
+                "status": "codex_app_create_thread_required",
+                "visibility": "visible_after_codex_app_create_thread",
+                "reason": (
+                    "Agent Bus cannot call Codex App tools from the local CLI. A Codex controller "
+                    "should call codex_app.create_thread so the role appears in the Codex App "
+                    "thread list, then attach the returned threadId to the team role."
+                ),
+            },
+        }
     if mode != "app-server-experimental":
         raise AgentBusError("Unsupported launch mode %r" % mode)
     for role_name, role in role_items:
@@ -904,6 +989,26 @@ def scrub_transport_result(value: Dict[str, Any]) -> Dict[str, Any]:
     return scrubbed
 
 
+def build_cli_reply_command(message_id: str, from_agent: str) -> str:
+    return (
+        "~/.codex/tools/codex-agent-bus/bin/agent-bus reply "
+        f"{shlex.quote(str(message_id or '<message_id>'))} "
+        "\"<你的 JSON 或简洁结果>\" "
+        f"--from-agent {shlex.quote(str(from_agent or '<your-agent-id-or-session-id>'))} --trigger queue"
+    )
+
+
+def reply_instruction_lines(message_id: str, from_agent: str) -> List[str]:
+    return [
+        "回执要求：",
+        "- 优先调用 MCP 工具：reply_message(message_id=%r, result=\"...\")。"
+        % str(message_id or "<message_id>"),
+        "- 如果当前线程没有 MCP reply_message 工具，使用 CLI fallback：",
+        build_cli_reply_command(message_id, from_agent),
+        "- 不要在回执或委派消息里写入密钥或敏感凭据。",
+    ]
+
+
 def maybe_resolve_agent(store: AgentStore, target: str) -> Dict[str, Any]:
     try:
         return store.resolve_agent(target, include_disabled=True)
@@ -912,7 +1017,7 @@ def maybe_resolve_agent(store: AgentStore, target: str) -> Dict[str, Any]:
 
 
 def build_team_role_prompt(team: Dict[str, Any], role: Dict[str, Any], from_agent: Dict[str, Any]) -> str:
-    del from_agent
+    source = str(from_agent.get("session_id") or from_agent.get("name") or "unknown")
     return "\n".join(
         [
             "你是 Agent Bus 团队成员：%s" % role.get("alias"),
@@ -928,7 +1033,9 @@ def build_team_role_prompt(team: Dict[str, Any], role: Dict[str, Any], from_agen
             "1. 确认 cwd 与 git status，不要覆盖其它人的改动。",
             "2. 读取项目 AGENTS.md / README / docs 中和任务相关的规则。",
             "3. 只在你的角色边界内工作；需要跨边界时通过 Agent Bus 回报 NEEDS_CONTEXT。",
-            "4. 完成后 reply_message(message_id=<原消息>, result=<JSON/摘要>)。",
+            "4. 完成后通过 Agent Bus 回传结果。",
+            "",
+            *reply_instruction_lines("<原消息>", source),
             "",
             "团队目标：",
             str(team.get("goal") or ""),
@@ -937,6 +1044,7 @@ def build_team_role_prompt(team: Dict[str, Any], role: Dict[str, Any], from_agen
 
 
 def build_team_task_prompt(team: Dict[str, Any], role: Dict[str, Any], body: str) -> str:
+    role_alias = str(role.get("alias") or role.get("name") or "unknown")
     return "\n".join(
         [
             "Agent Bus team task",
@@ -949,12 +1057,15 @@ def build_team_task_prompt(team: Dict[str, Any], role: Dict[str, Any], body: str
             "任务：",
             str(body),
             "",
-            "完成后用 reply_message 回传 status / files_changed / checks / risks。",
+            "完成后通过 Agent Bus 回传 status / files_changed / checks / risks。",
+            "",
+            *reply_instruction_lines("<原消息>", role_alias),
         ]
     )
 
 
 def build_subagent_spawn_prompt(team: Dict[str, Any], role: Dict[str, Any]) -> str:
+    role_alias = str(role.get("alias") or role.get("name") or "unknown")
     return "\n".join(
         [
             "你是 Agent Bus 团队里的 %s。" % role.get("name"),
@@ -970,12 +1081,146 @@ def build_subagent_spawn_prompt(team: Dict[str, Any], role: Dict[str, Any]) -> s
             "1. 你不是单独行动；父对话会把 spawn_agent 返回的 agent_id 当作底层 session/thread handle 写入 Agent Bus。",
             "2. 如果你要读 Bus 任务，等待父对话 attach-thread 后再查 inbox；不要臆造自己的 id。",
             "3. 先确认 cwd / git status / AGENTS.md，再按角色边界工作。",
-            "4. 完成任务时用 Agent Bus reply_message 回传 status / files_changed / checks / risks。",
+            "4. 完成任务时通过 Agent Bus 回传 status / files_changed / checks / risks。",
+            "",
+            *reply_instruction_lines("<原消息>", role_alias),
             "",
             "团队目标：",
             str(team.get("goal") or ""),
         ]
     )
+
+
+def build_codex_app_thread_prompt(team: Dict[str, Any], role: Dict[str, Any]) -> str:
+    return "\n".join(
+        [
+            "Agent Bus Codex App role thread bootstrap",
+            "",
+            "你是 Agent Bus 团队里的 %s。" % role.get("name"),
+            "role_alias: %s" % role.get("alias"),
+            "team_id: %s" % team.get("team_id"),
+            "project_dir: %s" % team.get("project"),
+            "",
+            "这条线程由 Codex App create_thread 原生创建，应该出现在 Codex App 左侧会话栏。",
+            "父对话会把 create_thread 返回的 threadId attach 到 Agent Bus；不要臆造自己的 id。",
+            "在收到后续 bootstrap/task 投递前，不要修改文件。",
+            "",
+            "请先直接回复以下 ACK：",
+            "ACK_CODEX_APP_THREAD_CREATED_VISIBLE",
+            "role_alias=%s" % role.get("alias"),
+            "project_dir=%s" % team.get("project"),
+            "no_file_changes=true",
+            "",
+            "团队目标：",
+            str(team.get("goal") or ""),
+        ]
+    )
+
+
+def resolve_codex_app_project(
+    project_path: str,
+    explicit_project_id: Optional[str] = None,
+    codex_projects: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
+    preferred_path = os.path.abspath(os.path.expanduser(str(project_path or os.getcwd())))
+    preferred_real_path = os.path.realpath(preferred_path)
+    if explicit_project_id:
+        return {
+            "status": "explicit",
+            "project_id": str(explicit_project_id),
+            "project_path": preferred_path,
+            "matched_project_path": None,
+            "match_strategy": "explicit_codex_project_id",
+        }
+    projects = codex_projects or []
+    best: Optional[Tuple[int, Dict[str, Any], str, str]] = None
+    for project in projects:
+        candidate_path = str(project.get("path") or project.get("projectId") or "")
+        if not candidate_path:
+            continue
+        display_candidate = os.path.abspath(os.path.expanduser(candidate_path))
+        real_candidate = os.path.realpath(display_candidate)
+        candidate_prefix = real_candidate.rstrip(os.sep)
+        if preferred_real_path == real_candidate:
+            best = (len(real_candidate), project, display_candidate, real_candidate)
+            break
+        if preferred_real_path.startswith(candidate_prefix + os.sep):
+            current = (len(real_candidate), project, display_candidate, real_candidate)
+            if best is None or current[0] > best[0]:
+                best = current
+    if best:
+        _, project, matched_path, matched_real_path = best
+        project_id = str(project.get("projectId") or matched_path)
+        status = "exact" if preferred_real_path == matched_real_path else "deepest_parent"
+        return {
+            "status": status,
+            "project_id": project_id,
+            "project_path": preferred_path,
+            "matched_project_path": matched_path,
+            "match_strategy": "deepest_path_prefix",
+            "project": project,
+        }
+    return {
+        "status": "project_lookup_required",
+        "project_id": None,
+        "project_path": preferred_path,
+        "matched_project_path": None,
+        "match_strategy": "call_codex_app.list_projects_then_choose_deepest_parent",
+        "tool": "codex_app.list_projects",
+    }
+
+
+def build_codex_app_create_thread_request(
+    prompt: str,
+    project_resolution: Dict[str, Any],
+) -> Dict[str, Any]:
+    project_id = project_resolution.get("project_id") or "<projectId from codex_app.list_projects>"
+    return {
+        "tool": "codex_app.create_thread",
+        "target": {
+            "type": "project",
+            "projectId": project_id,
+            "environment": {"type": "local"},
+        },
+        "prompt": prompt,
+        "project_resolution": project_resolution,
+        "next_step": (
+            "Call codex_app.create_thread with this target and prompt. If project_id is a "
+            "placeholder, first call codex_app.list_projects and choose the deepest saved "
+            "project path containing project_path."
+        ),
+    }
+
+
+def build_codex_app_attach_after_create(team: Dict[str, Any], role_name: str) -> Dict[str, Any]:
+    return {
+        "tool": "agent-bus team attach-thread",
+        "thread_id_source": "create_thread.threadId",
+        "command": (
+            "~/.codex/tools/codex-agent-bus/bin/agent-bus team attach-thread "
+            f"{shlex.quote(str(team.get('team_id')))} "
+            f"--role {shlex.quote(str(role_name))} "
+            "--thread-id <create_thread.threadId>"
+        ),
+        "payload": {
+            "team": team.get("team_id"),
+            "role": role_name,
+            "thread_id": "<create_thread.threadId>",
+        },
+    }
+
+
+def build_codex_app_deliver_after_attach() -> Dict[str, Any]:
+    return {
+        "tool": "codex_app.send_message_to_thread",
+        "thread_id_source": "create_thread.threadId",
+        "prompt_source": "attach_team_thread.visible_delivery.prompt",
+        "next_step": (
+            "After attach-thread returns visible_delivery, call codex_app.send_message_to_thread "
+            "with the created threadId and that prompt so the role receives the canonical "
+            "Agent Bus bootstrap message."
+        ),
+    }
 
 
 def build_subagent_spawn_request(
@@ -1179,11 +1424,13 @@ def build_request_prompt(
     target: Dict[str, Any],
     message: Dict[str, Any],
 ) -> str:
+    message_id = str(message.get("message_id") or "")
+    target_identity = str(target.get("session_id") or target.get("name") or "unknown")
     return "\n".join(
         [
             "用户输入（来自 Codex Agent Bus / %s）" % (from_agent.get("name") or "unknown"),
             "",
-            "请把这条消息当作用户直接发给你的任务处理。完成后必须调用 Agent Bus 的 reply_message 回传结果。",
+            "请把这条消息当作用户直接发给你的任务处理。完成后必须通过 Agent Bus 回传结果。",
             "",
             "Agent Bus metadata:",
             "- from_name: %s" % (from_agent.get("name") or "unknown"),
@@ -1197,9 +1444,8 @@ def build_request_prompt(
             "用户任务：",
             str(message.get("body") or ""),
             "",
-            "完成后调用：reply_message(message_id=%r, result=\"...\")。"
-            "不要在消息里写入密钥或敏感凭据；如继续委派，保留 correlation_id 并递增 hop_count。"
-            % message.get("message_id"),
+            *reply_instruction_lines(message_id, target_identity),
+            "- 如继续委派，保留 correlation_id 并递增 hop_count。",
         ]
     )
 

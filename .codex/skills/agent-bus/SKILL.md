@@ -28,6 +28,7 @@ If a request spans multiple areas, use this order:
 - Durable Bus storage and visible Codex thread delivery are separate proof layers.
 - A queued message, pending message, or `last_seen` update does not prove the target saw the task.
 - When the target is an existing Codex App thread/session and the task should be seen now, prefer Codex App visible delivery after creating the canonical Bus record.
+- When launching new team role threads, prefer `$agent-bus-team` with `team launch --mode codex-app` so the controller creates native Codex App threads with `codex_app.create_thread`.
 - Use pending Bus records for future sessions or stable role aliases that do not have a real thread yet.
 - Do not read Codex auth files, API keys, transcripts, or unrelated private state.
 - Do not edit `~/.codex/config.toml` unless the user explicitly asks for installation/configuration work.

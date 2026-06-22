@@ -149,11 +149,11 @@ def add_formula(doc, lines: list[str]) -> None:
         p = cell.paragraphs[0]
         style_paragraph(p, before=2, after=2, line=1.15, align=WD_ALIGN_PARAGRAPH.CENTER)
         r = p.add_run(line)
-        r.font.name = "Consolas"
-        r._element.rPr.rFonts.set(qn("w:ascii"), "Consolas")
-        r._element.rPr.rFonts.set(qn("w:hAnsi"), "Consolas")
+        r.font.name = "Calibri"
+        r._element.rPr.rFonts.set(qn("w:ascii"), "Calibri")
+        r._element.rPr.rFonts.set(qn("w:hAnsi"), "Calibri")
         r._element.rPr.rFonts.set(qn("w:eastAsia"), "Microsoft YaHei")
-        r.font.size = Pt(10.5)
+        r.font.size = Pt(12)
         r.font.color.rgb = DARK_BLUE
 
 
@@ -253,7 +253,7 @@ def add_cover(doc: Document) -> None:
     add_callout(
         doc,
         "学习目标",
-        "把读者当作第一次接触模式识别的小朋友：先用生活例子讲“它像什么”，再用很少的公式说明“机器怎么做”，最后用例题、习题和小实验巩固。",
+        "本小册子从生活化场景出发，依次讲清三个经典模型的直觉、公式、运行流程、典型应用与局限。读者不需要先背公式，只要先理解每个模型在解决什么问题。",
         PALE_GREEN,
     )
     add_image(doc, "assets/pattern_models_7_12/overview.png", "图 0-1  第 7-12 项模型的三条主线，本小册子聚焦前三个模型。")
@@ -270,6 +270,43 @@ def add_cover(doc: Document) -> None:
     doc.add_page_break()
 
 
+def add_reading_guide(doc: Document) -> None:
+    add_heading(doc, "0. 阅读导引：先记住三个故事", 1)
+    add_para(doc, "模式识别听起来像一门很抽象的课，但这三个模型都可以先从生活故事进入。感知机像拿尺子分水果，GMM 像根据味道猜糖果来自哪台机器，HMM 像根据脚印猜一个人走过哪些房间。")
+    add_para(doc, "这三个故事背后，对应的是三种不同的机器学习思路：用边界分开样本，用概率解释数据来源，用时间顺序推断隐藏状态。")
+    add_simple_table(
+        doc,
+        ["故事", "模型", "机器真正学的东西", "一句话记忆"],
+        [
+            ["尺子分水果", "感知机", "一条能分开两类样本的直线或平面", "分错就把边界挪一挪"],
+            ["猜糖果来源", "GMM", "多个概率团块的位置、形状和比例", "一个样本可以像多个群体"],
+            ["看脚印猜路线", "HMM", "隐藏状态如何随时间变化并产生观测", "看见表面现象，推测背后路线"],
+        ],
+        [1.35, 1.0, 2.45, 1.5],
+    )
+    add_heading(doc, "0.1 本文的公式怎么看", 2)
+    add_para(doc, "公式只承担“把故事变成计算规则”的作用。阅读时可以先看公式下面的中文解释，知道每个符号代表什么，再回到公式本身。")
+    add_simple_table(
+        doc,
+        ["符号", "通俗理解", "常见位置"],
+        [
+            ["x", "一个样本的特征，比如颜色、重量、声音片段", "三个模型都会出现"],
+            ["w", "感知机里每个特征的重要程度", "感知机"],
+            ["μ、Σ", "GMM 中一个概率团块的中心和形状", "GMM"],
+            ["π、a、b", "HMM 的初始概率、转移概率、发射概率", "HMM"],
+        ],
+        [1.0, 3.65, 1.65],
+        PALE_GREEN,
+    )
+    add_heading(doc, "0.2 学习时可以问自己的三个问题", 2)
+    add_numbers(doc, [
+        "这个模型把现实问题想象成什么故事？",
+        "模型最后学到的是边界、团块，还是状态路线？",
+        "如果数据变复杂，这个模型最先暴露的短板是什么？",
+    ])
+    doc.add_page_break()
+
+
 def add_perceptron(doc: Document) -> None:
     add_heading(doc, "1. 感知机（Perceptron）", 1)
     add_callout(doc, "一句话定位", "感知机是一种线性二分类模型。它用一条线、一个平面或一个高维超平面把样本分成两类，并在分错样本时调整边界。")
@@ -279,20 +316,35 @@ def add_perceptron(doc: Document) -> None:
     add_image(doc, "assets/pattern_models_7_12/perceptron.png", "图 1-1  感知机根据误分类样本调整线性边界。")
     add_para(doc, "如果只记一句话，就是：感知机像一个会改错的分类小老师，分错一次就把线挪一点。")
     add_heading(doc, "1.2 必要公式", 2)
-    add_formula(doc, ["s = w^T x + b", "f(x) = sign(s)", "w <- w + eta y_i x_i,    b <- b + eta y_i"])
-    add_para(doc, "这些符号不用害怕。x 就是样本的特征，比如“颜色有多红、重量有多大”；w 表示每个特征有多重要；b 像一个整体门槛；eta 决定每次改错时挪多远。公式真正想说的是：机器先打分，再看正负号；如果分错，就按正确方向改一下。")
-    add_heading(doc, "1.3 例题", 2)
-    add_para(doc, "例题：小老师一开始完全不会分，设 w=(0,0)，b=0，学习率 eta=1。现在来了一个“苹果”样本 x=(2,1)，真实标签 y=+1。小老师分错了，应该怎么改？")
+    add_formula(doc, ["s = wᵀx + b", "f(x) = sign(s)", "w ← w + ηyᵢxᵢ，   b ← b + ηyᵢ"])
+    add_para(doc, "x 是样本的特征，比如“颜色有多红、重量有多大”；w 表示每个特征有多重要；b 像一个整体门槛；η 决定每次改错时挪多远。公式真正想说的是：机器先打分，再看正负号；如果分错，就按正确方向改一下。")
+    add_heading(doc, "1.3 生活例子：水果分类", 2)
+    add_para(doc, "假设有一张表，每个水果只记录两个数字：颜色偏红的程度和重量。苹果通常更红一些，橘子通常颜色和重量分布不同。感知机会在这张二维表上画出一条线，线的一边叫“苹果”，另一边叫“橘子”。")
+    add_para(doc, "刚开始这条线可能画得很差。只要发现一个苹果被分到了橘子那边，模型就把线往能容纳这个苹果的方向挪一点；如果橘子被分到了苹果那边，就往相反方向挪一点。训练过程就是不断纠正这些小错误。")
+    add_heading(doc, "1.4 适合放在课本里的伪代码", 2)
+    add_numbers(doc, [
+        "准备一批已经标好类别的样本。",
+        "先随便给一组权重 w 和偏置 b。",
+        "拿一个样本来测试，看看当前模型是否分对。",
+        "分对就继续看下一个样本；分错就更新 w 和 b。",
+        "重复多轮，直到错误明显减少。",
+    ])
+    add_heading(doc, "1.5 例题", 2)
+    add_para(doc, "例题：小老师一开始完全不会分，设 w=(0,0)，b=0，学习率 η=1。现在来了一个“苹果”样本 x=(2,1)，真实标签 y=+1。小老师分错了，应该怎么改？")
     add_callout(doc, "解答", "更新后 w=(0,0)+1*(+1)*(2,1)=(2,1)，b=0+1*(+1)=1。下一次再遇到这个样本时，s=2*2+1*1+1=6，模型会判为正类。", PALE_YELLOW)
-    add_heading(doc, "1.4 运行流程", 2)
-    add_numbers(doc, ["初始化权重和偏置。", "依次查看训练样本并计算当前预测。", "如果样本被分错，就按误差方向更新权重和偏置。", "多轮重复，直到错误很少或达到迭代上限。"])
-    add_heading(doc, "1.5 习题", 2)
+    add_heading(doc, "1.6 常见误区", 2)
+    add_bullets(doc, [
+        "误区一：感知机什么边界都能学。实际上，单层感知机只能学直线、平面或高维超平面这类线性边界。",
+        "误区二：分对训练集就一定能分对新样本。训练集只是一部分例子，新样本可能落在边界附近。",
+        "误区三：学习率越大越好。学习率太大时，边界可能来回跳，反而不稳定。",
+    ])
+    add_heading(doc, "1.7 习题", 2)
     add_bullets(doc, [
         "如果苹果和橘子混成一个圆圈套一个圆圈，一条直线还能分开吗？这能说明感知机的什么局限？",
         "如果每次改错时尺子挪得特别远，可能会发生什么？",
         "把“是否有促销词、是否有可疑链接、邮件长度”当作三个特征，解释每个权重像什么。",
     ])
-    add_heading(doc, "1.6 小实验", 2)
+    add_heading(doc, "1.8 小实验", 2)
     add_simple_table(
         doc,
         ["实验目标", "数据建议", "操作步骤", "观察指标"],
@@ -305,7 +357,7 @@ def add_perceptron(doc: Document) -> None:
         [1.2, 1.55, 2.2, 1.4],
         PALE_GREEN,
     )
-    add_heading(doc, "1.7 本节小结", 2)
+    add_heading(doc, "1.9 本节小结", 2)
     add_para(doc, "感知机的关键不是复杂公式，而是“分错就修正”。它把模式识别中的分类问题转化为寻找线性边界的问题，是理解神经网络和线性模型的起点。")
 
 
@@ -318,20 +370,30 @@ def add_gmm(doc: Document) -> None:
     add_image(doc, "assets/pattern_models_7_12/gmm.png", "图 2-1  GMM 用多个椭圆状高斯成分解释数据分布。")
     add_para(doc, "所以，GMM 的重点不是“强行分堆”，而是“带着不确定性分堆”。这很适合真实世界，因为很多东西本来就不是非黑即白。")
     add_heading(doc, "2.2 必要公式", 2)
-    add_formula(doc, ["p(x) = sum_{k=1}^K pi_k N(x | mu_k, Sigma_k)", "gamma_{ik} = pi_k N(x_i | mu_k, Sigma_k) / sum_j pi_j N(x_i | mu_j, Sigma_j)"])
-    add_para(doc, "公式里的每个高斯成分可以理解为一个“糖果制造机器”。mu_k 是这台机器最常做出的典型糖果，Sigma_k 描述糖果可能散开的范围和方向，pi_k 表示这台机器在整袋糖果里占多大比例。gamma_ik 叫责任度，可以理解为“这台机器对这颗糖有多大嫌疑”。")
-    add_heading(doc, "2.3 EM 算法怎么理解", 2)
+    add_formula(doc, ["p(x) = pi1·N1(x) + pi2·N2(x) + ... + piK·NK(x)", "责任度 gamma(i,k) = 第 k 个团块的贡献 ÷ 所有团块的总贡献"])
+    add_para(doc, "公式里的每个 Nₖ(x) 可以理解为一个“糖果制造机器”对样本 x 的解释能力。μₖ 是这台机器最常做出的典型糖果，Σₖ 描述糖果可能散开的范围和方向，πₖ 表示这台机器在整袋糖果里占多大比例。γᵢₖ 叫责任度，可以理解为“第 k 台机器对第 i 颗糖有多大嫌疑”。")
+    add_heading(doc, "2.3 生活例子：商场顾客分群", 2)
+    add_para(doc, "商场可以记录顾客的两个数字：一年消费金额和到店次数。直接看散点图时，顾客可能混在一起；GMM 会尝试把他们解释成几个重叠的群体，例如“经常来且消费高的核心顾客”“不常来但偶尔买很多的顾客”“低频低消费的普通顾客”。")
+    add_para(doc, "有些顾客落在两个群体之间。GMM 不会强行说他只属于某一类，而是给出一组概率。这样，商场可以对边界顾客采用更柔性的策略，例如既推送高价值商品，也保留普通优惠券。")
+    add_heading(doc, "2.4 EM 算法怎么理解", 2)
     add_numbers(doc, ["E 步：根据当前模型，估计每个样本属于每个成分的概率。", "M 步：根据这些概率，重新计算每个成分的位置、形状和权重。", "两步交替进行，模型逐渐贴合数据分布。"])
-    add_heading(doc, "2.4 例题", 2)
+    add_para(doc, "E 步像是“先猜每颗糖来自哪台机器”；M 步像是“根据这些猜测，重新调整每台机器的典型口味”。一开始可能猜得不准，但反复几轮后，每台机器的位置和范围会越来越合理。")
+    add_heading(doc, "2.5 例题", 2)
     add_para(doc, "例题：一颗糖对草莓机器和葡萄机器的责任度分别是 0.75 和 0.25。如果只做硬分类，它会被分到哪一类？如果做软聚类，这两个数字又告诉我们什么？")
     add_callout(doc, "解答", "硬分类会把它分到草莓机器。但软聚类还告诉我们：它不是百分百草莓，也有 25% 像葡萄。这种“不确定性”有时比单纯给一个类别更有用。", PALE_YELLOW)
-    add_heading(doc, "2.5 习题", 2)
+    add_heading(doc, "2.6 常见误区", 2)
+    add_bullets(doc, [
+        "误区一：GMM 只是 K-Means 的复杂版本。GMM 的重点是概率解释，能表达一个样本同时像多个群体。",
+        "误区二：成分数 K 越大越好。K 太大时，模型可能把噪声也当成独立群体。",
+        "误区三：椭圆只是一张图。椭圆背后对应协方差矩阵，表示数据在不同方向上的散开程度。",
+    ])
+    add_heading(doc, "2.7 习题", 2)
     add_bullets(doc, [
         "如果糖果有三种来源，却只让 GMM 找两个团块，会发生什么？",
         "如果让 GMM 找太多团块，它会不会把一些偶然的小差异也当成一种来源？",
         "如果一颗糖不像任何一台机器做出来的，它为什么可能是异常样本？",
     ])
-    add_heading(doc, "2.6 小实验", 2)
+    add_heading(doc, "2.8 小实验", 2)
     add_simple_table(
         doc,
         ["实验目标", "数据建议", "操作步骤", "观察指标"],
@@ -344,7 +406,7 @@ def add_gmm(doc: Document) -> None:
         [1.2, 1.55, 2.2, 1.4],
         PALE_GREEN,
     )
-    add_heading(doc, "2.7 本节小结", 2)
+    add_heading(doc, "2.9 本节小结", 2)
     add_para(doc, "GMM 的核心价值是用概率方式描述“混合”。它不仅告诉我们样本属于哪个群体，还告诉我们这种判断有多确定。")
 
 
@@ -357,9 +419,12 @@ def add_hmm(doc: Document) -> None:
     add_image(doc, "assets/pattern_models_7_12/hmm.png", "图 3-1  HMM 的隐藏状态链与观测序列。")
     add_para(doc, "所以，HMM 的重点是：看见一串表面现象，推测背后一串看不见的状态。")
     add_heading(doc, "3.2 三组关键概率", 2)
-    add_formula(doc, ["pi_i = P(q_1 = i)", "a_ij = P(q_{t+1} = j | q_t = i)", "b_j(o) = P(o_t = o | q_t = j)"])
+    add_formula(doc, ["πᵢ = P(一开始在状态 i)", "aᵢⱼ = P(下一步到状态 j | 当前在状态 i)", "bⱼ(o) = P(看到观测 o | 当前在状态 j)"])
     add_para(doc, "用脚印故事来理解：初始概率表示小朋友一开始在哪个房间的可能性；转移概率表示他从一个房间走到另一个房间的可能性；发射概率表示某个房间留下某种脚印的可能性。")
-    add_heading(doc, "3.3 三个经典问题", 2)
+    add_heading(doc, "3.3 生活例子：天气和带伞", 2)
+    add_para(doc, "真实天气可能是晴天、阴天或雨天，但我们不一定直接看到天气记录，只看到一个人连续几天有没有带伞。如果连续三天都带伞，我们会猜这几天可能更容易下雨；如果某天没带伞，我们又会重新调整判断。")
+    add_para(doc, "在这个例子中，天气是隐藏状态，带伞与否是观测。HMM 的作用，就是把“连续几天有没有带伞”这串表面现象，变成对“连续几天天气如何”的概率推断。")
+    add_heading(doc, "3.4 三个经典问题", 2)
     add_simple_table(
         doc,
         ["问题", "在问什么", "典型算法"],
@@ -370,16 +435,22 @@ def add_hmm(doc: Document) -> None:
         ],
         [1.1, 3.7, 1.5],
     )
-    add_heading(doc, "3.4 例题", 2)
+    add_heading(doc, "3.5 例题", 2)
     add_para(doc, "例题：在“看脚印猜路线”中，我们看到的序列是：湿脚印、湿脚印、干脚印。请问隐藏状态和观测分别是什么？")
     add_callout(doc, "解答", "观测是我们真正看到的脚印类型，比如湿脚印、干脚印；隐藏状态是小朋友走过的房间，比如水池房、走廊、教室。HMM 想做的事，就是根据脚印序列猜最可能的房间路线。", PALE_YELLOW)
-    add_heading(doc, "3.5 习题", 2)
+    add_heading(doc, "3.6 常见误区", 2)
+    add_bullets(doc, [
+        "误区一：隐藏状态等于看不见的标签。更准确地说，隐藏状态是一串随时间变化、并能产生观测的内部过程。",
+        "误区二：HMM 只用于天气例子。天气只是入门例子，语音识别、词性标注、手势识别也可以用类似思想理解。",
+        "误区三：只看上一个状态永远够用。现实任务可能存在更长的依赖，这也是 HMM 的重要局限。",
+    ])
+    add_heading(doc, "3.7 习题", 2)
     add_bullets(doc, [
         "在天气和带伞例子里，哪个是隐藏状态？哪个是观测？",
         "为什么只看今天有没有带伞，可能还不如看连续三天有没有带伞？",
         "如果小朋友可能记得很久以前走过哪里，只看上一个房间会不会太简单？这说明 HMM 有什么局限？",
     ])
-    add_heading(doc, "3.6 小实验", 2)
+    add_heading(doc, "3.8 小实验", 2)
     add_simple_table(
         doc,
         ["实验目标", "数据建议", "操作步骤", "观察指标"],
@@ -392,7 +463,7 @@ def add_hmm(doc: Document) -> None:
         [1.2, 1.55, 2.2, 1.4],
         PALE_GREEN,
     )
-    add_heading(doc, "3.7 本节小结", 2)
+    add_heading(doc, "3.9 本节小结", 2)
     add_para(doc, "HMM 把序列识别拆成“隐藏状态”和“可见观测”。看懂这两层结构，就能理解它为什么适合处理语音、文本、动作和故障这类随时间展开的问题。")
 
 
@@ -430,6 +501,7 @@ def add_comparison_and_refs(doc: Document) -> None:
 def main() -> None:
     doc = setup_doc()
     add_cover(doc)
+    add_reading_guide(doc)
     add_perceptron(doc)
     add_gmm(doc)
     add_hmm(doc)
